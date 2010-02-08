@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/layout_item"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    >
+    
+    <!-- Used to draw a colored line on subject changes -->
+	<View 
+	android:id="@+id/msglist_line"
+	android:layout_width="fill_parent"
+	android:layout_height="8dip"
+	android:background="#736F6E"
+	/>
+	
+	<!-- Layout de parte principal + estrella -->
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/layout_item"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+    
+    <!-- Elementos no estrella -->
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/layout_item"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="bottom"
+	    android:layout_weight="1"
+	    >
+      
+	<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/text_level"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textSize="15sp"
+		android:textStyle="bold"
+		android:textColor="#ff000000"
+	/>
+
+	<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/text_subject"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textSize="18sp"
+		android:textStyle="bold"
+		android:textColor="#ff000000"
+	/>		
+
+		<!-- Layout de autor + corazon (opcional el corazon) -->
+		<LinearLayout
+	    android:orientation="horizontal"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="bottom"
+	    >
+	
+		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/text_author"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textSize="14sp"
+		android:textStyle="italic"
+		android:gravity="left"
+		android:textColor="#ff000000"
+		android:layout_weight="1"
+		android:paddingTop="3px"
+		android:paddingBottom="3px"
+		/>	    
+		
+	    <ImageView 
+	    android:id="@+id/messagelistitem_img_love"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="right"
+	    android:layout_weight="7"
+	    />
+
+		
+		</LinearLayout> <!-- Cierre Corazon y autor -->
+	</LinearLayout> <!--  Cierre vertical de elementos no-estrella -->
+
+	   	<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+	   		android:id="@+id/img_thread_star"
+	   		android:clickable="true"
+	   		android:src="@android:drawable/star_big_off"
+	   		android:layout_width="fill_parent"
+	   		android:layout_height="fill_parent"
+	   		android:gravity="center_vertical"
+	   		android:layout_weight="9"
+	   		/>	
+	</LinearLayout> <!-- Cierre elementos normales + estrella en horizontal -->	
+</LinearLayout>

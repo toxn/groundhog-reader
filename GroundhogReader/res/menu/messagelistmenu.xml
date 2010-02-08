@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item android:orderInCategory="1" android:title="New post"
+		android:id="@+id/messagelist_menu_newpost" android:icon="@android:drawable/ic_menu_edit"></item>
+
+	<item android:title="Groups List" android:id="@+id/messagelist_menu_groupslist"
+	android:orderInCategory="2" android:icon="@android:drawable/ic_media_rew"></item>
+
+	<item android:title="Refresh" android:id="@+id/messagelist_menu_refresh"
+	android:orderInCategory="3" android:icon="@android:drawable/ic_menu_rotate"></item>
+	
+	<item android:title="Get new messages" android:id="@+id/messagelist_menu_getnew"
+	android:orderInCategory="4" android:icon="@android:drawable/ic_menu_set_as"></item>
+	
+	<item android:title="Mark all read" android:id="@+id/messagelist_menu_markread"
+	android:orderInCategory="5" android:icon="@android:drawable/ic_menu_close_clear_cancel"></item>
+	
+	<item android:title="Manage banned threads" android:id="@+id/messagelist_menu_managebanneds"
+	android:orderInCategory="6"/>
+	
+	<item android:title="Manage banned users" android:id="@+id/messagelist_menu_managebannedusers"
+	android:orderInCategory="7"/>
+		
+	<item android:title="Global settings" android:id="@+id/messagelist_menu_settings"
+	android:orderInCategory="8" android:icon="@android:drawable/ic_menu_preferences"></item>
+</menu>
+
+
+

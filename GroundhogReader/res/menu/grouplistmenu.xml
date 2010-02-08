@@ -1,0 +1,44 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+	android:title="Get All Messages"
+	android:orderInCategory="1"
+	android:id="@+id/grouplist_menu_getall" 
+	android:icon="@android:drawable/ic_menu_set_as"
+	/>
+	
+	<item
+	android:title="Add Groups" 
+	android:orderInCategory="2"
+	android:id="@+id/grouplist_menu_addgroups" 
+	android:icon="@android:drawable/ic_menu_add"
+	/>
+	
+	<item
+	android:title="Set Offline Mode"
+	android:orderInCategory="3"
+	android:id="@+id/grouplist_menu_offline"
+	/>
+
+	<item
+	android:title="Show QuickHelp"
+	android:orderInCategory="4"
+	android:id="@+id/grouplist_menu_quickhelp"
+	android:icon="@android:drawable/ic_menu_help"
+	/>
+	 
+	<item
+	android:title="Global Settings"
+	android:orderInCategory="5"
+	android:id="@+id/grouplist_menu_settings" 
+	android:icon="@android:drawable/ic_menu_preferences"
+	/>
+
+	<item
+	android:title="Clear Cache"
+	android:orderInCategory="6"
+	android:id="@+id/grouplist_menu_clearcache"
+	android:icon="@android:drawable/ic_menu_close_clear_cancel"
+	/>
+			
+</menu>

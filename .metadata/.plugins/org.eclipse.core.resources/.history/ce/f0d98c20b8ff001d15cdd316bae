@@ -1,0 +1,54 @@
+package com.almarsoft.GroundhogReader.lib;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.apache.commons.net.io.DotTerminatedMessageReader;
+import org.apache.commons.net.nntp.Article;
+import org.apache.commons.net.nntp.NNTPClient;
+import org.apache.commons.net.nntp.NNTPReply;
+
+import android.util.Log;
+
+// Extends the apache commons NNTPClient to add support for the 
+public class NNTPExtended extends NNTPClient {
+	
+	private int[] __parseListGroup() throws NumberFormatException, IOException {
+		
+		int size;
+		String line;
+		Vector<Integer> list;
+		BufferedReader reader;
+		
+		reader = new BufferedReader(new DotTerminatedMessageReader(_reader_));
+		list = new Vector<Integer>(2048);
+		
+		while ((line = reader.readLine()) != null) {
+			list.add(Integer.parseInt(line.trim()));
+		}
+		
+		int[] retval = new int[list.size()];
+		
+		int idx = 0;
+		for (Integer i : list) {
+			retval[idx] = i;
+			idx++;
+		}
+			
+		return retval;
+		
+	}
+	
+	public int[] listGroup(String group) throws IOException {
+		
+		if (!NNTPReply.isPositiveCompletion(sendCommand("LISTGROUP", group)))
+			return null;
+		
+		return __parseListGroup();
+		
+	}
+
+}

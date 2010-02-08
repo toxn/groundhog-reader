@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--  Layout principal, contiene las opciones (con su layout y scroll) y el layout de los botones -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Connection">   
+	    
+		<EditTextPreference
+		android:key="host"
+		android:id="@+id/preference_host"
+		android:title="Server Address"
+		android:summary="Click to enter server address."
+		android:dialogTitle="Server host address:"
+		android:dialogMessage="Enter your usenet server address, (WITHOUT the nntp://). If you don't have an account, you can register one on a free server like Motzarella (go to http://news.motzarella.org with the browser) or others"
+		android:singleLine="true"			
+		/>
+
+		<EditTextPreference
+		android:key="port"			
+		android:title="Server Port"
+		android:summary="Click to enter server port number"
+		android:dialogTitle="Server port number:"
+		android:defaultValue="119"
+		android:singleLine="true"
+		android:numeric="integer"			
+		/>
+		
+		<CheckBoxPreference
+		android:key="needsAuth"
+		android:id="@+id/preference_needsAuth"
+		android:title="Server needs login"			
+		android:checked="true"
+		/>
+
+		<EditTextPreference		
+		android:key="login"	
+		android:title="Login name"
+		android:summary="Click to enter the login name in the server"
+		android:dialogTitle="Enter login name"
+		android:singleLine="true"			
+		/>
+		
+		<EditTextPreference		
+		android:key="pass"	
+		android:title="Password"
+		android:summary="Click to enter the password in the server"
+		android:dialogTitle="Enter password"
+		android:password="true"	
+		android:singleLine="true"		
+		/>
+		
+		<EditTextPreference
+		android:key="maxFetch"
+		android:title="Max message fetch"
+		android:summary="Max number of messages to fetch when you open a group"
+		android:dialogTitle="Max fetch"
+		android:defaultValue="100"
+		android:singleLine="true"
+		android:numeric="integer"
+		/>
+		
+	</PreferenceCategory>
+				
+	<PreferenceCategory android:title="User info"> 
+		<EditTextPreference
+		android:key="name"			
+		android:title="Name"
+		android:summary="Name to use on posts"
+		android:dialogTitle="Enter name"
+		android:singleLine="true"						
+		/>
+
+		<EditTextPreference
+		android:key="email"			
+		android:title="Email"
+		android:summary="Email to use on posts (mandatory but can be fake)"
+		android:dialogTitle="Enter email"
+		android:singleLine="true"						
+		/>
+		
+		<EditTextPreference
+		android:key="signature"
+		android:title="Signature"
+		android:summary="Optionally put your customized signature"
+		android:dialogTitle="Write signature"
+		android:singleLine="false"
+		/>
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="Groups list">
+		<CheckBoxPreference
+		android:key="markReplies"
+		android:id="@+id/preference_markReplies"
+		android:title="Highlight my replies"
+		android:summary="Highlight direct replies to my messages"			
+		android:checked="true"
+		/>	
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="Posting">
+		<CheckBoxPreference
+		android:key="useQuotingView"
+		android:id="@+id/preference_usequoter"
+		android:title="Use quote selector"
+		android:summary="Enable the screen for easy quoting before posting"			
+		android:checked="true"
+		/>
+		
+		<CheckBoxPreference
+		android:key="replyCursorPositionStart"
+		android:id="@+id/preference_replyCursorStart"
+		android:title="Reply cursor at start"
+		android:summary="If enabled, put the cursor at the start of the message when replying"			
+		android:checked="false"
+		/>		
+		
+		 <ListPreference  
+		 android:key="multipleFollowup"  
+		 android:title="Multiple followups"  
+		 android:summary="When replying a message posted to several groups followup to..."  
+		 android:entries="@array/followupOptionKeys"  
+		 android:entryValues="@array/followupOptionValues"  
+		 android:dialogTitle="Followup to..." />
+		 
+		<EditTextPreference
+		android:key="authorline"
+		android:id="@+id/preference_authorline"
+		android:title="Message quoting header"
+		android:summary="Click to configure the initial line of the quoted text when replying"
+		android:dialogTitle="Configure line"
+		android:dialogMessage="Write the text to show as the first line of the original message before the quoted part. You can use the tokens [date] and [user] that will be replaced on the line with the appropiate values. For example the default value is: On [date], [user] wrote:"
+		android:singleLine="false"			
+		/>		  		
+
+		<CheckBoxPreference
+		android:key="postDirectlyInOfflineMode"
+		android:id="@+id/preference_postDirectly"
+		android:title="Offline mode posting"
+		android:summary="If enabled, messages posted in offline mode will tried to be sent online first"			
+		android:checked="true"
+		/>	
+	</PreferenceCategory>
+
+	
+</PreferenceScreen>

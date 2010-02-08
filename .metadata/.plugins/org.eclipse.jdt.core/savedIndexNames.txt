@@ -1,0 +1,6 @@
+INDEX VERSION 1.126+/home/juanjux/reader/.metadata/.plugins/org.eclipse.jdt.core
+3126950479.index
+1951288087.index
+485331341.index
+3064686561.index
+2072416675.index

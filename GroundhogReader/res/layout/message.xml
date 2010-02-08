@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--  Layout principal vertical -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/main_message_layout"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="bottom"
+    android:textColor="#000000"
+	android:background="#FFFFFF"
+    >
+    
+	   	<!--  Layout horizontal de Autor (no se desplaza) -->    
+	    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    	android:id="@+id/layout_author"
+			android:orientation="horizontal"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:background="#cccccc"			    	     	 
+	    >
+		    
+	   		<TextView
+			android:id="@+id/text_authorlabel"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Author: "
+			android:textStyle="italic"
+			android:textColor="#000000"
+		    />
+		    
+    		<ImageView 
+		    android:id="@+id/img_love"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="right"
+		    />
+		    
+		    <TextView
+		    android:id="@+id/text_author"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:textStyle="bold"
+		    android:textColor="#000000"
+	        android:singleLine="true"
+		    android:ellipsize="end"
+		    />
+		</LinearLayout>
+		    
+	<!-- ScrollView para que el cuerpo del mensaje se pueda desplazar --> 
+	<ScrollView android:id="@+id/textAreaScroller"
+	   	android:layout_width="fill_parent"
+	   	android:layout_height="0dip"
+	   	android:layout_weight="1"
+	   > 
+	       
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:gravity="bottom"
+		    >
+	
+				
+				<!--  Layout horizontal de Date -->
+			    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			    	android:id="@+id/layout_date"
+			    	android:orientation="horizontal"
+			    	android:layout_width="fill_parent"
+			    	android:layout_height="wrap_content"
+			    	android:gravity="left"
+			    	android:background	="#cccccc"	
+			    >
+			   		<TextView
+					android:id="@+id/text_subjectlabel"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Date: "
+					android:textStyle="italic"
+					android:textColor="#000000"
+				    />
+				    <TextView
+				    android:id="@+id/text_date"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:textStyle="bold"
+				    android:textColor="#000000"
+				    />    
+
+			    </LinearLayout>			
+				
+				<!--  Layout horizontal de Subject -->
+			    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			    	android:id="@+id/layout_subject"
+			    	android:orientation="horizontal"
+			    	android:layout_width="fill_parent"
+			    	android:layout_height="wrap_content"
+			    	android:gravity="left"
+			    	android:background	="#cccccc"	
+			    >
+			   		<TextView
+					android:id="@+id/text_subjectlabel"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Subject: "
+					android:textStyle="italic"
+					android:textColor="#000000"
+				    />
+				    <TextView
+				    android:id="@+id/text_subject"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:textStyle="bold"
+				    android:textColor="#000000"
+				    />    
+			    </LinearLayout>
+			 	
+			 	<!-- Main message view -->
+				<WebView 
+					android:id="@+id/text_content"
+					android:layout_width="fill_parent"		
+					android:layout_height="0px"
+			        android:layout_weight="1"	
+			        android:padding="3px"
+				/>
+			</LinearLayout>
+	</ScrollView>
+
+	<!--  Layout horizontal para los botones -->
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"		
+		>
+		<Button
+			android:id="@+id/btn_prev"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Prev"
+			android:layout_weight="1"
+		/>				
+		<Button
+			android:id="@+id/btn_next"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Next"
+			android:layout_weight="1"
+		/>
+		
+	</LinearLayout>	
+</LinearLayout>

@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:id="@+id/msglist_item_menu_markthreadread"
+  android:title="Mark thread as read"
+  android:orderInCategory="1"
+/>
+
+<item android:id="@+id/msglist_item_menu_markthreadunread"
+  android:title="Mark thread as unread"
+  android:orderInCategory="2"
+/>
+
+<item android:id="@+id/msglist_item_menu_starthread"
+  android:title="Star/Un-Star thread"
+  android:orderInCategory="3"
+/>
+
+<item android:id="@+id/msglist_item_menu_ignorethread"
+  android:title="Ban thread"
+  android:orderInCategory="4"
+/>
+
+<item android:id="@+id/msglist_item_menu_banuser"
+  android:title="Ban author"
+  android:orderInCategory="5"
+/>
+
+</menu>

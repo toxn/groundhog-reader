@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="followupOptionKeys">
+        <item>Ask</item>
+        <item>All groups</item>
+        <item>Current group only</item>
+</string-array>
+    
+<string-array name="followupOptionValues">
+        <item>ASK</item>
+        <item>ALL</item>
+        <item>CURRENT</item>
+</string-array>
+</resources>

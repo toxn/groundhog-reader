@@ -1,0 +1,52 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item 
+	android:orderInCategory="1" 
+	android:title="Reply"
+	android:id="@+id/message_menu_reply" 
+	android:icon="@android:drawable/ic_menu_revert"/>
+	
+	<item android:title="Keep Unread" 
+	android:id="@+id/message_menu_markunread" 
+	android:orderInCategory="2" 
+	android:icon="@android:drawable/ic_menu_add"/>
+	
+	<item android:title="Forward by Email" 
+	android:id="@+id/message_menu_forward"
+	android:orderInCategory="3" 
+	android:icon="@android:drawable/ic_menu_send"/>
+	
+	<item android:title="Ban Author" 
+	android:id="@+id/message_menu_ban"
+	android:orderInCategory="4" 
+	android:icon="@android:drawable/ic_menu_mylocation"/>
+	
+	<item android:orderInCategory="5" 
+	android:icon="@drawable/love_big_off" 
+	android:id="@+id/message_menu_favorite" 
+	android:title="Toggle Favorite"></item>
+	
+	<item android:title="Increase text size" 
+	android:id="@+id/message_menu_bigtext" 
+	android:orderInCategory="6"  />
+	
+	<item android:title="Decrease text size" 
+	android:id="@+id/message_menu_smalltext" 
+	android:orderInCategory="7"  />
+	
+	<item android:title="Manage Authors Bans" 
+	android:id="@+id/message_menu_manageban" 
+	android:orderInCategory="8" 
+	android:icon="@android:drawable/ic_menu_agenda" />
+	
+	<item android:title="Show/Hide full headers" 
+	android:id="@+id/message_menu_fullheaders" 
+	android:orderInCategory="9" 
+	/>	
+	
+	<item android:title="Global Settings" 
+	android:id="@+id/message_menu_settings" 
+	android:icon="@android:drawable/ic_menu_preferences" 
+	android:orderInCategory="10"/>
+
+</menu>
