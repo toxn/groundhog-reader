@@ -103,7 +103,15 @@ public class MessageActivity extends Activity {
     	mPrefs   = PreferenceManager.getDefaultSharedPreferences(this);
     	
     	mOfflineMode = mPrefs.getBoolean("offlineMode", false);
-    	
+    
+        // ZZZ 
+        /*
+        extras = getIntent().getExtras();
+    	mMsgIndexInArray     = extras.getInt("msgIndexInArray");
+    	mArticleNumbersArray = extras.getLongArray("articleNumbers");
+    	mGroup               = extras.getString("group");
+
+        */
     	mMsgIndexInArray     = getIntent().getExtras().getInt("msgIndexInArray");
     	mArticleNumbersArray = getIntent().getExtras().getLongArray("articleNumbers");
     	mGroup               = getIntent().getExtras().getString("group");
@@ -603,6 +611,11 @@ public class MessageActivity extends Activity {
     		public void run() {
     			
     	    	try {
+                    /*
+                     * ZZZ: Buena parte de esta mierda se puede utilizar usando org.apache.james.mime4j.message.Message (getCharset, Mime, Encoding, etc
+                     * mServerManager debe devolver un Message, despues hacermos getHeader, getField(), etc
+                     */
+
     	    		updateStatus("Fetching message body", NOT_FINISHED);
     	    		
     	    		// shortcut
@@ -624,6 +637,8 @@ public class MessageActivity extends Activity {
     	    		// Get or load the header, and from the header, the from, subject, date,
     	    		// and Content-Transfer-Encoding
     	    		// ===========================================================================================
+
+                    // ZZZ: Mierdas, llama a getMessage y obtiene el mesage completo, luego de alli saca el body
     	    		mHeader = mServerManager.getHeader((Integer)articleData.get("id"), 
     	    				                           (String)articleData.get("server_article_id"), 
     	    				                           false, isCatched);
@@ -651,6 +666,8 @@ public class MessageActivity extends Activity {
     	    		// Extract the charset from the Content-Type header or if it's MULTIPART/MIME, the boundary
     	    		// between parts
     	    		// ===========================================================================================
+
+                    // ZZZ: llamar a mHeader.getField("Content-Type").getBody()
     	    		String[] tmpContentArr = null;
     	    		String[] contentTypeParts = null;
     	    		String tmpFirstToken;
@@ -685,10 +702,12 @@ public class MessageActivity extends Activity {
     	    		// Get or load the body, extract the mime text/plain part if it is a Mime message
     	    		// and decode if it is QuotedPrintable
     	    		// ===============================================================================
-    	    		
+                    
+                    
+    	    		// ZZZ getBody sera getMessage y obtendra el mensaje completo
     	    		mBodyText = mServerManager.getBody((Integer)articleData.get("id"), 
 	                                                   (String)articleData.get("server_article_id"), 
-	                                                   false, (Boolean)articleData.get("catched"));
+	                                                   false, isCatched);
 
 	    			if (mMimePartsVector != null) mMimePartsVector.clear();
     	    		if (isMime && mimeBoundary != null) {
@@ -723,8 +742,7 @@ public class MessageActivity extends Activity {
     	    		}
     	    		
     	    		if (encoding != null && encoding.equalsIgnoreCase("quoted-printable")) 
-    	    			mBodyText = QuotedPrintableDecoder.decode(mBodyText);
-    	    		
+                        mBodyText = QuotedPrintableDecoder.decode(mBodyText);
     	    		
     	    		updateStatus("Fetching message body", FINISHED_GET_OK);
     	    		
@@ -836,6 +854,7 @@ public class MessageActivity extends Activity {
     		// lo devuelve y se le pasa a prepareHTML)
     		
     		
+            // XXX: NO reutilizar mBodyText tanto, ahorra memoria pero es una mierda
     		mBodyText = MessageTextProcessor.sanitizeLineBreaks(mBodyText);
     		
     		mBodyText = MessageTextProcessor.getHtmlHeader(mCharset) + 

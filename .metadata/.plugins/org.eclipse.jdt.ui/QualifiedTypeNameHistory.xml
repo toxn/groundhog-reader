@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="com.almarsoft.GroundhogReader.BannedActivity.BannedItem"/>
 <fullyQualifiedTypeName name="com.almarsoft.GroundhogReader.lib.HeaderItemClass"/>
 <fullyQualifiedTypeName name="com.almarsoft.GroundhogReader.QuotingActivity.QuoteLineItem"/>
 <fullyQualifiedTypeName name="com.almarsoft.GroundhogReader.QuoteLineItem"/>
@@ -26,7 +25,6 @@
 <fullyQualifiedTypeName name="com.almarsoft.GroundhogReader.R.id"/>
 <fullyQualifiedTypeName name="org.apache.commons.codec.binary.Base64"/>
 <fullyQualifiedTypeName name="android.widget.ListView.FixedViewInfo"/>
-<fullyQualifiedTypeName name="java.io.OutputStreamWriter"/>
 <fullyQualifiedTypeName name="java.io.RandomAccessFile"/>
 <fullyQualifiedTypeName name="android.os.Environment"/>
 <fullyQualifiedTypeName name="java.io.BufferedOutputStream"/>
@@ -47,11 +45,9 @@
 <fullyQualifiedTypeName name="java.io.FileReader"/>
 <fullyQualifiedTypeName name="java.util.Vector"/>
 <fullyQualifiedTypeName name="java.io.InputStream"/>
-<fullyQualifiedTypeName name="java.io.DataInputStream"/>
 <fullyQualifiedTypeName name="java.io.DataOutputStream"/>
 <fullyQualifiedTypeName name="com.almarsoft.GroundhogReader.lib.UsenetReaderException"/>
 <fullyQualifiedTypeName name="java.io.ByteArrayOutputStream"/>
-<fullyQualifiedTypeName name="com.almarsoft.GroundhogReader.lib.MessageTextProcessor"/>
 <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
 <fullyQualifiedTypeName name="android.app.ProgressDialog"/>
 <fullyQualifiedTypeName name="java.lang.IllegalArgumentException"/>
@@ -60,4 +56,8 @@
 <fullyQualifiedTypeName name="java.lang.NullPointerException"/>
 <fullyQualifiedTypeName name="android.webkit.WebSettings.TextSize"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="java.io.DataInputStream"/>
+<fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+<fullyQualifiedTypeName name="java.io.OutputStreamWriter"/>
+<fullyQualifiedTypeName name="com.almarsoft.GroundhogReader.lib.MessageTextProcessor"/>
 </qualifiedTypeNameHistroy>

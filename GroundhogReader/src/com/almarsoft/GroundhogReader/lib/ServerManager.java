@@ -424,7 +424,9 @@ final public class ServerManager {
 		
 		if (header == null || header.trim().length() == 0)  
 			return null;
-		
+
+        // ZZZ: Se devuelve un header, no hace falta parsear ni convertir en String[] se devuelve directamente el objeto
+        
 		// Now that we have read the header part, split it into a HashTable
 		String[] headerFields = header.split("\n");
 		String[] fieldValue = null;

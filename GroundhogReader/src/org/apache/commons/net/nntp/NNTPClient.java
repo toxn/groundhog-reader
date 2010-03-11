@@ -272,7 +272,7 @@ public class NNTPClient extends NNTP
     throws IOException
     {
         Reader reader;
-        if (articleId != null)
+                if (articleId != null)
         {
             if (!NNTPReply.isPositiveCompletion(sendCommand(command, articleId)))
                 return null;

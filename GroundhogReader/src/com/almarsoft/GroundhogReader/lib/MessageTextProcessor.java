@@ -503,7 +503,34 @@ public class MessageTextProcessor {
 	}
 
 
+	public static String getCharsetFromHeader(HashMap<String, String> header) 
+	{
+		String[] tmpContentArr = null;
+		String[] contentTypeParts = null;
+		String tmpFirstToken;
+		
+		String charset = "iso-8859-1";
+		
+		if (header.containsKey("Content-Type")) {
+			tmpContentArr = header.get("Content-Type").split(";");
+			int contentLen = tmpContentArr.length;
+		
+			for (int i=0; i<contentLen; i++) {
+				
+				contentTypeParts = tmpContentArr[i].split("=", 2);
+				tmpFirstToken = contentTypeParts[0].trim();
+				
+				if (contentTypeParts.length > 1 && tmpFirstToken.equalsIgnoreCase("charset")) {
+					// Found
+					return contentTypeParts[1].replace("\"", "").trim();					
+					
+				}				
+			}
+		}		
+		return charset;
+	}
 
+	
 	public static String htmlizeFullHeaders(HashMap<String, String> header) {
 		
 		StringBuilder html = new StringBuilder();

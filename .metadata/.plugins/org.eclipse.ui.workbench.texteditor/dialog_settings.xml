@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="311" key="DIALOG_WIDTH"/>
+		<item value="319" key="DIALOG_WIDTH"/>
 		<item value="99" key="DIALOG_Y_ORIGIN"/>
 		<item value="489" key="DIALOG_X_ORIGIN"/>
-		<item value="430" key="DIALOG_HEIGHT"/>
-		<item value="1|Droid Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+		<item value="454" key="DIALOG_HEIGHT"/>
+		<item value="1|Segoe UI|8.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="wrap"/>
@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value=".stop" key="selection"/>
+		<item value="ZZZ" key="selection"/>
 		<list key="findhistory">
-			<item value=".stop"/>
-			<item value="throw"/>
-			<item value="There was an"/>
-			<item value="there was an"/>
-			<item value="== null"/>
-			<item value="dialog"/>
-			<item value="mSearchResults"/>
-			<item value="mSearchRes"/>
+			<item value="ZZZ"/>
+			<item value="XXX"/>
+			<item value="XXX "/>
+			<item value="utf"/>
+			<item value="mCharset"/>
+			<item value="charset"/>
+			<item value="type"/>
+			<item value="writeByteArra"/>
 		</list>
 		<list key="replacehistory">
 			<item value="StringBuilder"/>

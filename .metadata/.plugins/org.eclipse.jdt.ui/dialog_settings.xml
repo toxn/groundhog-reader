@@ -42,42 +42,6 @@
 			<item value="11" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
-			<item value="XXX 15" key="pattern"/>
-			<item value="" key="javaElement"/>
-			<item value="4" key="searchFor"/>
-			<item value="0" key="matchLocations"/>
-			<item value="false" key="isCaseSensitive"/>
-			<list key="workingSets">
-			</list>
-		</section>
-		<section name="HISTORY2">
-			<item value="15" key="includeMask"/>
-			<item value="2" key="limitTo"/>
-			<item value="0" key="scope"/>
-			<item value="com.almarsoft.GroundhogReader.lib.MessageTextProcessor.getUUEncodedAttachments(String)" key="pattern"/>
-			<item value="=GroundhogReader/src&lt;com.almarsoft.GroundhogReader.lib{MessageTextProcessor.java[MessageTextProcessor~getUUEncodedAttachments~QString;" key="javaElement"/>
-			<item value="1" key="searchFor"/>
-			<item value="0" key="matchLocations"/>
-			<item value="true" key="isCaseSensitive"/>
-			<list key="workingSets">
-			</list>
-		</section>
-		<section name="HISTORY3">
-			<item value="15" key="includeMask"/>
-			<item value="2" key="limitTo"/>
-			<item value="0" key="scope"/>
-			<item value="com.almarsoft.GroundhogReader.lib.FSUtils.saveUUencodedAttachment(String, String)" key="pattern"/>
-			<item value="=GroundhogReader/src&lt;com.almarsoft.GroundhogReader.lib{FSUtils.java[FSUtils~saveUUencodedAttachment~QString;~QString;" key="javaElement"/>
-			<item value="1" key="searchFor"/>
-			<item value="0" key="matchLocations"/>
-			<item value="true" key="isCaseSensitive"/>
-			<list key="workingSets">
-			</list>
-		</section>
-		<section name="HISTORY10">
-			<item value="11" key="includeMask"/>
-			<item value="2" key="limitTo"/>
-			<item value="0" key="scope"/>
 			<item value="java.lang.Runnable" key="pattern"/>
 			<item value="" key="javaElement"/>
 			<item value="0" key="searchFor"/>
@@ -86,19 +50,7 @@
 			<list key="workingSets">
 			</list>
 		</section>
-		<section name="HISTORY0">
-			<item value="15" key="includeMask"/>
-			<item value="2" key="limitTo"/>
-			<item value="0" key="scope"/>
-			<item value="runnable" key="pattern"/>
-			<item value="" key="javaElement"/>
-			<item value="0" key="searchFor"/>
-			<item value="0" key="matchLocations"/>
-			<item value="false" key="isCaseSensitive"/>
-			<list key="workingSets">
-			</list>
-		</section>
-		<section name="HISTORY1">
+		<section name="HISTORY2">
 			<item value="15" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
@@ -110,7 +62,19 @@
 			<list key="workingSets">
 			</list>
 		</section>
-		<section name="HISTORY9">
+		<section name="HISTORY3">
+			<item value="15" key="includeMask"/>
+			<item value="2" key="limitTo"/>
+			<item value="0" key="scope"/>
+			<item value="com.almarsoft.GroundhogReader.lib.MessageTextProcessor.getUUEncodedAttachments(String)" key="pattern"/>
+			<item value="=GroundhogReader/src&lt;com.almarsoft.GroundhogReader.lib{MessageTextProcessor.java[MessageTextProcessor~getUUEncodedAttachments~QString;" key="javaElement"/>
+			<item value="1" key="searchFor"/>
+			<item value="0" key="matchLocations"/>
+			<item value="true" key="isCaseSensitive"/>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY10">
 			<item value="11" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
@@ -122,7 +86,31 @@
 			<list key="workingSets">
 			</list>
 		</section>
-		<section name="HISTORY8">
+		<section name="HISTORY0">
+			<item value="15" key="includeMask"/>
+			<item value="2" key="limitTo"/>
+			<item value="0" key="scope"/>
+			<item value="com.almarsoft.GroundhogReader.lib.MessageTextProcessor.getHtmlHeader(String)" key="pattern"/>
+			<item value="=GroundhogReader/src&lt;com.almarsoft.GroundhogReader.lib{MessageTextProcessor.java[MessageTextProcessor~getHtmlHeader~QString;" key="javaElement"/>
+			<item value="1" key="searchFor"/>
+			<item value="0" key="matchLocations"/>
+			<item value="true" key="isCaseSensitive"/>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY1">
+			<item value="15" key="includeMask"/>
+			<item value="2" key="limitTo"/>
+			<item value="0" key="scope"/>
+			<item value="runnable" key="pattern"/>
+			<item value="" key="javaElement"/>
+			<item value="0" key="searchFor"/>
+			<item value="0" key="matchLocations"/>
+			<item value="false" key="isCaseSensitive"/>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY9">
 			<item value="11" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
@@ -134,31 +122,7 @@
 			<list key="workingSets">
 			</list>
 		</section>
-		<section name="HISTORY5">
-			<item value="15" key="includeMask"/>
-			<item value="2" key="limitTo"/>
-			<item value="0" key="scope"/>
-			<item value="attachment://" key="pattern"/>
-			<item value="" key="javaElement"/>
-			<item value="0" key="searchFor"/>
-			<item value="0" key="matchLocations"/>
-			<item value="false" key="isCaseSensitive"/>
-			<list key="workingSets">
-			</list>
-		</section>
-		<section name="HISTORY4">
-			<item value="15" key="includeMask"/>
-			<item value="2" key="limitTo"/>
-			<item value="0" key="scope"/>
-			<item value="com.almarsoft.GroundhogReader.lib.FSUtils.GetTypeFromExtension(String)" key="pattern"/>
-			<item value="=GroundhogReader/src&lt;com.almarsoft.GroundhogReader.lib{FSUtils.java[FSUtils~GetTypeFromExtension~QString;" key="javaElement"/>
-			<item value="1" key="searchFor"/>
-			<item value="0" key="matchLocations"/>
-			<item value="true" key="isCaseSensitive"/>
-			<list key="workingSets">
-			</list>
-		</section>
-		<section name="HISTORY7">
+		<section name="HISTORY8">
 			<item value="11" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
@@ -170,7 +134,31 @@
 			<list key="workingSets">
 			</list>
 		</section>
-		<section name="HISTORY6">
+		<section name="HISTORY5">
+			<item value="15" key="includeMask"/>
+			<item value="2" key="limitTo"/>
+			<item value="0" key="scope"/>
+			<item value="com.almarsoft.GroundhogReader.lib.FSUtils.GetTypeFromExtension(String)" key="pattern"/>
+			<item value="=GroundhogReader/src&lt;com.almarsoft.GroundhogReader.lib{FSUtils.java[FSUtils~GetTypeFromExtension~QString;" key="javaElement"/>
+			<item value="1" key="searchFor"/>
+			<item value="0" key="matchLocations"/>
+			<item value="true" key="isCaseSensitive"/>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY4">
+			<item value="15" key="includeMask"/>
+			<item value="2" key="limitTo"/>
+			<item value="0" key="scope"/>
+			<item value="com.almarsoft.GroundhogReader.lib.FSUtils.saveUUencodedAttachment(String, String)" key="pattern"/>
+			<item value="=GroundhogReader/src&lt;com.almarsoft.GroundhogReader.lib{FSUtils.java[FSUtils~saveUUencodedAttachment~QString;~QString;" key="javaElement"/>
+			<item value="1" key="searchFor"/>
+			<item value="0" key="matchLocations"/>
+			<item value="true" key="isCaseSensitive"/>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY7">
 			<item value="11" key="includeMask"/>
 			<item value="2" key="limitTo"/>
 			<item value="0" key="scope"/>
@@ -179,6 +167,18 @@
 			<item value="1" key="searchFor"/>
 			<item value="0" key="matchLocations"/>
 			<item value="true" key="isCaseSensitive"/>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY6">
+			<item value="15" key="includeMask"/>
+			<item value="2" key="limitTo"/>
+			<item value="0" key="scope"/>
+			<item value="attachment://" key="pattern"/>
+			<item value="" key="javaElement"/>
+			<item value="0" key="searchFor"/>
+			<item value="0" key="matchLocations"/>
+			<item value="false" key="isCaseSensitive"/>
 			<list key="workingSets">
 			</list>
 		</section>
@@ -197,11 +197,11 @@
 		<item value="true" key="ShowStatusLine"/>
 		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History/&gt;" key="History"/>
 		<section name="DialogBoundsSettings">
-			<item value="600" key="DIALOG_WIDTH"/>
+			<item value="296" key="DIALOG_WIDTH"/>
 			<item value="48" key="DIALOG_Y_ORIGIN"/>
-			<item value="500" key="DIALOG_HEIGHT"/>
+			<item value="600" key="DIALOG_HEIGHT"/>
 			<item value="343" key="DIALOG_X_ORIGIN"/>
-			<item value="1|Droid Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+			<item value="1|Segoe UI|8.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
 		</section>
 	</section>
 	<section name="org.eclipse.jdt.internal.ui.typehierarchy.QuickHierarchy">

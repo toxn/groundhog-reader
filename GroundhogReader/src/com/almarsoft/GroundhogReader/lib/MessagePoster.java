@@ -71,6 +71,12 @@ public class MessagePoster {
 
 		ServerManager serverMgr = new ServerManager(mContext);	
 		mBody = MessageTextProcessor.shortenPostLines(mBody);	
+
+        /* ZZZ
+        Charset bodycharset = CharsetUtil.getCharset("UTF-8");
+        ByteSequence bodybytes = ContentUtil.encode(bodycharset, mBody);
+        mBody = new String(bodybytes.toByteArray(), "ISO-8859-1");
+        */
 		serverMgr.postArticle(headerText, mBody, signature);
 		
 		// Log the message to check against future replies in the MessageList
@@ -96,13 +102,18 @@ public class MessagePoster {
 		Date now = new Date();
 		Format formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
 		date = formatter.format(now);
-		
+	
+        // ZZZ: Usar SimpleNNTPHeader? (addheader)
+
+        // ZZZ: name = EncoderUtil.encodeIfNecessary(mPrefs.getString("name", "anonymous"), EncoderUtil.Usage.TEXT_TOKEN, 0);
 		name = mPrefs.getString("name", "anonymous");
 		email = "<" + mPrefs.getString("email", "nobody@nobody.no").trim() + ">";
-		
+    
+        // ZZZ: Quitar el MiniMime
 		buf.append("From: " + MiniMime.mencodemime_ifneeded(name + " " + email, charset) + "\n"); 
 		buf.append("Date: " + date + "\n"); 
 		
+        // buf.append("Content-Type", "text/plain; charset=UTF-8; format=flowed");
 		buf.append("Content-Type: text/plain; charset=\"iso-8859-15\"" + "\n");
 		buf.append("Content-Transfer-Encoding: 8bit" + "\n");
 		

@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workbench progressCount="14" version="2.0">
 <workbenchAdvisor/>
-<window height="764" maximized="true" width="1024" x="0" y="0">
+<window height="690" maximized="true" width="990" x="97" y="0">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
 </perspectiveBar>
 <coolbarLayout locked="0">
 <coolItem id="group.file" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="96" y="26"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="106" y="32"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
-<coolItem id="adt.actionSet.avdManager" itemType="typeToolBarContribution" x="36" y="26"/>
-<coolItem id="adt.actionSet.wizards" itemType="typeToolBarContribution" x="88" y="26"/>
-<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="112" y="26"/>
-<coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="96" y="26"/>
-<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="70" y="26"/>
-<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="62" y="26"/>
+<coolItem id="adt.actionSet.avdManager" itemType="typeToolBarContribution" x="42" y="32"/>
+<coolItem id="adt.actionSet.wizards" itemType="typeToolBarContribution" x="98" y="32"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="122" y="32"/>
+<coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="106" y="32"/>
+<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="78" y="32"/>
+<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="126" y="32"/>
 <coolItem id="org.eclipse.wst.xml.ui.perspective.NewFileToolBar" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.wst.xml.ui.design.DesignToolBar" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="172" y="26"/>
+<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="186" y="32"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.jdt.ui.ClassFileEditor" itemType="typePlaceholder" x="-1" y="-1"/>
 <coolItem id="org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.jdt.ui.CompilationUnitEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
@@ -50,13 +51,15 @@
 <part id="15"/>
 <part id="16"/>
 <part id="17"/>
+<part id="18"/>
+<part id="19"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GroupListActivity.java" partName="GroupListActivity.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/GroupListActivity.java" title="GroupListActivity.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/GroupListActivity.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/GroupListActivity.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3900" selectionTopPixel="949"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3735" selectionTopPixel="949"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="SubscribeActivity.java" partName="SubscribeActivity.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/SubscribeActivity.java" title="SubscribeActivity.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/SubscribeActivity.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/SubscribeActivity.java"/>
@@ -68,7 +71,7 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ComposeActivity.java" partName="ComposeActivity.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/ComposeActivity.java" title="ComposeActivity.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/ComposeActivity.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/ComposeActivity.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7307" selectionTopPixel="2985"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8496" selectionTopPixel="3300"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="UsenetConstants.java" partName="UsenetConstants.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/UsenetConstants.java" title="UsenetConstants.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/UsenetConstants.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/UsenetConstants.java"/>
@@ -79,23 +82,23 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GroupMessagesDownloadDialog.java" partName="GroupMessagesDownloadDialog.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/GroupMessagesDownloadDialog.java" title="GroupMessagesDownloadDialog.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/GroupMessagesDownloadDialog.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/GroupMessagesDownloadDialog.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="5" selectionOffset="8250" selectionTopPixel="3069"/>
+<editorState selectionHorizontalPixel="213" selectionLength="0" selectionOffset="6436" selectionTopPixel="2208"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MessageActivity.java" partName="MessageActivity.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/MessageActivity.java" title="MessageActivity.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/MessageActivity.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/MessageActivity.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="8" selectionOffset="27721" selectionTopPixel="10545"/>
+<editorState selectionHorizontalPixel="67" selectionLength="4" selectionOffset="30535" selectionTopPixel="11640"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MessageListActivity.java" partName="MessageListActivity.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/MessageListActivity.java" title="MessageListActivity.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/MessageListActivity.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/MessageListActivity.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="4" selectionOffset="21523" selectionTopPixel="8745"/>
 </editor>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MessagePoster.java" partName="MessagePoster.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessagePoster.java" title="MessagePoster.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessagePoster.java" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MessagePoster.java" partName="MessagePoster.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessagePoster.java" title="MessagePoster.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessagePoster.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessagePoster.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1984" selectionTopPixel="690"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2660" selectionTopPixel="1125"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ServerManager.java" partName="ServerManager.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/ServerManager.java" title="ServerManager.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/ServerManager.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/ServerManager.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="15741" selectionTopPixel="6900"/>
+<editorState selectionHorizontalPixel="32" selectionLength="0" selectionOffset="12901" selectionTopPixel="5760"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="NNTPExtended.java" partName="NNTPExtended.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/NNTPExtended.java" title="NNTPExtended.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/NNTPExtended.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/NNTPExtended.java"/>
@@ -115,34 +118,44 @@
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="NNTPClient.java" partName="NNTPClient.java" path="/home/juanjux/reader/GroundhogReader/src/org/apache/commons/net/nntp/NNTPClient.java" title="NNTPClient.java" tooltip="GroundhogReader/src/org/apache/commons/net/nntp/NNTPClient.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/org/apache/commons/net/nntp/NNTPClient.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="25" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3997" selectionTopPixel="915"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="NNTPNoSuchMessageException.java" partName="NNTPNoSuchMessageException.java" path="/home/juanjux/reader/GroundhogReader/src/org/apache/commons/net/nntp/NNTPNoSuchMessageException.java" title="NNTPNoSuchMessageException.java" tooltip="GroundhogReader/src/org/apache/commons/net/nntp/NNTPNoSuchMessageException.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/org/apache/commons/net/nntp/NNTPNoSuchMessageException.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="1102" selectionOffset="0" selectionTopPixel="0"/>
 </editor>
-<editor activePart="true" focus="true" id="com.android.ide.eclipse.editors.manifest.ManifestEditor" name="AndroidManifest.xml" partName="GroundhogReader Manifest" path="/home/juanjux/reader/GroundhogReader/AndroidManifest.xml" title="GroundhogReader Manifest" tooltip="GroundhogReader/AndroidManifest.xml" workbook="DefaultEditorWorkbook">
+<editor id="com.android.ide.eclipse.editors.manifest.ManifestEditor" name="AndroidManifest.xml" partName="GroundhogReader Manifest" path="/home/juanjux/reader/GroundhogReader/AndroidManifest.xml" title="GroundhogReader Manifest" tooltip="GroundhogReader/AndroidManifest.xml" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/AndroidManifest.xml"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MessageTextProcessor.java" partName="MessageTextProcessor.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessageTextProcessor.java" title="MessageTextProcessor.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessageTextProcessor.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessageTextProcessor.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="3" selectionOffset="19778" selectionTopPixel="9075"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="FSUtils.java" partName="FSUtils.java" path="/home/juanjux/reader/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/FSUtils.java" title="FSUtils.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/FSUtils.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/FSUtils.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="470" selectionTopPixel="0"/>
 </editor>
 </editors>
 <views>
-<view id="org.eclipse.ui.views.ProgressView" partName="Progress">
-<viewState/>
-</view>
 <view id="org.eclipse.jdt.ui.TypeHierarchy" partName="Hierarchy">
 <viewState hidefields="false" hidelocaltypes="false" hidenonpublic="false" hidestatic="false" link_editors="0" mv_vertical_scroll="0" orientation="3" qualified_names="0" ratio="350" showinherited="false" sortbydefiningtype="false" vertical_scroll="0" view="2" workingSetName="Aggregate for window 1264938451813"/>
+</view>
+<view id="org.eclipse.ui.views.ProgressView" partName="Progress">
+<viewState/>
 </view>
 <view id="org.eclipse.search.ui.views.SearchView" partName="Search">
 <viewState isPinned="false">
 <view IMemento.internal.id="" org.eclipse.search.lastActivation="0"/>
 <view IMemento.internal.id="org.eclipse.search.text.FileSearchResultPage" org.eclipse.search.lastActivation="1" org.eclipse.search.resultpage.layout="2" org.eclipse.search.resultpage.limit="1000" org.eclipse.search.resultpage.sorting="2"/>
+<view IMemento.internal.id="org.eclipse.jdt.ui.JavaSearchResultPage" org.eclipse.jdt.search.resultpage.grouping="3" org.eclipse.jdt.search.resultpage.limit="1000" org.eclipse.jdt.search.resultpage.limit_enabled="TRUE" org.eclipse.jdt.search.resultpage.sorting="1" org.eclipse.search.lastActivation="2" org.eclipse.search.resultpage.layout="2"/>
 </viewState>
 </view>
-<view id="com.android.ide.eclipse.ddms.views.DeviceView" partName="Devices"/>
 <view id="org.eclipse.debug.ui.DebugView" partName="Debug">
 <viewState/>
 </view>
-<view id="com.android.ide.eclipse.ddms.views.ThreadView" partName="Threads"/>
+<view id="org.eclipse.pde.runtime.LogView" partName="Error Log">
+<viewState activate="true" allSessions="true" column2="717" column3="150" column4="150" error="true" groupBy="0" info="true" limit="50" ok="true" orderType="2" orderValue="-1" show_filter_text="true" useLimit="true" warning="true"/>
+</view>
 <view id="org.eclipse.ui.views.TaskList" partName="Tasks"/>
 <view id="org.eclipse.debug.ui.VariableView" partName="Variables">
 <viewState/>
@@ -151,15 +164,13 @@
 <view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
 <viewState/>
 </view>
-<view id="com.android.ide.eclipse.ddms.views.HeapView" partName="Heap"/>
 <view id="com.android.ide.eclipse.ddms.views.LogCatView" partName="LogCat">
 <viewState/>
 </view>
-<view id="com.android.ide.eclipse.ddms.views.FileExplorerView" partName="File Explorer"/>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
-<expanded>
-<category IMemento.internal.id="Warnings"/>
+<expanded>&#x0A;<category IMemento.internal.id="Warnings"/>
+<category IMemento.internal.id="Errors"/>
 </expanded>
 <columnWidths org.eclipse.ui.ide.locationField="0" org.eclipse.ui.ide.markerType="0" org.eclipse.ui.ide.pathField="0" org.eclipse.ui.ide.resourceField="0" org.eclipse.ui.ide.severityAndDescriptionField="0"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
@@ -201,14 +212,13 @@
 <view id="org.eclipse.ui.console.ConsoleView" partName="Console">
 <viewState/>
 </view>
-<view id="com.android.ide.eclipse.ddms.views.EmulatorControlView" partName="Emulator Control"/>
 <view id="org.eclipse.jdt.ui.SourceView" partName="Declaration"/>
+<view id="org.eclipse.wst.server.ui.ServersView" partName="Servers"/>
 <view id="org.eclipse.jdt.ui.JavadocView" partName="Javadoc">
 <viewState/>
 </view>
-<view id="org.eclipse.wst.server.ui.ServersView" partName="Servers"/>
 </views>
-<perspectives activePart="org.eclipse.jdt.ui.PackageExplorer" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
+<perspectives activePart="org.eclipse.jdt.ui.CompilationUnitEditor" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.jdt.internal.ui.JavaPerspectiveFactory" id="org.eclipse.jdt.ui.JavaPerspective" label="Java"/>
 <alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
@@ -263,18 +273,23 @@
 <perspective_action id="org.eclipse.debug.ui.DebugPerspective"/>
 <perspective_action id="org.eclipse.jdt.ui.JavaBrowsingPerspective"/>
 <hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
-<view id="org.eclipse.ui.views.ContentOutline"/>
 <view id="org.eclipse.jdt.ui.PackageExplorer"/>
-<view id="org.eclipse.jdt.ui.TypeHierarchy"/>
 <fastViewBars>
-<fastViewBar fastViewLocation="1024" id="bottom" orientation="256" selectedTabId="org.eclipse.search.ui.views.SearchView" style="0">
+<fastViewBar fastViewLocation="1024" id="bottom" orientation="256" selectedTabId="org.eclipse.ui.console.ConsoleView" style="0">
 <fastViews>
 <view id="org.eclipse.ui.views.ProblemView" ratio="0.29953197"/>
 <view id="org.eclipse.jdt.ui.JavadocView" ratio="0.3"/>
 <view id="org.eclipse.jdt.ui.SourceView" ratio="0.3"/>
-<view id="org.eclipse.ui.console.ConsoleView" ratio="0.29485178"/>
+<view id="org.eclipse.ui.console.ConsoleView" ratio="0.29248366"/>
 <view id="org.eclipse.ui.views.ProgressView" ratio="0.29968455"/>
-<view id="org.eclipse.search.ui.views.SearchView" ratio="0.29173166"/>
+<view id="org.eclipse.search.ui.views.SearchView" ratio="0.29022083"/>
+</fastViews>
+</fastViewBar>
+<fastViewBar fastViewLocation="131072" id="right" orientation="512" selectedTabId="org.eclipse.jdt.ui.PackageExplorer" style="0">
+<fastViews>
+<view id="org.eclipse.ui.views.ContentOutline" ratio="0.2985437"/>
+<view id="org.eclipse.jdt.ui.TypeHierarchy" ratio="0.3"/>
+<view id="org.eclipse.pde.runtime.LogView" ratio="0.3"/>
 </fastViews>
 </fastViewBar>
 </fastViewBars>
@@ -293,6 +308,7 @@
 <page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
 <page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
 <info part="org.eclipse.ui.editorss" ratio="0.25" ratioLeft="252" ratioRight="756" relationship="2" relative="left"/>
@@ -308,18 +324,21 @@
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info folder="true" part="right" ratio="0.76674545" ratioLeft="973" ratioRight="296" relationship="2" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.jdt.ui.PackageExplorer" appearance="2" expanded="2">
-<page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
-<page content="org.eclipse.jdt.ui.PackageExplorer" label="Package Explorer"/>
-<page content="org.eclipse.jdt.ui.TypeHierarchy" label="Hierarchy"/>
+<info folder="true" part="right" ratio="0.75825346" ratioLeft="712" ratioRight="227" relationship="2" relative="org.eclipse.ui.editorss">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.ui.views.ContentOutline" label="LabelNotFound"/>
+<page content="org.eclipse.jdt.ui.TypeHierarchy" label="LabelNotFound"/>
 <page content="org.eclipse.pde.runtime.LogView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.texteditor.TemplatesView" label="LabelNotFound"/>
 <page content="org.eclipse.ant.ui.views.AntView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+</folder>
+</info>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@6b37695c" ratio="0.75" ratioLeft="927" ratioRight="309" relationship="2" relative="org.eclipse.ui.editorss">
+<folder activePageID="org.eclipse.jdt.ui.PackageExplorer" appearance="2" expanded="2">
+<page content="org.eclipse.jdt.ui.PackageExplorer" label="Package Explorer"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
-<part id="1"/>
-<part id="2"/>
 </presentation>
 </folder>
 </info>
@@ -359,67 +378,47 @@
 <view id="com.android.ide.eclipse.ddms.views.LogCatView"/>
 <view id="org.eclipse.ui.console.ConsoleView"/>
 <view id="org.eclipse.debug.ui.DebugView"/>
-<fastViewBars>
-<fastViewBar fastViewLocation="16384" id="emulator" orientation="256" selectedTabId="com.android.ide.eclipse.ddms.views.EmulatorControlView" style="1">
-<fastViews>
-<view id="com.android.ide.eclipse.ddms.views.EmulatorControlView" ratio="0.3"/>
+<fastViewBars>&#x0A;<fastViewBar fastViewLocation="16384" id="emulator" orientation="256" selectedTabId="com.android.ide.eclipse.ddms.views.EmulatorControlView" style="1">&#x0A;<fastViews>&#x0A;<view id="com.android.ide.eclipse.ddms.views.EmulatorControlView" ratio="0.3"/>
 </fastViews>
 </fastViewBar>
-<fastViewBar fastViewLocation="131072" id="ddms-detail" orientation="256" selectedTabId="com.android.ide.eclipse.ddms.views.ThreadView" style="1">
-<fastViews>
-<view id="com.android.ide.eclipse.ddms.views.ThreadView" ratio="0.3"/>
+<fastViewBar fastViewLocation="131072" id="ddms-detail" orientation="256" selectedTabId="com.android.ide.eclipse.ddms.views.ThreadView" style="1">&#x0A;<fastViews>&#x0A;<view id="com.android.ide.eclipse.ddms.views.ThreadView" ratio="0.3"/>
 <view id="com.android.ide.eclipse.ddms.views.HeapView" ratio="0.3"/>
 <view id="com.android.ide.eclipse.ddms.views.FileExplorerView" ratio="0.3"/>
 </fastViews>
 </fastViewBar>
-<fastViewBar fastViewLocation="16384" id="devices" orientation="256" selectedTabId="com.android.ide.eclipse.ddms.views.DeviceView" style="1">
-<fastViews>
-<view id="com.android.ide.eclipse.ddms.views.DeviceView" ratio="0.3"/>
+<fastViewBar fastViewLocation="16384" id="devices" orientation="256" selectedTabId="com.android.ide.eclipse.ddms.views.DeviceView" style="1">&#x0A;<fastViews>&#x0A;<view id="com.android.ide.eclipse.ddms.views.DeviceView" ratio="0.3"/>
 </fastViews>
 </fastViewBar>
 </fastViewBars>
-<layout>
-<mainWindow maximized="logcat">
-<info folder="true" part="devices">
-<folder appearance="2" expanded="2">
-<page content="com.android.ide.eclipse.ddms.views.DeviceView:*" label="LabelNotFound"/>
+<layout>&#x0A;<mainWindow maximized="logcat">&#x0A;<info folder="true" part="devices">&#x0A;<folder appearance="2" expanded="2">&#x0A;<page content="com.android.ide.eclipse.ddms.views.DeviceView:*" label="LabelNotFound"/>
 <page content="com.android.ide.eclipse.ddms.views.DeviceView" label="LabelNotFound"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="954" ratioRight="318" relationship="2" relative="devices">
-<folder appearance="2" expanded="2">
-<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
+<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="954" ratioRight="318" relationship="2" relative="devices">&#x0A;<folder appearance="2" expanded="2">&#x0A;<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
 <page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
 </folder>
 </info>
-<info folder="true" part="logcat" ratio="0.7987421" ratioLeft="508" ratioRight="128" relationship="4" relative="devices">
-<folder activePageID="com.android.ide.eclipse.ddms.views.LogCatView" appearance="2" expanded="1">
-<page content="com.android.ide.eclipse.ddms.views.LogCatView" label="LogCat"/>
+<info folder="true" part="logcat" ratio="0.7987421" ratioLeft="508" ratioRight="128" relationship="4" relative="devices">&#x0A;<folder activePageID="com.android.ide.eclipse.ddms.views.LogCatView" appearance="2" expanded="1">&#x0A;<page content="com.android.ide.eclipse.ddms.views.LogCatView" label="LogCat"/>
 <page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
 <page content="org.eclipse.debug.ui.DebugView" label="Debug"/>
 <page content="com.android.ide.eclipse.ddms.views.LogCatView:*" label="LabelNotFound"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">&#x0A;<part id="0"/>
 <part id="1"/>
 <part id="2"/>
 </presentation>
 </folder>
 </info>
 <info part="org.eclipse.ui.editorss" ratio="0.2995283" ratioLeft="381" ratioRight="891" relationship="2" relative="devices"/>
-<info folder="true" part="ddms-detail" ratio="0.49943882" ratioLeft="445" ratioRight="446" relationship="2" relative="org.eclipse.ui.editorss">
-<folder appearance="2" expanded="2">
-<page content="com.android.ide.eclipse.ddms.views.ThreadView:*" label="LabelNotFound"/>
+<info folder="true" part="ddms-detail" ratio="0.49943882" ratioLeft="445" ratioRight="446" relationship="2" relative="org.eclipse.ui.editorss">&#x0A;<folder appearance="2" expanded="2">&#x0A;<page content="com.android.ide.eclipse.ddms.views.ThreadView:*" label="LabelNotFound"/>
 <page content="com.android.ide.eclipse.ddms.views.ThreadView" label="LabelNotFound"/>
 <page content="com.android.ide.eclipse.ddms.views.HeapView" label="LabelNotFound"/>
 <page content="com.android.ide.eclipse.ddms.views.FileExplorerView" label="LabelNotFound"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info folder="true" part="emulator" ratio="0.5" ratioLeft="254" ratioRight="254" relationship="4" relative="devices">
-<folder appearance="2" expanded="2">
-<page content="com.android.ide.eclipse.ddms.views.EmulatorControlView:*" label="LabelNotFound"/>
+<info folder="true" part="emulator" ratio="0.5" ratioLeft="254" ratioRight="254" relationship="4" relative="devices">&#x0A;<folder appearance="2" expanded="2">&#x0A;<page content="com.android.ide.eclipse.ddms.views.EmulatorControlView:*" label="LabelNotFound"/>
 <page content="com.android.ide.eclipse.ddms.views.EmulatorControlView" label="LabelNotFound"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
@@ -526,178 +525,172 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/org/apache/commons/net/nntp/NNTP.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/GroupMessagesDownloadDialog.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/GroupListActivity.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/SubscribeActivity.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/MessageActivity.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/FSUtils.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/ServerManager.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/org/apache/commons/net/nntp/NNTPClient.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/org/apache/commons/net/MalformedServerReplyException.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/NNTPExtended.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/org/apache/commons/net/nntp/NNTPNoSuchMessageException.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.android.ide.eclipse.editors.manifest.ManifestEditor" path="/GroundhogReader/AndroidManifest.xml"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/GroupMessagesDownloadDialog.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessageTextProcessor.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessageTextProcessor.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessagePoster.java"/>
 </editors>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="22086" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="13550" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="17162" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6635" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="15274" y="7"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6634" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="15274" y="7"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="15490" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="15493" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6488" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12908" y="23"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6469" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="17162" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6486" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12932" y="9"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="13499" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="11509" y="24"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="FSUtils.java" index="1">
+<position info="not_deleted" x="5850" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="11509" y="24"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position info="not_deleted" x="6913" y="0"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12199" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position info="not_deleted" x="5947" y="0"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12200" y="0"/>
 </item>
-<item historyLabel="NNTP.java" index="0">
-<position info="not_deleted" x="5868" y="0"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12203" y="0"/>
 </item>
-<item historyLabel="GroupMessagesDownloadDialog.java" index="1">
-<position info="not_deleted" x="13793" y="4"/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6485" y="0"/>
 </item>
-<item historyLabel="GroupListActivity.java" index="2">
-<position info="not_deleted" x="3719" y="4"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="13971" y="0"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="2440" y="0"/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="23734" y="821"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="6537" y="0"/>
+<item historyLabel="FSUtils.java" index="1">
+<position info="not_deleted" x="5850" y="0"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="7025" y="12"/>
+<item historyLabel="MessageTextProcessor.java" index="4">
+<position info="not_deleted" x="15340" y="0"/>
 </item>
-<item historyLabel="ServerManager.java" index="4">
-<position info="not_deleted" x="6" y="0"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="13971" y="0"/>
 </item>
-<item historyLabel="ServerManager.java" index="4">
-<position info="not_deleted" x="15463" y="14"/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="26170" y="0"/>
 </item>
-<item historyLabel="NNTPClient.java" index="5">
-<position info="not_deleted" x="4" y="0"/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6485" y="0"/>
 </item>
-<item historyLabel="NNTPClient.java" index="5">
-<position info="not_deleted" x="2022" y="0"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12908" y="23"/>
 </item>
-<item historyLabel="NNTPClient.java" index="5">
-<position info="not_deleted" x="4305" y="0"/>
+<item historyLabel="MessageTextProcessor.java" index="4">
+<position info="not_deleted" x="15542" y="0"/>
 </item>
-<item historyLabel="MalformedServerReplyException.java" index="6">
-<position info="not_deleted" x="1543" y="29"/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="26170" y="0"/>
 </item>
-<item historyLabel="NNTPExtended.java" index="7">
-<position info="not_deleted" x="1614" y="5"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12908" y="23"/>
 </item>
-<item historyLabel="NNTPClient.java" index="5">
-<position info="not_deleted" x="51042" y="0"/>
+<item historyLabel="MessageTextProcessor.java" index="4">
+<position info="not_deleted" x="15542" y="0"/>
 </item>
-<item historyLabel="NNTPNoSuchMessageException.java" index="8">
-<position info="not_deleted" x="0" y="1102"/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="23438" y="206"/>
 </item>
-<item historyLabel="NNTPClient.java" index="5">
-<position info="not_deleted" x="51042" y="0"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12908" y="23"/>
 </item>
-<item historyLabel="ServerManager.java" index="4">
-<position info="not_deleted" x="15741" y="0"/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="28821" y="0"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="7777" y="0"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12901" y="0"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="7740" y="10"/>
+<item historyLabel="MessageTextProcessor.java" index="4">
+<position info="not_deleted" x="15289" y="20"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="5951" y="14"/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6485" y="0"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="7908" y="0"/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6607" y="0"/>
 </item>
-<item historyLabel="NNTPExtended.java" index="7">
-<position info="not_deleted" x="5009" y="5"/>
+<item historyLabel="GroupMessagesDownloadDialog.java" index="3">
+<position info="not_deleted" x="6436" y="0"/>
 </item>
-<item historyLabel="NNTPClient.java" index="5">
-<position info="not_deleted" x="53782" y="5"/>
+<item historyLabel="MessageActivity.java" index="0">
+<position info="not_deleted" x="30535" y="4"/>
 </item>
-<item historyLabel="NNTPNoSuchMessageException.java" index="8">
-<position info="not_deleted" x="0" y="1102"/>
+<item historyLabel="ServerManager.java" index="2">
+<position info="not_deleted" x="12901" y="0"/>
 </item>
-<item historyLabel="NNTPClient.java" index="5">
-<position info="not_deleted" x="25" y="0"/>
+<item historyLabel="FSUtils.java" index="1">
+<position info="not_deleted" x="6375" y="0"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="7908" y="0"/>
+<item historyLabel="FSUtils.java" index="1">
+<position info="not_deleted" x="0" y="0"/>
 </item>
-<item historyLabel="SubscribeActivity.java" index="3">
-<position info="not_deleted" x="7985" y="0"/>
+<item historyLabel="MessageTextProcessor.java" index="5">
+<position info="not_deleted" x="15289" y="20"/>
 </item>
-<item historyLabel="GroupMessagesDownloadDialog.java" index="1">
-<position info="not_deleted" x="8250" y="5"/>
+<item historyLabel="MessagePoster.java" index="6">
+<position info="not_deleted" x="0" y="0"/>
 </item>
-<item active="true" historyLabel="GroundhogReader Manifest" index="9"/>
+<item active="true" historyLabel="MessagePoster.java" index="6">
+<position info="not_deleted" x="0" y="0"/>
+</item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
 </page>
 <workbenchWindowAdvisor/>
 <actionBarAdvisor/>
 <trimLayout>
-<trimArea IMemento.internal.id="16384">
-<trimItem IMemento.internal.id="emulator"/>
-<trimItem IMemento.internal.id="devices"/>
-</trimArea>
 <trimArea IMemento.internal.id="131072">
-<trimItem IMemento.internal.id="ddms-detail"/>
-<trimItem IMemento.internal.id="org.eclipse.ui.editorss"/>
+<trimItem IMemento.internal.id="right"/>
 </trimArea>
 <trimArea IMemento.internal.id="128">
 <trimItem IMemento.internal.id="org.eclipse.ui.internal.WorkbenchWindow.topBar"/>
@@ -711,6 +704,18 @@
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="String.class" tooltip="java.lang.String">
+<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=GroundhogReader/\/home\/juanjux\/sync\/work\/androidsdk\/platforms\/android-1.5\/android.jar&lt;java.lang(String.class"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="FSUtils.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/FSUtils.java">
+<persistable path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/FSUtils.java"/>
+</file>
+<file factoryID="org.eclipse.jdt.ui.ClassFileEditorInputFactory" id="org.eclipse.jdt.ui.ClassFileEditor" name="Reader.class" tooltip="java.io.Reader">
+<persistable org.eclipse.jdt.ui.ClassFileIdentifier="=GroundhogReader/\/home\/juanjux\/sync\/work\/androidsdk\/platforms\/android-1.5\/android.jar&lt;java.io(Reader.class"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MessageTextProcessor.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessageTextProcessor.java">
+<persistable path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/MessageTextProcessor.java"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.android.ide.eclipse.editors.manifest.ManifestEditor" name="AndroidManifest.xml" tooltip="GroundhogReader/AndroidManifest.xml">
 <persistable path="/GroundhogReader/AndroidManifest.xml"/>
 </file>
@@ -743,18 +748,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MessageListActivity.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/MessageListActivity.java">
 <persistable path="/GroundhogReader/src/com/almarsoft/GroundhogReader/MessageListActivity.java"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="MessageActivity.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/MessageActivity.java">
-<persistable path="/GroundhogReader/src/com/almarsoft/GroundhogReader/MessageActivity.java"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="GroupMessagesDownloadDialog.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/GroupMessagesDownloadDialog.java">
-<persistable path="/GroundhogReader/src/com/almarsoft/GroundhogReader/GroupMessagesDownloadDialog.java"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart" name="composemenu.xml" tooltip="GroundhogReader/res/menu/composemenu.xml">
-<persistable path="/GroundhogReader/res/menu/composemenu.xml"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="UsenetConstants.java" tooltip="GroundhogReader/src/com/almarsoft/GroundhogReader/lib/UsenetConstants.java">
-<persistable path="/GroundhogReader/src/com/almarsoft/GroundhogReader/lib/UsenetConstants.java"/>
 </file>
 </mruList>
 </workbench>
