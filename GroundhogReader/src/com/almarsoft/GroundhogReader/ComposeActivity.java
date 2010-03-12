@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.almarsoft.GroundhogReader.lib.MessagePoster;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
@@ -61,6 +63,8 @@ public class ComposeActivity extends Activity {
 		
 		mIsNew = getIntent().getExtras().getBoolean("isNew");
 		mCurrentGroup = getIntent().getExtras().getString("group");
+		
+		Toast.makeText(getApplicationContext(), "Encoding: " + mPrefs.getString("postCharset", "UTF-8") + " (you can changue it with Menu & Encoding)", Toast.LENGTH_SHORT).show();
 		
 		if (mIsNew) {
 			mEdit_Groups.setText(mCurrentGroup);
@@ -165,6 +169,9 @@ public class ComposeActivity extends Activity {
             case R.id.compose_menu_smalltext:
                 setComposeSizeFromPrefs(-1);
                 return true;
+            case R.id.compose_menu_charset:
+            	startActivity(new Intent(ComposeActivity.this, CharsetActivity.class));
+            	return true;
 
 		}
 		return false;
@@ -198,7 +205,7 @@ public class ComposeActivity extends Activity {
 					if (mHeader.containsKey("References"))
 						references = mHeader.get("References");
 					msgid      = mHeader.get("Message-ID");
-				}
+				}						
 				
 				MessagePoster poster = new MessagePoster(mCurrentGroup, 
 						                                 mEdit_Groups.getText().toString(), 

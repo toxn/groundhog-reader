@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+				
+	<PreferenceCategory android:title="Posting Charset"> 
+		
+		<ListPreference
+		android:key="postCharset"
+		android:title="Posting Charset"
+		android:summary="Charset to use on the messages you post"  
+		android:entries="@array/postCharsetKeys" 
+		android:entryValues="@array/postCharsetValues" 
+		android:dialogTitle="Pick your charset" 
+		/>
+
+	</PreferenceCategory>
+	
+</PreferenceScreen>

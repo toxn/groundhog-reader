@@ -78,6 +78,15 @@
 		android:singleLine="true"						
 		/>
 		
+		<ListPreference
+		android:key="postCharset"
+		android:title="Posting Charset"
+		android:summary="Charset to use on the messages you post"  
+		android:entries="@array/postCharsetKeys" 
+		android:entryValues="@array/postCharsetValues" 
+		android:dialogTitle="Pick your charset" 
+		/>
+		 				
 		<EditTextPreference
 		android:key="signature"
 		android:title="Signature"

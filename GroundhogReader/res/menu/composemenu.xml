@@ -23,4 +23,8 @@
 <item android:title="Decrease text size"
     android:id="@+id/compose_menu_smalltext"
     android:orderInCategory="5"  />
+    
+<item android:title="Change charset"
+	android:id="@+id/compose_menu_charset"
+	android:orderInCategory="6" />    
 </menu>

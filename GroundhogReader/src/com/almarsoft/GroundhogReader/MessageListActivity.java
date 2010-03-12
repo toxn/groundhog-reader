@@ -186,7 +186,7 @@ public class MessageListActivity extends ListActivity {
 	
 	private void checkNoUnread() {
 		if (mNumUnread == 0) 
-			Toast.makeText(this, "No unread messages", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "No unread messages, use Menu->Sync to get more", Toast.LENGTH_LONG).show();
 	}
 
 	

@@ -53,11 +53,7 @@ public class OptionsActivity extends PreferenceActivity {
 			markReplies.setChecked(true);
 		} else
 			markReplies.setChecked(false);
-		
-		//EditTextPreference p = (EditTextPreference) this.findViewById(R.id.preference_host);
-		//hostpref = (EditTextPreference) this.findPreference("host");
-		//hostpref.setOnPreferenceChangeListener(changedHostListener);
-		//hostpref.setOnPreferenceClickListener(clickedHostListener);
+
 	}
 	
 	// ============================================================================================

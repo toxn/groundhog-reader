@@ -29,6 +29,7 @@ public class MessagePoster {
 	private String mReferences;
 	private String mPrevMsgId;
 	private String mMyMsgId;
+	private String mPostCharset;
 	
 	SharedPreferences mPrefs;
 	Context mContext;
@@ -43,6 +44,7 @@ public class MessagePoster {
 		mGroups = groups.trim();
 		mBody = body;
 		mSubject = subject.trim();
+		mPostCharset = mPrefs.getString("postCharset", "UTF-8");		
 		
 		// Reply to non-first post in a thread
 		if (references != null && references.length() > 0) 
@@ -72,7 +74,7 @@ public class MessagePoster {
 
 		ServerManager serverMgr = new ServerManager(mContext);	
 		mBody = MessageTextProcessor.shortenPostLines(mBody);
-		Charset charset = CharsetUtil.getCharset("UTF-8");
+		Charset charset = CharsetUtil.getCharset(mPostCharset);		
 		ByteSequence bytebody = ContentUtil.encode(charset, mBody);
 		mBody = new String(bytebody.toByteArray(), "ISO-8859-1");
 		
@@ -99,11 +101,23 @@ public class MessagePoster {
         Date now = new Date();
         Format formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
         date = formatter.format(now);
-          
-		name = EncoderUtil.encodeIfNecessary(mPrefs.getString("name", "anonymous"), EncoderUtil.Usage.TEXT_TOKEN, 0);        
+         
+        Charset headerCharset = CharsetUtil.getCharset(mPostCharset);        
+        String tmpName = mPrefs.getString("name", "anonymous");
+        
+        if (EncoderUtil.hasToBeEncoded(tmpName, 0)) {
+        	name = EncoderUtil.encodeEncodedWord(tmpName, EncoderUtil.Usage.TEXT_TOKEN, 0, headerCharset, null);
+        } else 
+        	name = tmpName;
+		//name = EncoderUtil.encodeIfNecessary(mPrefs.getString("name", "anonymous"), EncoderUtil.Usage.TEXT_TOKEN, 0);
+        
 		email = "<" + mPrefs.getString("email", "nobody@nobody.no").trim() + ">";
 		from = name + " " + email;		
-		mSubject = EncoderUtil.encodeIfNecessary(mSubject, EncoderUtil.Usage.TEXT_TOKEN, 0);
+		
+		if (EncoderUtil.hasToBeEncoded(mSubject, 0)) {
+			mSubject = EncoderUtil.encodeEncodedWord(mSubject, EncoderUtil.Usage.TEXT_TOKEN, 0, headerCharset, null);
+		}
+		//mSubject = EncoderUtil.encodeIfNecessary(mSubject, EncoderUtil.Usage.TEXT_TOKEN, 0);
 		
 		SimpleNNTPHeader header = new SimpleNNTPHeader(from, mSubject);
 		String[] groups = mGroups.trim().split(",");
@@ -112,8 +126,8 @@ public class MessagePoster {
 		for(int i=0; i<mgroupslen; i++) {
 			header.addNewsgroup(groups[i]);
 		}
-		header.addHeaderField("Date", date);
-		header.addHeaderField("Content-Type", "text/plain; charset=UTF-8; format=flowed");
+		header.addHeaderField("Date", date);		
+		header.addHeaderField("Content-Type", "text/plain; charset=" + CharsetUtil.toMimeCharset(mPostCharset) +"; format=flowed");
 		header.addHeaderField("Content-Transfer-Encoding", "8bit");	
 
         if (mReferences != null) {
