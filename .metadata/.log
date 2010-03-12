@@ -9514,3 +9514,135 @@ java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclip
 	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
 	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.ui.ide 4 4 2010-03-12 01:29:20.249
+!MESSAGE Problems saving workspace
+
+!ENTRY org.eclipse.ui.ide 4 1 2010-03-12 01:29:20.249
+!MESSAGE Problems occurred while trying to save the state of the workbench.
+!SUBENTRY 1 org.eclipse.core.resources 4 568 2010-03-12 01:29:20.249
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:179)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:131)
+	at org.eclipse.core.internal.localstore.SafeFileOutputStream.<init>(SafeFileOutputStream.java:46)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSave(SaveManager.java:1401)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSave(SaveManager.java:1483)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1024)
+	at org.eclipse.core.internal.resources.Workspace.save(Workspace.java:1831)
+	at org.eclipse.ui.internal.ide.application.IDEWorkbenchAdvisor$5.run(IDEWorkbenchAdvisor.java:453)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+!SESSION 2010-03-12 01:29:24.694 -----------------------------------------------
+eclipse.buildId=M20090917-0800
+java.version=1.6.0_15
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=es_ES
+Command-line arguments:  -os linux -ws gtk -arch x86_64
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.542
+!MESSAGE The installable unit org.eclipse.jdt.compiler.apt.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.543
+!MESSAGE The installable unit org.eclipse.ecf.provider.filetransfer.httpclient.ssl.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.543
+!MESSAGE The installable unit org.eclipse.equinox.launcher.gtk.linux.x86_64.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.543
+!MESSAGE The installable unit org.eclipse.core.filesystem.linux.x86_64.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.543
+!MESSAGE The installable unit org.eclipse.ui.workbench.compatibility.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.605
+!MESSAGE The installable unit org.eclipse.jdt.compiler.apt.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.605
+!MESSAGE The installable unit org.eclipse.ecf.provider.filetransfer.httpclient.ssl.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.605
+!MESSAGE The installable unit org.eclipse.equinox.launcher.gtk.linux.x86_64.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.605
+!MESSAGE The installable unit org.eclipse.core.filesystem.linux.x86_64.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:30.605
+!MESSAGE The installable unit org.eclipse.ui.workbench.compatibility.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.ui.ide 4 4 2010-03-12 01:29:47.758
+!MESSAGE Problems saving workspace
+
+!ENTRY org.eclipse.ui.ide 4 1 2010-03-12 01:29:47.769
+!MESSAGE Problems occurred while trying to save the state of the workbench.
+!SUBENTRY 1 org.eclipse.core.resources 4 568 2010-03-12 01:29:47.769
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:179)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:131)
+	at org.eclipse.core.internal.localstore.SafeFileOutputStream.<init>(SafeFileOutputStream.java:46)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSave(SaveManager.java:1401)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSave(SaveManager.java:1483)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1024)
+	at org.eclipse.core.internal.resources.Workspace.save(Workspace.java:1831)
+	at org.eclipse.ui.internal.ide.application.IDEWorkbenchAdvisor$5.run(IDEWorkbenchAdvisor.java:453)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
+!SESSION 2010-03-12 01:29:50.287 -----------------------------------------------
+eclipse.buildId=M20090917-0800
+java.version=1.6.0_15
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=es_ES
+Command-line arguments:  -os linux -ws gtk -arch x86_64
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.452
+!MESSAGE The installable unit org.eclipse.jdt.compiler.apt.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.452
+!MESSAGE The installable unit org.eclipse.ecf.provider.filetransfer.httpclient.ssl.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.453
+!MESSAGE The installable unit org.eclipse.equinox.launcher.gtk.linux.x86_64.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.453
+!MESSAGE The installable unit org.eclipse.core.filesystem.linux.x86_64.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.453
+!MESSAGE The installable unit org.eclipse.ui.workbench.compatibility.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.532
+!MESSAGE The installable unit org.eclipse.jdt.compiler.apt.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.532
+!MESSAGE The installable unit org.eclipse.ecf.provider.filetransfer.httpclient.ssl.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.532
+!MESSAGE The installable unit org.eclipse.equinox.launcher.gtk.linux.x86_64.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.532
+!MESSAGE The installable unit org.eclipse.core.filesystem.linux.x86_64.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-12 01:29:53.533
+!MESSAGE The installable unit org.eclipse.ui.workbench.compatibility.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.ui.ide 4 4 2010-03-12 01:30:10.061
+!MESSAGE Problems saving workspace
+
+!ENTRY org.eclipse.ui.ide 4 1 2010-03-12 01:30:10.066
+!MESSAGE Problems occurred while trying to save the state of the workbench.
+!SUBENTRY 1 org.eclipse.core.resources 4 568 2010-03-12 01:30:10.066
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.open(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:179)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:131)
+	at org.eclipse.core.internal.localstore.SafeFileOutputStream.<init>(SafeFileOutputStream.java:46)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSave(SaveManager.java:1401)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSave(SaveManager.java:1483)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1024)
+	at org.eclipse.core.internal.resources.Workspace.save(Workspace.java:1831)
+	at org.eclipse.ui.internal.ide.application.IDEWorkbenchAdvisor$5.run(IDEWorkbenchAdvisor.java:453)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:121)
