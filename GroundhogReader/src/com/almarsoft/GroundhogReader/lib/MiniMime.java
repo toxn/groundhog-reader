@@ -3,7 +3,6 @@ package com.almarsoft.GroundhogReader.lib;
 import java.util.Vector;
 
 import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.BCodec;
 import org.apache.commons.codec.net.QCodec;
 import org.apache.commons.codec.net.QuotedPrintableCodec;
@@ -15,19 +14,12 @@ public class MiniMime {
 	
 	private static QCodec qdecoder = new QCodec();
 	private static BCodec bdecoder = new BCodec();
-	private static QuotedPrintableCodec qpdecoder = new QuotedPrintableCodec();
-	
-    /* remove leading whitespace */
+	private static QuotedPrintableCodec qpdecoder = new QuotedPrintableCodec();	
+    
     private static String ltrim(String source) {
         return source.replaceAll("^\\s+", "");
     }
 
-    /* remove trailing whitespace */
-    /*
-    private static String rtrim(String source) {
-        return source.replaceAll("\\s+$", "");
-    }
-    */
 
 
 	public static String decodemime(String headerfield, boolean onepass) {
@@ -131,26 +123,6 @@ public class MiniMime {
 		}
 		
 		return chunks;
-	}
-	
-	
-	public static String encodemime(String text, String charset) throws EncoderException {
-		QCodec d = new QCodec(charset);
-		return d.encode(text);
-	}
-	
-	
-	public static String mencodemime_ifneeded(String text, String charset) throws EncoderException {
-		
-		int textLen = text.length();
-		
-		for (int i = 0; i<textLen; i++) {
-			if ( (int) text.charAt(i) > 127 ) {
-				return encodemime(text, charset);
-			}
-		}
-		
-		return text;
 	}
 	
 	private static String decodeSubString(String substr) {

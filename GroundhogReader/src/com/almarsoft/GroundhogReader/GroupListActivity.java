@@ -61,8 +61,6 @@ public class GroupListActivity extends ListActivity {
 	private final Handler mHandler = new Handler();
 
 	private boolean mOfflineMode;
-	private boolean mExpired = false;
-
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -253,8 +251,7 @@ public class GroupListActivity extends ListActivity {
 	
 	
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (mExpired) finish();
+	public boolean onPrepareOptionsMenu(Menu menu) {		
 		
 		MenuItem getAll = menu.findItem(R.id.grouplist_menu_getall);
 		MenuItem offline = menu.findItem(R.id.grouplist_menu_offline);
