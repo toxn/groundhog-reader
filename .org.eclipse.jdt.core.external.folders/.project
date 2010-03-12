@@ -10,9 +10,14 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>.link0</name>
+			<type>2</type>
+			<location>/home/juanjux/and/android-sdk-linux_86/platforms/android-3/sources</location>
+		</link>
+		<link>
 			<name>.link1</name>
 			<type>2</type>
-			<location>/home/juanjux/sync/work/androidsdk/platforms/android-1.5/sources</location>
+			<location>/home/juanjux/and/android-sdk-linux_86/platforms/android-3/sources</location>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="319" key="DIALOG_WIDTH"/>
+		<item value="305" key="DIALOG_WIDTH"/>
 		<item value="99" key="DIALOG_Y_ORIGIN"/>
 		<item value="489" key="DIALOG_X_ORIGIN"/>
-		<item value="454" key="DIALOG_HEIGHT"/>
-		<item value="1|Segoe UI|8.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+		<item value="418" key="DIALOG_HEIGHT"/>
+		<item value="1|Sans|10.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="wrap"/>
@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="ZZZ" key="selection"/>
+		<item value="" key="selection"/>
 		<list key="findhistory">
-			<item value="ZZZ"/>
-			<item value="XXX"/>
-			<item value="XXX "/>
 			<item value="utf"/>
-			<item value="mCharset"/>
-			<item value="charset"/>
-			<item value="type"/>
-			<item value="writeByteArra"/>
+			<item value="\n"/>
+			<item value="Subject"/>
+			<item value="subject"/>
+			<item value="header"/>
+			<item value="newsg"/>
+			<item value="mGroup"/>
+			<item value="headerText"/>
 		</list>
 		<list key="replacehistory">
 			<item value="StringBuilder"/>

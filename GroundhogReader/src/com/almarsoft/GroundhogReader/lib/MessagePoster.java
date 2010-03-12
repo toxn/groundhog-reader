@@ -33,18 +33,13 @@ public class MessagePoster {
 	SharedPreferences mPrefs;
 	Context mContext;
 	
-	// XXX YYY ZZZ: Cambiar cuando se haga configurable el charset
-	private final String charset = "ISO-8859-15";
-	MiniMime m;
-	
 	
 	public MessagePoster(String currentGroup, String groups, String body, String subject, 
 			                String references, String prevMsgId, Context context){
 	
 		mCurrentGroup = currentGroup;
 		mContext = context;
-		mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		m = new MiniMime();
+		mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);		
 		mGroups = groups.trim();
 		mBody = body;
 		mSubject = subject.trim();
