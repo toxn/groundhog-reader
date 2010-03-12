@@ -9194,3 +9194,323 @@ Command-line arguments:  -os linux -ws gtk -arch x86_64
 
 !ENTRY org.eclipse.equinox.p2.directorywatcher 4 0 2010-03-11 22:14:53.977
 !MESSAGE The installable unit org.eclipse.ui.workbench.compatibility.translated_host_properties is missing the filename property.
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-11 22:20:38.413
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-11 22:25:48.611
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-11 22:32:41.253
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-11 23:32:38.350
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-11 23:38:35.432
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-11 23:44:47.374
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-11 23:50:28.531
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-11 23:58:50.728
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 00:09:01.685
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 00:16:54.367
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 00:22:46.902
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 00:28:51.009
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 00:43:59.402
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 00:48:59.424
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 00:56:32.404
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 01:02:05.549
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 01:07:05.614
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 01:12:19.094
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 01:17:19.166
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY org.eclipse.core.resources 4 568 2010-03-12 01:23:27.543
+!MESSAGE Could not write metadata for '/.org.eclipse.jdt.core.external.folders'.
+!STACK 0
+java.io.FileNotFoundException: /home/juanjux/reader/.metadata/.plugins/org.eclipse.core.resources/.projects/.org.eclipse.jdt.core.external.folders/.markers.snap (No existe el fichero ó directorio)
+	at java.io.FileOutputStream.openAppend(Native Method)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:177)
+	at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:43)
+	at org.eclipse.core.internal.localstore.SafeChunkyOutputStream.<init>(SafeChunkyOutputStream.java:39)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1512)
+	at org.eclipse.core.internal.resources.SaveManager.visitAndSnap(SaveManager.java:1592)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:1049)
+	at org.eclipse.core.internal.resources.SaveManager.save(SaveManager.java:991)
+	at org.eclipse.core.internal.resources.DelayedSnapshotJob.run(DelayedSnapshotJob.java:44)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)

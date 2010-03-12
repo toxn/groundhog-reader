@@ -2,12 +2,18 @@ package com.almarsoft.GroundhogReader.lib;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.commons.net.nntp.SimpleNNTPHeader;
+import org.apache.james.mime4j.codec.EncoderUtil;
+import org.apache.james.mime4j.util.ByteSequence;
+import org.apache.james.mime4j.util.CharsetUtil;
+import org.apache.james.mime4j.util.ContentUtil;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -70,13 +76,11 @@ public class MessagePoster {
 		String signature  = getSignature();
 
 		ServerManager serverMgr = new ServerManager(mContext);	
-		mBody = MessageTextProcessor.shortenPostLines(mBody);	
-
-        /* ZZZ
-        Charset bodycharset = CharsetUtil.getCharset("UTF-8");
-        ByteSequence bodybytes = ContentUtil.encode(bodycharset, mBody);
-        mBody = new String(bodybytes.toByteArray(), "ISO-8859-1");
-        */
+		mBody = MessageTextProcessor.shortenPostLines(mBody);
+		Charset charset = CharsetUtil.getCharset("UTF-8");
+		ByteSequence bytebody = ContentUtil.encode(charset, mBody);
+		mBody = new String(bytebody.toByteArray(), "ISO-8859-1");
+		
 		serverMgr.postArticle(headerText, mBody, signature);
 		
 		// Log the message to check against future replies in the MessageList
@@ -94,48 +98,45 @@ public class MessagePoster {
 		return signature;
 	}
 	
-	private String createHeaderData() throws EncoderException {
-		
-		StringBuilder buf = new StringBuilder();
-		String references, name, email, date;
-		
-		Date now = new Date();
-		Format formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
-		date = formatter.format(now);
-	
-        // ZZZ: Usar SimpleNNTPHeader? (addheader)
+	private String createHeaderData() throws EncoderException {        
+        String references, from, name, email, date;
 
-        // ZZZ: name = EncoderUtil.encodeIfNecessary(mPrefs.getString("name", "anonymous"), EncoderUtil.Usage.TEXT_TOKEN, 0);
-		name = mPrefs.getString("name", "anonymous");
+        Date now = new Date();
+        Format formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+        date = formatter.format(now);
+          
+		name = EncoderUtil.encodeIfNecessary(mPrefs.getString("name", "anonymous"), EncoderUtil.Usage.TEXT_TOKEN, 0);        
 		email = "<" + mPrefs.getString("email", "nobody@nobody.no").trim() + ">";
-    
-        // ZZZ: Quitar el MiniMime
-		buf.append("From: " + MiniMime.mencodemime_ifneeded(name + " " + email, charset) + "\n"); 
-		buf.append("Date: " + date + "\n"); 
+		from = name + " " + email;		
+		mSubject = EncoderUtil.encodeIfNecessary(mSubject, EncoderUtil.Usage.TEXT_TOKEN, 0);
 		
-        // buf.append("Content-Type", "text/plain; charset=UTF-8; format=flowed");
-		buf.append("Content-Type: text/plain; charset=\"iso-8859-15\"" + "\n");
-		buf.append("Content-Transfer-Encoding: 8bit" + "\n");
+		SimpleNNTPHeader header = new SimpleNNTPHeader(from, mSubject);
+		String[] groups = mGroups.trim().split(",");
+		int mgroupslen = groups.length;
 		
-		buf.append("Newsgroups: " + mGroups + "\n");
-		buf.append("Subject: " + MiniMime.mencodemime_ifneeded(mSubject, charset) + "\n");
-		
-		
-		if (mReferences != null) {
-			if (mPrevMsgId != null) {
-				references = mReferences + " " + mPrevMsgId;
-				buf.append("In-Reply-To: " + mPrevMsgId + "\n");
-			}
-			else {
-				references = mReferences;
-			}
-			buf.append("References: " + references + "\n");
+		for(int i=0; i<mgroupslen; i++) {
+			header.addNewsgroup(groups[i]);
 		}
-		
-		mMyMsgId = generateMsgId();
-		buf.append("Message-ID: " + mMyMsgId + "\n");
-		buf.append("User-Agent: Groundhog Newseader for Android" + "\n");
-		return buf.toString();
+		header.addHeaderField("Date", date);
+		header.addHeaderField("Content-Type", "text/plain; charset=UTF-8; format=flowed");
+		header.addHeaderField("Content-Transfer-Encoding", "8bit");	
+
+        if (mReferences != null) {
+            if (mPrevMsgId != null) {
+                references = mReferences + " " + mPrevMsgId;
+                header.addHeaderField("In-Reply-To", mPrevMsgId);                
+            }
+            else {
+                references = mReferences;
+            }            
+            header.addHeaderField("References", references);
+        }
+
+        mMyMsgId = generateMsgId();
+        header.addHeaderField("Message-ID", mMyMsgId);
+        header.addHeaderField("User-Agent", "Groundhog Newsreader for Android");        
+        Log.d("groundhog", "Header es|\n" + header.toString());
+        return header.toString();
 	}
 	
 	
