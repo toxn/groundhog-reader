@@ -46,6 +46,7 @@ import com.almarsoft.GroundhogReader.lib.DBHelper;
 import com.almarsoft.GroundhogReader.lib.DBUtils;
 import com.almarsoft.GroundhogReader.lib.FSUtils;
 import com.almarsoft.GroundhogReader.lib.HeaderItemClass;
+import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
 import com.almarsoft.GroundhogReader.lib.MiniHeader;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
@@ -135,7 +136,7 @@ public class MessageListActivity extends ListActivity {
 	protected void onStop() {
 		super.onStop();
 		
-		Log.d("XXX", "MessageList onStop");
+		Log.d(UsenetConstants.APPNAME, "MessageList onStop");
 
     	if (mDbGetterThread != null && mDbGetterThread.isAlive())
     			mDbGetterThread.interrupt();
@@ -150,7 +151,7 @@ public class MessageListActivity extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		
-		Log.d("Groundhog", "ListActivity onResume");
+		Log.d(UsenetConstants.APPNAME, "ListActivity onResume");
 		
 		// ==================================================================================
 		// Detect server hostname changes in the settings (if true, go to the
@@ -230,6 +231,10 @@ public class MessageListActivity extends ListActivity {
 			case R.id.messagelist_menu_markread:
 				markAllRead();
 				return true;
+				
+            case R.id.messagelist_menu_charset:
+            	startActivity(new Intent(MessageListActivity.this, ReadCharsetActivity.class));
+            	return true;				
 	
 			case R.id.messagelist_menu_settings:
 				startActivity(new Intent(MessageListActivity.this, OptionsActivity.class));
@@ -556,6 +561,8 @@ public class MessageListActivity extends ListActivity {
 				// Faster since this way it doesnt have to search the members (see developer guide)
 				MessageListActivity act = MessageListActivity.this;
 				
+				String charset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
+				
 				DBHelper dbhelper = new DBHelper(getApplicationContext());
 				SQLiteDatabase db = dbhelper.getReadableDatabase();
 				
@@ -588,21 +595,21 @@ public class MessageListActivity extends ListActivity {
 
 				cur.moveToFirst();
 				Article currentArticle;
-
+				
 				for (int i = 0; i < numArticles; i++) {
 					if (isInterrupted()) {
 						act.updateStatus("Interrupted", FINISHED_INTERRUPTED, i, numArticles);
 						cur.close(); db.close(); dbhelper.close();
 						return;
 					}
-						
+					
 					act.updateStatus("Threading all unread messages", NOT_FINISHED, i, numArticles);
 					currentArticle = new Article();
 					currentArticle.setArticleId(cur.getString(0));
 					currentArticle.setArticleNumber(cur.getInt(1));
 					currentArticle.setDate(cur.getString(2));
-					currentArticle.setFrom(cur.getString(3));
-					currentArticle.setSubject(cur.getString(4));
+					currentArticle.setFrom(MessageTextProcessor.decodeHeaderInArticleInfo(cur.getString(3), charset));
+					currentArticle.setSubject(MessageTextProcessor.decodeHeaderInArticleInfo(cur.getString(4), charset));
 					currentArticle.setSimplifiedSubject(cur.getString(5));
 
 					String dbrefs = cur.getString(5);
@@ -872,7 +879,6 @@ public class MessageListActivity extends ListActivity {
 				}
 				
 				subjectChangeLine.setVisibility(subjectChangeValue);
-				
 				
 				/*
 				ImageView arrow = (ImageView) v.findViewById(R.id.img_reply);

@@ -14,10 +14,5 @@
 			<type>2</type>
 			<location>/home/juanjux/sync/work/androidsdk/platforms/android-1.5/sources</location>
 		</link>
-		<link>
-			<name>.link2</name>
-			<type>2</type>
-			<location>/home/juanjux/reader/GroundhogReader/apache-mime4j-0.6/src</location>
-		</link>
 	</linkedResources>
 </projectDescription>

@@ -71,8 +71,9 @@ public class MessageActivity extends Activity {
 	private String mBodyText;
 	private String mOriginalText;
 	private String mSubjectText;
+	private String mAuthorText;
 	private String mLastSubject;
-	private String mCharset = "utf-8";
+	private String mCharset;
 	private Header mHeader;
 	private Message mMessage;
 	private Vector<HashMap<String, String>> mMimePartsVector;
@@ -358,7 +359,14 @@ public class MessageActivity extends Activity {
     		
     		Intent intent_Post = new Intent(MessageActivity.this, ComposeActivity.class);
 			intent_Post.putExtra("isNew", false);
-			intent_Post.putExtra("headerdata", mHeader.toString());			
+			intent_Post.putExtra("From", mAuthorText);
+			intent_Post.putExtra("Newsgroups", mHeader.getField("Newsgroups").getBody());
+			intent_Post.putExtra("Date", mHeader.getField("Date").getBody());
+			intent_Post.putExtra("Message-ID", mHeader.getField("Message-ID").getBody());
+			if (mHeader.getField("References") != null)
+				intent_Post.putExtra("References", mHeader.getField("References").getBody());
+			if (mSubjectText != null)
+				intent_Post.putExtra("Subject", mSubjectText);
 			intent_Post.putExtra("bodytext", composeText);			
 			if (data != null)
 				intent_Post.putExtra("multipleFollowup", data.getStringExtra("multipleFollowup"));
@@ -660,7 +668,7 @@ public class MessageActivity extends Activity {
     	    		String tmpFirstToken;
     	    		
     	    		String mimeBoundary = null;
-    	    		mCharset = "ISO8859-15";
+    	    		mCharset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
     	    		
     	    		// ZZZ: Es posible que teniendo el Message todo esto sobre
     	    		//boolean isMime = (mHeader.getField("MIME-Version") != null);
@@ -700,21 +708,12 @@ public class MessageActivity extends Activity {
     	    		TextBody textBody = (TextBody)body_attachs.get(0);
     	    		mBodyText = MessageTextProcessor.readerToString(textBody.getReader()).trim();
     	    		
-    	    		Log.d("XXX", "Imprimiendo mBodyText caracter a caracter");
-    	    		
-    	    		for(int i=0; i<mBodyText.length(); i++) {
-    	    			char c = mBodyText.charAt(i);
-    	    			Log.d("XXX", "|" + c + "|");
-    	    			Log.d("XXX", "Idx: |" + (int)c + "|");
-    	    		}
-    	    		
     	    		if (mSubjectText != null)
     	    			mLastSubject = Article.simplifySubject(mSubjectText);
     	    		
-    	    		mSubjectText = mMessage.getSubject();
+    	    		mSubjectText = MessageTextProcessor.decodeSubject(mHeader.getField("Subject"), mCharset, mMessage);
     	    		
     	    		// XXX YYY ZZZ Obtener los adjuntos
-    	    		// XXX YYY ZZZ: Probar con varios encodings y Quoted-Printable!!!
 
     	    		/*
 	    			if (mMimePartsVector != null) mMimePartsVector.clear();
@@ -877,15 +876,8 @@ public class MessageActivity extends Activity {
     			mLayoutDate.setVisibility(View.VISIBLE);
     			mLayoutSubject.setVisibility(View.VISIBLE);
     			
-    			//mAuthor.setText(mHeader.getField("From").getBody());
-    			MailboxList authorList = mMessage.getFrom();
-    			Mailbox author;
-    			if ((authorList != null) && (author = authorList.get(0)) != null) {
-    				mAuthor.setText(author.getName() + "<" + author.getAddress());
-    			} else {
-    				mAuthor.setText("unkown");
-    			}
-    			
+    			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
+    			mAuthor.setText(mAuthorText);
     			mDate.setText(mHeader.getField("Date").getBody());
     			mSubject.setText(mSubjectText);
     			

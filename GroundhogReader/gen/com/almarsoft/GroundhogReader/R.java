@@ -79,16 +79,17 @@ public final class R {
         public static final int list_quotelines=0x7f080026;
         public static final int main_help_layout=0x7f080023;
         public static final int main_message_layout=0x7f08000b;
-        public static final int message_menu_ban=0x7f080052;
-        public static final int message_menu_bigtext=0x7f080054;
-        public static final int message_menu_favorite=0x7f080053;
-        public static final int message_menu_forward=0x7f080051;
-        public static final int message_menu_fullheaders=0x7f080057;
-        public static final int message_menu_manageban=0x7f080056;
-        public static final int message_menu_markunread=0x7f080050;
-        public static final int message_menu_reply=0x7f08004f;
-        public static final int message_menu_settings=0x7f080058;
-        public static final int message_menu_smalltext=0x7f080055;
+        public static final int message_menu_ban=0x7f080053;
+        public static final int message_menu_bigtext=0x7f080055;
+        public static final int message_menu_favorite=0x7f080054;
+        public static final int message_menu_forward=0x7f080052;
+        public static final int message_menu_fullheaders=0x7f080058;
+        public static final int message_menu_manageban=0x7f080057;
+        public static final int message_menu_markunread=0x7f080051;
+        public static final int message_menu_reply=0x7f080050;
+        public static final int message_menu_settings=0x7f080059;
+        public static final int message_menu_smalltext=0x7f080056;
+        public static final int messagelist_menu_charset=0x7f08004e;
         public static final int messagelist_menu_getnew=0x7f08004a;
         public static final int messagelist_menu_groupslist=0x7f080048;
         public static final int messagelist_menu_managebanneds=0x7f08004c;
@@ -96,7 +97,7 @@ public final class R {
         public static final int messagelist_menu_markread=0x7f08004b;
         public static final int messagelist_menu_newpost=0x7f080047;
         public static final int messagelist_menu_refresh=0x7f080049;
-        public static final int messagelist_menu_settings=0x7f08004e;
+        public static final int messagelist_menu_settings=0x7f08004f;
         public static final int messagelistitem_img_love=0x7f08001a;
         public static final int msglist_item_menu_banuser=0x7f080046;
         public static final int msglist_item_menu_ignorethread=0x7f080045;
@@ -137,11 +138,12 @@ public final class R {
         public static final int messagelist_item=0x7f030006;
         public static final int options=0x7f030007;
         public static final int optionscharset=0x7f030008;
-        public static final int quickhelp=0x7f030009;
-        public static final int quote=0x7f03000a;
-        public static final int quoted_item=0x7f03000b;
-        public static final int subscribe=0x7f03000c;
-        public static final int updatelist=0x7f03000d;
+        public static final int optionsreadcharset=0x7f030009;
+        public static final int quickhelp=0x7f03000a;
+        public static final int quote=0x7f03000b;
+        public static final int quoted_item=0x7f03000c;
+        public static final int subscribe=0x7f03000d;
+        public static final int updatelist=0x7f03000e;
     }
     public static final class menu {
         public static final int banneditemsmenu=0x7f070000;

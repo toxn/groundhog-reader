@@ -40,8 +40,9 @@ public class ComposeActivity extends Activity {
 	private boolean mIsNew;
 	private String mPostingErrorMessage = null;
 	private String mCurrentGroup = null;
+	private String mMessageID = null;
+	private String mReferences = null;
 	
-	private Header mHeader;
 	private final Handler mHandler = new Handler();
 	private SharedPreferences mPrefs;
 
@@ -63,7 +64,7 @@ public class ComposeActivity extends Activity {
 		// but we later will need more parts for posting
 		
         Bundle extras = getIntent().getExtras();
-		mIsNew = extras.getBoolean("isNew");
+		mIsNew        = extras.getBoolean("isNew");
 		mCurrentGroup = extras.getString("group");
 		
 		Toast.makeText(getApplicationContext(), "Encoding: " + mPrefs.getString("postCharset", "UTF-8") + " (you can changue it with Menu & Encoding)", Toast.LENGTH_SHORT).show();
@@ -71,35 +72,34 @@ public class ComposeActivity extends Activity {
 		if (mIsNew) {
 			mEdit_Groups.setText(mCurrentGroup);
 			mEdit_Subject.requestFocus();
+		} 
+		
+		else {
+
+			String prevFrom   = extras.getString("From");
+			String prevDate   = extras.getString("Date");
+			String newsgroups = extras.getString("Newsgroups");			
+			mMessageID = extras.getString("Message-ID");
+			if (extras.containsKey("References"))
+				mReferences = extras.getString("References");
 			
-		} else {
-						
-			try {
-				mHeader = MessageTextProcessor.strToHeader(extras.getString("headerdata"));
-			} catch (IOException e) {
-				Log.e("Groundhog", "ERROR: IOException on strToHeader getting header on ComposeActivty via getExtras");
-				e.printStackTrace();
-				return;
+			if (extras.containsKey("Subject")) {
+				String prevSubject = extras.getString("Subject");
+				if (!prevSubject.toLowerCase().contains("re:")) {
+					prevSubject = "Re: " + prevSubject;
+				
+				mEdit_Subject.setText(prevSubject);
+				}
 			}
 			
 			
 			String followupOption = extras.getString("multipleFollowup");
 			
 			if (followupOption == null || !followupOption.equalsIgnoreCase("CURRENT"))
-				mEdit_Groups.setText(mHeader.getField("Newsgroups").getBody());
+				mEdit_Groups.setText(newsgroups);
 			else
 				mEdit_Groups.setText(mCurrentGroup);
 				
-			if (mHeader.getField("Subject") != null) {
-				String mSubject = mHeader.getField("Subject").getBody();
-				if (mSubject != null) {
-					if (!mSubject.toLowerCase().contains("re:")) {
-						mSubject = "Re: " + mSubject;
-					}
-					mEdit_Subject.setText(mSubject);
-				}
-			}
-	
 			mEdit_Body.setText("");
 			
 			// Get the quoted bodytext, set it and set the cursor at the configured position
@@ -107,10 +107,7 @@ public class ComposeActivity extends Activity {
 			boolean replyCursorStart = mPrefs.getBoolean("replyCursorPositionStart", false);
 			
 			String quoteheader = mPrefs.getString("authorline", "On [date], [user] said:");
-			String quotedBody = MessageTextProcessor.quoteBody(bodyText, 
-															   quoteheader, 
-					                                           mHeader.getField("From").getBody(), 
-					                                           mHeader.getField("Date").getBody());
+			String quotedBody = MessageTextProcessor.quoteBody(bodyText, quoteheader, prevFrom, prevDate);
 			
 			if (bodyText != null && bodyText.length() > 0) {
 				
@@ -209,20 +206,11 @@ public class ComposeActivity extends Activity {
 			
 			public void run() {
 
-				String references = null;
-				String msgid = null;
-				
-				if (!mIsNew) {
-					if (mHeader.getField("References") != null)
-						references = mHeader.getField("References").getBody();
-					msgid = mHeader.getField("Message-ID").getBody();
-				}						
-				
 				MessagePoster poster = new MessagePoster(mCurrentGroup, 
 						                                 mEdit_Groups.getText().toString(), 
 						                          		 mEdit_Body.getText().toString(), 
 						                                 mEdit_Subject.getText().toString(), 
-						                                 references, msgid, ComposeActivity.this);
+						                                 mReferences, mMessageID, ComposeActivity.this);
 				
 				try {
 					

@@ -95,7 +95,7 @@ public class GroupListActivity extends ListActivity {
     protected void onResume() {
     	super.onResume();
     	
-    	Log.d("Groundhog", "GroupList onResume");
+    	Log.d(UsenetConstants.APPNAME, "GroupList onResume");
 		
 		// =====================================================
         // Try to detect server hostname changes in the settings
@@ -119,7 +119,7 @@ public class GroupListActivity extends ListActivity {
 			
 		}
 			
-		Log.d("Groundhog", "onResume, recreating ServerManager");
+		Log.d(UsenetConstants.APPNAME, "onResume, recreating ServerManager");
 		if (mServerManager == null)
 			mServerManager = new ServerManager(getApplicationContext());
 		

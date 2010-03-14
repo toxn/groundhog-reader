@@ -40,12 +40,17 @@ public abstract class AbstractField implements ParsedField {
     
     private final String name;
     private final String body;
+    private final String rawbody;
     private final ByteSequence raw;
     
     protected AbstractField(final String name, final String body, final ByteSequence raw) {
         this.name = name;
         this.body = body;
         this.raw = raw;
+        if (raw.indexOf(':') != -1) 
+            this.rawbody = new String(raw.toByteArray()).split(":", 1);
+        else
+            this.rawbody = raw;
     }
 
     /**
@@ -135,7 +140,11 @@ public abstract class AbstractField implements ParsedField {
     public ByteSequence getRaw() {
         return raw;
     }
-    
+
+    public String getRawBody() {
+        return rawbody;
+    }
+
     /**
      * Gets the unfolded, unparsed and possibly encoded (see RFC 2047) field 
      * body string.

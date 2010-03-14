@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,10 @@ import java.util.Vector;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.james.mime4j.codec.DecoderUtil;
+import org.apache.james.mime4j.codec.EncoderUtil;
+import org.apache.james.mime4j.field.address.Mailbox;
+import org.apache.james.mime4j.field.address.MailboxList;
 import org.apache.james.mime4j.message.BinaryBody;
 import org.apache.james.mime4j.message.Body;
 import org.apache.james.mime4j.message.BodyPart;
@@ -38,7 +43,59 @@ public class MessageTextProcessor {
 		}
 
 		return sb.toString();
-	}	
+	}
+	
+	// ======================================================================================================
+	// If the encoding is declared, call to message.getSubject() which takes care of transcoding
+	// If not, we encode if on the header or user declared encoding
+	// Note that this will probably fail if the string contains a =? that doesnt declare a charset... oh well
+	// ======================================================================================================
+	public static String decodeSubject(Field subjectField, String charset, Message message) 
+	throws UnsupportedEncodingException {
+		String rawStr = new String(subjectField.getRaw().toByteArray());
+		if (rawStr.indexOf("=?") != -1) {
+			return message.getSubject();
+		}
+		return new String(subjectField.getRaw().toByteArray(), charset).replaceFirst("Subject: ", "");
+	}
+	
+	// ======================================================================================================
+	// If the encoding is declared, call to message.getFrom() which takes care of transcoding
+	// If not, we encode if on the header or user declared encoding
+	// Note that this will probably fail if the string contains a =? that doesnt declare a charset... oh well
+	// ======================================================================================================
+	
+	public static String decodeFrom(Field fromField, String charset, Message message) {
+		
+		String rawStr = new String(fromField.getRaw().toByteArray());
+		if (rawStr.indexOf("=?") != -1) {
+			MailboxList authorList = message.getFrom();
+			Mailbox author;
+			if ((authorList != null) && (author = authorList.get(0)) != null) 
+				return author.getName() + "<" + author.getAddress() + ">";
+			else 
+				return "Unknown";
+		}
+
+		try {
+			return new String(fromField.getRaw().toByteArray(), charset).replaceFirst("From: ", "");
+		} catch (UnsupportedEncodingException e) {
+			return "Unknown";
+		}
+	}
+	
+	public static String decodeHeaderInArticleInfo(String originalHeader, String charset) {
+		
+		if (originalHeader.indexOf("=?") != -1) {
+			return DecoderUtil.decodeEncodedWords(originalHeader);
+		}
+		try{
+			return new String(originalHeader.getBytes("ISO8859-1"), charset);
+		} catch (UnsupportedEncodingException e) {
+			return "Unknown";
+		}
+		
+	}
 	
     // =============================================================================
     // Remove all \n except the ones that are after a point. We do this
@@ -519,7 +576,7 @@ public class MessageTextProcessor {
 			try {
 				size = FSUtils.writeByteArrayToDiskFileAndGetSize(decodedData, path, partData2.get("md5"));
 			} catch (IOException e) {
-				Log.d("Groundhog", "Unable to save attachment " + partData2.get("name") + ":" + e.getMessage());
+				Log.d(UsenetConstants.APPNAME, "Unable to save attachment " + partData2.get("name") + ":" + e.getMessage());
 				e.printStackTrace();
 				continue;
 			}
@@ -670,7 +727,6 @@ public class MessageTextProcessor {
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (UsenetReaderException e) {
-						// XXX YYY ZZZ: Poner mensaje de adjunto incorrecto?
 						e.printStackTrace();
 					}
 					attachment = null;
@@ -838,7 +894,6 @@ public class MessageTextProcessor {
 			realBody = (TextBody) body;
 		}
 		else if (body instanceof Message) {
-			// XXX: What to do here???
 		}
 		else if (body instanceof BinaryBody) {
 			// XXX YYY ZZZ: GUARDAR ADJUNTOS en attachsVector, guardar a disco, etc (no meter en el vector)

@@ -170,7 +170,7 @@ final public class ServerManager {
 			allNumbers = mClient.listGroup(mGroup, firstMsg, limit);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Log.d("Groundhog", "Connection seems lost, reconnecting");
+			Log.d(UsenetConstants.APPNAME, "Connection seems lost, reconnecting");
 			connect();
 			allNumbers = mClient.listGroup(mGroup, firstMsg, limit);
 		}
@@ -212,24 +212,22 @@ final public class ServerManager {
 	// database. Return the msgId of the article.
 	// ===============================================================================
 
-	public Vector<Object> getAndInsertArticleInfo(long articleNumber) throws IOException, UsenetReaderException, ServerAuthException {
+	public Vector<Object> getAndInsertArticleInfo(long articleNumber, String charset) 
+	throws IOException, UsenetReaderException, ServerAuthException {
 		clientConnectIfNot();
 		
-		String decodedfrom;
-
 		// Get the article information (shorter than the header; we'll fetch the body and the
 		// body when the user clicks on an article.)
 		Article articleInfo = getArticleInfo(articleNumber);
+		String from = articleInfo.getFrom();
 		long ddbbId = -1;
 
 		if (articleInfo != null) {
 			
-			decodedfrom = MiniMime.decodemime(articleInfo.getFrom(), true);
-			
 			if (  (!mBannedThreadsSet.contains(articleInfo.simplifiedSubject())) 
-			    &&(!mBannedTrollsSet.contains(decodedfrom))) {
+			    &&(!mBannedTrollsSet.contains(from))) {
 				
-				ddbbId = insertArticleInDB(articleInfo, articleNumber, decodedfrom);
+				ddbbId = insertArticleInDB(articleInfo, articleNumber, from, charset);
 			} 
 		}
 		
@@ -294,7 +292,8 @@ final public class ServerManager {
 	// Decode, process and insert the articleInfo into the DB, return the _id
 	// ======================================================================
 	
-	private long insertArticleInDB(Article articleInfo, long articleNumber, String decodedfrom) throws UsenetReaderException {
+	private long insertArticleInDB(Article articleInfo, long articleNumber, String decodedfrom, String charset) 
+	throws UsenetReaderException {
 
 		// Get the reference list as a string instead of as an array of strings
 		// for insertion into the DB
@@ -313,11 +312,12 @@ final public class ServerManager {
 		}
 		
 		String finalRefs = references_buff.toString();
-		String finalSubject = MiniMime.decodemime(articleInfo.getSubject(), false);
-		finalSubject = finalSubject.replaceAll(" +", " ");
+		//String finalSubject = MessageTextProcessor.decodeHeaderInArticleInfo(articleInfo.getSubject(), charset);
+		String subject = articleInfo.getSubject();
+		subject = subject.replaceAll(" +", " ");
 
 		// Now insert the Article into the DB
-		return DBUtils.insertArticleToGroupID(mGroupID, articleInfo, finalRefs, decodedfrom, finalSubject, mContext);
+		return DBUtils.insertArticleToGroupID(mGroupID, articleInfo, finalRefs, decodedfrom, subject, mContext);
 	}
 
 	// ====================================================================================
@@ -353,8 +353,6 @@ final public class ServerManager {
 		FSUtils.writeStringToDiskFile(strHeader, outputPath, Long.toString(headerTableId));
 		DBUtils.setMessageCatched(headerTableId, true, mContext);
 		
-		Log.d("XXX", "Header: ");
-		Log.d("XXX", strHeader);
 		return MessageTextProcessor.strToHeader(strHeader);		
 	}
 
@@ -406,7 +404,7 @@ final public class ServerManager {
 		
 		if (!f.exists()) {
 			// For some odd reason, its not on the disk, fetch it from the net and write it to the cache
-			Log.d("Groundhog", "Message supposedly catched wasn't; catching from the net");
+			Log.d(UsenetConstants.APPNAME, "Message supposedly catched wasn't; catching from the net");
 			return GetAndCacheHeader(id, msgId, group);
 		}
 		else {
@@ -429,7 +427,7 @@ final public class ServerManager {
 		
 		if (!f.exists()) {
 			// For some odd reason, its not on the disk, fetch it from the net and write it to the cache
-			Log.d("Groundhog", "Message supposedly catched wasn't; catching from the net");
+			Log.d(UsenetConstants.APPNAME, "Message supposedly catched wasn't; catching from the net");
 			body = GetAndCacheBody(id, msgId, group);
 		}
 		else {

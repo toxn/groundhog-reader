@@ -50,6 +50,13 @@
             </intent-filter>
         </activity>
         
+        <activity android:name=".ReadCharsetActivity" android:label="Posting Charset">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />                
+                <category android:name="android.intent.category.DEFAULT" />                
+            </intent-filter>
+        </activity>        
+        
         <activity android:name=".SubscribeActivity" android:label="Subscribe to Groups" android:configChanges="keyboardHidden|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />                

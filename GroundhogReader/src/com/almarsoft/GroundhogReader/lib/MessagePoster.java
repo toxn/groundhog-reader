@@ -144,8 +144,8 @@ public class MessagePoster {
         mMyMsgId = generateMsgId();
         header.addHeaderField("Message-ID", mMyMsgId);
         header.addHeaderField("User-Agent", "Groundhog Newsreader for Android");        
-        Log.d("groundhog", "Header es|\n" + header.toString());
         return header.toString();
+        
 	}
 	
 	
