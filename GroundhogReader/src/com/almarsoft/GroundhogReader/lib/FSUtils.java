@@ -18,7 +18,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class FSUtils {
 	
-	
 	public static String loadStringFromDiskFile(String fullPath, boolean existenceChecked) 
 							throws UsenetReaderException, IOException {
 

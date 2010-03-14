@@ -2,13 +2,14 @@ package com.almarsoft.GroundhogReader.lib;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.net.SocketException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -16,6 +17,12 @@ import java.util.Vector;
 import org.apache.commons.net.io.DotTerminatedMessageReader;
 import org.apache.commons.net.nntp.Article;
 import org.apache.commons.net.nntp.NewsgroupInfo;
+import org.apache.james.mime4j.message.Header;
+import org.apache.james.mime4j.message.Message;
+import org.apache.james.mime4j.parser.MimeEntityConfig;
+import org.apache.james.mime4j.storage.DefaultStorageProvider;
+import org.apache.james.mime4j.storage.MemoryStorageProvider;
+import org.apache.james.mime4j.storage.StorageProvider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -247,7 +254,7 @@ final public class ServerManager {
 		}
 
 		if (reader != null) {
-			String theInfo = ServerManager.readerToString(reader);
+			String theInfo = MessageTextProcessor.readerToString(reader);
 
 			if (theInfo.trim().length() == 0) {
 				return null;
@@ -283,22 +290,6 @@ final public class ServerManager {
 	}
 
 
-	
-	private static String readerToString(Reader reader) throws IOException {
-		BufferedReader bufReader = new BufferedReader(reader);
-		StringBuilder sb = new StringBuilder();
-		String temp = bufReader.readLine();
-		
-		while (temp != null) {
-			sb.append(temp);
-			sb.append("\n");
-			temp = bufReader.readLine();
-		}
-
-		return sb.toString();
-	}
-
-	
 	// ======================================================================
 	// Decode, process and insert the articleInfo into the DB, return the _id
 	// ======================================================================
@@ -328,76 +319,126 @@ final public class ServerManager {
 		// Now insert the Article into the DB
 		return DBUtils.insertArticleToGroupID(mGroupID, articleInfo, finalRefs, decodedfrom, finalSubject, mContext);
 	}
+
+	// ====================================================================================
+	// Get a header from the server, store it in the sdcard cache and return it
+	// ====================================================================================
 	
+	private Header GetAndCacheHeader(long headerTableId, String msgId, String group)
+	throws ServerAuthException, IOException, UsenetReaderException {
+
+		clientConnectIfNot();	
+		Reader reader = null;	
+		String strHeader = null;
+		
+		try {
+			reader = (DotTerminatedMessageReader) mClient.retrieveArticleHeader(msgId);
+		} catch (IOException e) {
+			// Needed now???
+			connect();
+			selectNewsGroup(mGroup, false);
+			reader = (DotTerminatedMessageReader) mClient.retrieveArticleHeader(msgId);
+		}
+		
+		if (reader == null)
+			return null;
+		
+		strHeader = MessageTextProcessor.readerToString(reader);
+		
+		if (strHeader == null) 
+			return null;
+		
+		// Now we have the header from the server, store it into the sdcard
+		String outputPath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/header/";
+		FSUtils.writeStringToDiskFile(strHeader, outputPath, Long.toString(headerTableId));
+		DBUtils.setMessageCatched(headerTableId, true, mContext);
+		
+		Log.d("XXX", "Header: ");
+		Log.d("XXX", strHeader);
+		return MessageTextProcessor.strToHeader(strHeader);		
+	}
+
 	
 	// ====================================================================================
-	// Get a message part (body or header) from the server and store it in the sdcard cache
+	// Get a body from the server and store it in the sdcard cache
 	// ====================================================================================
 	
-	private String writeMessagePartToCache(String type, long headerTableId, String msgId, String group) 
-									throws ServerAuthException, IOException, UsenetReaderException {
+	private String GetAndCacheBody(long headerTableId, String msgId, String group) 
+	throws ServerAuthException, IOException, UsenetReaderException {
 		clientConnectIfNot();
 		
 		Reader reader = null;
-		String thePart = null;
+		String body   = null;
 		
 		try {
-			if (type.equalsIgnoreCase("header")) {
-				reader = (DotTerminatedMessageReader) mClient.retrieveArticleHeader(msgId);
-			}
-			else {
-				reader = (DotTerminatedMessageReader) mClient.retrieveArticleBody(msgId);
-			}
+			reader = (DotTerminatedMessageReader) mClient.retrieveArticleBody(msgId);
 		} catch (IOException  e) {
 			connect();
 			selectNewsGroup(mGroup, false);
-			if (type.equalsIgnoreCase("header")) {
-				reader = (DotTerminatedMessageReader) mClient.retrieveArticleHeader(msgId);
-			}
-			else {
-				reader = (DotTerminatedMessageReader) mClient.retrieveArticleBody(msgId);
-			}
+			reader = (DotTerminatedMessageReader) mClient.retrieveArticleBody(msgId);
 		}		
 		
 		if (reader == null) 
 			return null;
 
-		thePart = ServerManager.readerToString(reader);
+		body = MessageTextProcessor.readerToString(reader);
 		
-		if (thePart == null) 
+		if (body == null) 
 			return null;
 		
 		// Now we have the header from the server, store it into the sdcard
-		String outputPath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/" + type + "/";
-		FSUtils.writeStringToDiskFile(thePart, outputPath, Long.toString(headerTableId));
+		String outputPath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/body/";
+		FSUtils.writeStringToDiskFile(body, outputPath, Long.toString(headerTableId));
 		DBUtils.setMessageCatched(headerTableId, true, mContext);
-		return thePart;
+		return body;
+	}
+	
+	
+	// ===================================================
+	// Read a header from the cache
+	// ===================================================
+	private Header readHeaderFromCache(long id, String msgId, String group)
+	throws UsenetReaderException, IOException, ServerAuthException {
+		
+		String header = null;
+		String headerFilePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/header/" + id;
+		File f = new File(headerFilePath);
+		
+		if (!f.exists()) {
+			// For some odd reason, its not on the disk, fetch it from the net and write it to the cache
+			Log.d("Groundhog", "Message supposedly catched wasn't; catching from the net");
+			return GetAndCacheHeader(id, msgId, group);
+		}
+		else {
+			header = FSUtils.loadStringFromDiskFile(headerFilePath, true);
+		}
+	
+		return MessageTextProcessor.strToHeader(header);
 	}
 
 	
 	// ===================================================
-	// Read a message part (body or header) from the cache
+	// Read a body from the cache
 	// ===================================================
-	private String readMessagePartFromCache(String type, long id, String msgId, String group) 
-	                                       throws UsenetReaderException, IOException, ServerAuthException {
+	private String readBodyFromCache(long id, String msgId, String group) 
+	throws UsenetReaderException, IOException, ServerAuthException {
 	
-		String part = null;
-		
-		String partFilePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/" + type + "/" + id;
+		String body;
+		String partFilePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/body/" + id;
 		File f = new File(partFilePath);
 		
 		if (!f.exists()) {
 			// For some odd reason, its not on the disk, fetch it from the net and write it to the cache
 			Log.d("Groundhog", "Message supposedly catched wasn't; catching from the net");
-			part = writeMessagePartToCache(type, id, msgId, group);
+			body = GetAndCacheBody(id, msgId, group);
 		}
 		else {
-			part = FSUtils.loadStringFromDiskFile(partFilePath, true);
+			body = FSUtils.loadStringFromDiskFile(partFilePath, true);
 		}
 		
-		return part;
+		return body;
 	}
-	
+
 	
 	// ================================================================================================================
 	// Get a header for and article id (with msgId given too). If the article is not in the cache, it will request it 
@@ -405,66 +446,25 @@ final public class ServerManager {
 	// will just read the article
 	// ================================================================================================================
 	
-	public HashMap<String, String> getHeader(long id, String msgId, boolean isoffline, boolean iscatched) 
-											 throws UsenetReaderException, ServerAuthException, IOException {
+	public Header getHeader(long id, String msgId, boolean isoffline, boolean iscatched) 
+	throws UsenetReaderException, ServerAuthException, IOException {
 		
-		String header = null;
-		HashMap<String, String> headerTable = null;
+		Header headerObj = null;
+		//String header = null;
+		//HashMap<String, String> headerTable = null;
 		
 		if (!iscatched) { // Not catched, cache it and get the result
 			if (isoffline) 
 				throw new UsenetReaderException("Offline mode enabled but header " + id + " not catched");
-			else {
-				header = writeMessagePartToCache("header", id, msgId, mGroup);
-			}
-			
-		} else { // Catched, read if from the cache
-			header = readMessagePartFromCache("header", id, msgId, mGroup);
-		}
+			else
+				headerObj = GetAndCacheHeader(id, msgId, mGroup);
 		
-		if (header == null || header.trim().length() == 0)  
-			return null;
-
-        // ZZZ: Se devuelve un header, no hace falta parsear ni convertir en String[] se devuelve directamente el objeto
-        
-		// Now that we have read the header part, split it into a HashTable
-		String[] headerFields = header.split("\n");
-		String[] fieldValue = null;
-		headerTable = new HashMap<String, String>(headerFields.length);
-		String lastField = "";
-		int headerFieldsLen = headerFields.length;
-		String tmp;
+		} else // Catched, read if from the cache
+			headerObj = readHeaderFromCache(id, msgId, mGroup);
 		
-		for (int i = 0; i < headerFieldsLen; i++) {
-			
-			fieldValue = headerFields[i].split(":", 2);
-			
-			// First line of a header (or single line if, like most headers, it's just a line)
-			if (fieldValue.length == 2) {
-				
-				if (fieldValue[0].equalsIgnoreCase("From") || fieldValue[0].equalsIgnoreCase("Subject")) {
-					tmp = MiniMime.decodemime(fieldValue[1].trim(), false);
-					headerTable.put(fieldValue[0], tmp.replaceAll(" +", " "));
-				}
-				else
-					headerTable.put(fieldValue[0], fieldValue[1].trim());
-				
-				lastField = fieldValue[0];				
-				
-			// fieldValue.length == 1, following parts of a multiline header
-			} else {
-				
-				if (lastField.equalsIgnoreCase("From") || lastField.equalsIgnoreCase("Subject")) {
-					tmp = headerTable.get(lastField) + MiniMime.decodemime(fieldValue[0].trim(), false);
-					headerTable.put(lastField, tmp.replaceAll(" +", " "));
-				}
-				else
-					headerTable.put(lastField, headerTable.get(lastField) + fieldValue[0].trim());
-			}
-		}		
-		
-		return headerTable;
+		return headerObj;
 	}
+
 	
 	
 	// ===================================================================================
@@ -479,15 +479,44 @@ final public class ServerManager {
 			if (isoffline)
 				throw new UsenetReaderException("Offline mode enabled but bodytext for " + id + " not catched");
 			else {
-				body = writeMessagePartToCache("body", id, msgId, mGroup);
+				body = GetAndCacheBody(id, msgId, mGroup);
 			}
 		} else {
-			body = readMessagePartFromCache("body", id, msgId, mGroup);
+			body = readBodyFromCache(id, msgId, mGroup);
 		}
 		return body;
 	}
 
 
+	// =============================================================================================
+	// Construct a Message object with the given Header and the body taken from the cache or the net
+	// =============================================================================================
+	public Message getMessage(Header header, long id, String msgId, boolean isoffline, boolean iscatched, String charset) 
+	throws UsenetReaderException, ServerAuthException, IOException {
+		
+		Message message = null;	
+		
+		String strBody = getBody(id, msgId, isoffline, iscatched);
+		if (strBody == null || header == null)
+			throw new UsenetReaderException("Error getting body or header");
+		
+		String messageStr = header.toString() + "\r\n" + strBody;
+
+		StorageProvider storageProvider = new MemoryStorageProvider();
+		DefaultStorageProvider.setInstance(storageProvider);
+		MimeEntityConfig mimeConfig = new MimeEntityConfig();
+		mimeConfig.setMaxLineLen(-1);
+		//ByteArrayInputStream bis = new ByteArrayInputStream(messageStr.getBytes());
+		StringReader strReader = new StringReader(messageStr); 
+		ReaderInputStream msgStream = new  ReaderInputStream(strReader);
+		message = new Message(msgStream, mimeConfig, charset);
+		
+		return message;
+	}
+	
+	// ========================
+	// List newsgroups
+	// ========================
 	public NewsgroupInfo[] listNewsgroups(String wildmat) throws IOException, ServerAuthException {
 		clientConnectIfNot();
 

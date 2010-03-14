@@ -1,23 +1,50 @@
 package com.almarsoft.GroundhogReader.lib;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.james.mime4j.message.BinaryBody;
+import org.apache.james.mime4j.message.Body;
+import org.apache.james.mime4j.message.BodyPart;
+import org.apache.james.mime4j.message.Header;
+import org.apache.james.mime4j.message.Message;
+import org.apache.james.mime4j.message.Multipart;
+import org.apache.james.mime4j.message.TextBody;
+import org.apache.james.mime4j.parser.Field;
+import org.apache.james.mime4j.parser.MimeEntityConfig;
 
 import android.util.Log;
 
 public class MessageTextProcessor {
+
+	public static String readerToString(Reader reader) throws IOException {
+		BufferedReader bufReader = new BufferedReader(reader);
+		StringBuilder sb = new StringBuilder();
+		String temp = bufReader.readLine();
+		
+		while (temp != null) {
+			sb.append(temp);
+			sb.append("\n");
+			temp = bufReader.readLine();
+		}
+
+		return sb.toString();
+	}	
+	
     // =============================================================================
     // Remove all \n except the ones that are after a point. We do this
     // because the screen is probably going to be less than 70 chars anyway, so 
     // we let the GUI reflow the new lines, which makes the text looks "justified".
     // =============================================================================
-
     public static String sanitizeLineBreaks(String inputText) {
     	
     	if (inputText == null) 
@@ -62,7 +89,7 @@ public class MessageTextProcessor {
 					    && (charprev != ':')
 						&& (charprev != '?')
 						&& (!inputText.substring(i-2, i).equals("> "))
-						&& (charprev != '\n') // Don't remote newlines when there are more than one together (formatting newlines)
+						&& (charprev != '\n') // Don't remove newlines when there are more than one together (formatting newlines)
 						&& (hasNext && charnext != '\n')) {
 						
 						selectedChar = ' ';
@@ -81,7 +108,6 @@ public class MessageTextProcessor {
     	return newBody.toString();
     }
 	
-    
     
     public static String prepareHTML(String inputText) {
     	
@@ -223,6 +249,22 @@ public class MessageTextProcessor {
     	return color;
     }
 	
+	
+	// =======================================================
+	// Converts a header as String into a mime4j Header object
+	// =======================================================
+	
+	public static Header strToHeader(String strHeader) 
+	throws IOException {
+		
+		StringReader strread = new StringReader(strHeader);
+		ReaderInputStream ris = new ReaderInputStream(strread);
+		MimeEntityConfig mimeConfig = new MimeEntityConfig();
+		mimeConfig.setMaxLineLen(-1);
+		Header header = new Header(ris);
+		
+		return header;
+	}	
 	
 	// ============================================================================================
 	// Replace in the configured quote header template the replacing tokens with the real values.
@@ -531,44 +573,48 @@ public class MessageTextProcessor {
 	}
 
 	
-	public static String htmlizeFullHeaders(HashMap<String, String> header) {
+	public static String htmlizeFullHeaders(Message message) {
 		
+		Header header = message.getHeader();
 		StringBuilder html = new StringBuilder();
 		
-		// Since this is a unsorted HashMap, put some logical order on the first fields
-		if (header.containsKey("From"))
-			html.append("<strong>From:</Strong> " + "<i>" + escapeHtmlWithLinks(header.get("From")) + "</i> <br/>\n");
+		// Since this is a unsorted HashMap, put some logical order on the first fields		
+		if (header.getField("From") != null)
+			html.append("<strong>From:</Strong> " + "<i>" + escapeHtmlWithLinks(header.getField("From").getBody()) + "</i> <br/>\n");
 		
-		if (header.containsKey("Subject"))
-			html.append("<strong>Subject:</Strong> " + "<i>" + escapeHtmlWithLinks(header.get("Subject")) + "</i><br/>\n");
+		if (header.getField("Subject") != null)
+			html.append("<strong>Subject:</Strong> " + "<i>" + escapeHtmlWithLinks(message.getSubject()) + "</i><br/>\n");
 		
-		if (header.containsKey("Date"))
-			html.append("<strong>Date:</Strong> " + "<i>" + escapeHtmlWithLinks(header.get("Date")) + "</i><br/>\n");
+		if (header.getField("Date") != null)
+			html.append("<strong>Date:</Strong> " + "<i>" + escapeHtmlWithLinks(header.getField("Date").getBody()) + "</i><br/>\n");
 		
-		if (header.containsKey("Newsgroups"))
-			html.append("<strong>Newsgroups:</Strong> " + "<i>" + escapeHtmlWithLinks(header.get("Newsgroups")) + "</i><br/>\n");
+		if (header.getField("Newsgroups") != null)
+			html.append("<strong>Newsgroups:</Strong> " + "<i>" + escapeHtmlWithLinks(header.getField("Newsgroups").getBody()) + "</i><br/>\n");
 		
-		if (header.containsKey("Organization"))
-			html.append("<strong>Organization:</Strong> " + "<i>" + escapeHtmlWithLinks(header.get("Organization")) + "</i><br/>\n");
+		if (header.getField("Organization") != null)
+			html.append("<strong>Organization:</Strong> " + "<i>" + escapeHtmlWithLinks(header.getField("Organization").getBody()) + "</i><br/>\n");
 		
-		if (header.containsKey("Message-ID"))
-			html.append("<strong>Message-ID:</Strong> " + "<i>" + escapeHtmlWithLinks(header.get("Message-ID")) + "</i><br/>\n");
+		if (header.getField("Message-ID") != null)
+			html.append("<strong>Message-ID:</Strong> " + "<i>" + escapeHtmlWithLinks(message.getMessageId()) + "</i><br/>\n");
 		
-		if (header.containsKey("References"))
-			html.append("<strong>References:</Strong> " + "<i>" + escapeHtmlWithLinks(header.get("References")) + "</i><br/>\n");
+		if (header.getField("References") != null)
+			html.append("<strong>References:</Strong> " + "<i>" + escapeHtmlWithLinks(header.getField("References").getBody()) + "</i><br/>\n");
 		
-		if (header.containsKey("Path"))
-			html.append("<strong>Path:</Strong> " + "<i>" + escapeHtmlWithLinks(header.get("Path")) + "</i><br/>\n");
+		if (header.getField("Path") != null)
+			html.append("<strong>Path:</Strong> " + "<i>" + escapeHtmlWithLinks(header.getField("Path").getBody()) + "</i><br/>\n");
 		
-		for (String key : header.keySet()) {
-			if (key.equals("From") || key.equals("Subject") || key.equals("Date") || key.equals("Newsgroups")
-			    || key.equals("Message-ID") || key.equals("References") || key.equals("Organization") || key.equals("Path"))
-				continue;
-			html.append("<strong>" + key + ":" + "</strong>" + " <i>" + escapeHtmlWithLinks(header.get(key)) + "</i><br/>\n ");
+		List<Field> fields = header.getFields();
+		int fieldsLen = fields.size();
+		String fieldName = null;
+		
+		for(int i=0; i<fieldsLen; i++) {
+			fieldName = fields.get(i).getName();
+			if (fieldName.equals("From") || fieldName.equals("Subject") || fieldName.equals("Date") || fieldName.equals("Newsgroups")
+				|| fieldName.equals("Message-ID") || fieldName.equals("References") || fieldName.equals("Organization") || fieldName.equals("Path"))
+					continue;
+			html.append("<strong>" + fieldName + ":" + "</strong>" + " <i>" + escapeHtmlWithLinks(fields.get(i).getBody()) + "</i><br/>\n ");
 		}
-		
-		html.append("<br/><br/>");
-		
+		html.append("<br/><br/>");		
 		return html.toString();
 	}
 
@@ -589,8 +635,8 @@ public class MessageTextProcessor {
 		else {
 			
 			StringBuilder newBodyBuilder = new StringBuilder();
-			StringBuilder attachment = new StringBuilder();
-			String[] bodyLines = bodyText.split("\n");
+			StringBuilder attachment     = new StringBuilder();
+			String[] bodyLines           = bodyText.split("\n");
 			bodyText = null;
 			int bodyLinesLen = bodyLines.length;
 			
@@ -754,6 +800,54 @@ public class MessageTextProcessor {
 		}
 		
 		return builder.toString();
+	}
+
+
+
+	// =============================================================================================
+	// Split the message into its body and attachments. The attachments are saved to disk/sdcard
+	// and only a reference to the filepath (as an md5) is passed.
+	// =============================================================================================
+	
+	// XXX YYY ZZZ: Sacar los adjuntos uuencoded aqui tambien
+	public static Vector<Object> getBodyAndAttachments(Message message) {
+		
+		Vector<Object> body_attachs = new Vector<Object>(2);
+		TextBody realBody = null;
+		
+		Body body = message.getBody();
+		
+		// attachsVector = vector of maps with {content(BinaryBody), name(String), md5(String), size(long)} keys/values
+		Vector<HashMap<String, Object>> attachsVector = new Vector<HashMap<String, Object>>(1);
+		
+		if (body instanceof Multipart) {
+			Log.d("XXX", "Es multipart");
+			Multipart multipart = (Multipart) body;
+			for(BodyPart part : multipart.getBodyParts()) {
+				Body partbody = part.getBody();
+				
+				if (partbody instanceof TextBody) {
+					realBody = (TextBody) partbody;
+				}
+				else if (partbody instanceof BinaryBody) {
+					// XXX YYY ZZZ: GUARDAR ADJUNTOS en attachsVector, guardar a disco, etc (no meter en el vector)
+				}				
+			}
+		} 
+		else if (body instanceof TextBody) {
+			realBody = (TextBody) body;
+		}
+		else if (body instanceof Message) {
+			// XXX: What to do here???
+		}
+		else if (body instanceof BinaryBody) {
+			// XXX YYY ZZZ: GUARDAR ADJUNTOS en attachsVector, guardar a disco, etc (no meter en el vector)
+			// liberar la memoria también de los adjuntos
+		}
+		
+		body_attachs.add(realBody);
+		body_attachs.add(attachsVector);
+		return body_attachs;
 	}
 }
 

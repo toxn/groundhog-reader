@@ -102,9 +102,9 @@ public class MessagePoster {
         Format formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
         date = formatter.format(now);
          
-        Charset headerCharset = CharsetUtil.getCharset(mPostCharset);        
-        String tmpName = mPrefs.getString("name", "anonymous");
+        Charset headerCharset = CharsetUtil.getCharset(mPostCharset);
         
+        String tmpName = mPrefs.getString("name", "anonymous");        
         if (EncoderUtil.hasToBeEncoded(tmpName, 0)) {
         	name = EncoderUtil.encodeEncodedWord(tmpName, EncoderUtil.Usage.TEXT_TOKEN, 0, headerCharset, null);
         } else 

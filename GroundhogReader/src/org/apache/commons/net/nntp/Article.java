@@ -279,7 +279,6 @@ public class Article implements Threadable {
     public static String simplifySubject(String subject) {
         int start = 0;
         int len = subject.length();
-        boolean lIsReply = false;
         String simplifiedSubject = "";
 
         boolean done = false;
@@ -299,7 +298,6 @@ public class Article implements Threadable {
 
                 if (subject.charAt(start + 2) == ':') {
                     start += 3; // Skip "Re:"
-                    lIsReply = true;
                     done = false;
                 } else if (
                     start < (len - 2) 
@@ -315,7 +313,6 @@ public class Article implements Threadable {
                         && (subject.charAt(i) == ']' || subject.charAt(i) == ')')
                         && subject.charAt(i + 1) == ':') {
                         start = i + 2;
-                        lIsReply = true;
                         done = false;
                     }
                 }

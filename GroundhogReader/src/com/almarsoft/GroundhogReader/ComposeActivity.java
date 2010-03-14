@@ -2,9 +2,9 @@ package com.almarsoft.GroundhogReader;
 
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.HashMap;
 
 import org.apache.commons.codec.EncoderException;
+import org.apache.james.mime4j.message.Header;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,6 +17,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,11 +41,11 @@ public class ComposeActivity extends Activity {
 	private String mPostingErrorMessage = null;
 	private String mCurrentGroup = null;
 	
-	private HashMap<String,String> mHeader;
+	private Header mHeader;
 	private final Handler mHandler = new Handler();
 	private SharedPreferences mPrefs;
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,8 +62,9 @@ public class ComposeActivity extends Activity {
 		// Get the header passed from the ; for the moment we only need the newsgroups and subject,
 		// but we later will need more parts for posting
 		
-		mIsNew = getIntent().getExtras().getBoolean("isNew");
-		mCurrentGroup = getIntent().getExtras().getString("group");
+        Bundle extras = getIntent().getExtras();
+		mIsNew = extras.getBoolean("isNew");
+		mCurrentGroup = extras.getString("group");
 		
 		Toast.makeText(getApplicationContext(), "Encoding: " + mPrefs.getString("postCharset", "UTF-8") + " (you can changue it with Menu & Encoding)", Toast.LENGTH_SHORT).show();
 		
@@ -71,19 +73,25 @@ public class ComposeActivity extends Activity {
 			mEdit_Subject.requestFocus();
 			
 		} else {
+						
+			try {
+				mHeader = MessageTextProcessor.strToHeader(extras.getString("headerdata"));
+			} catch (IOException e) {
+				Log.e("Groundhog", "ERROR: IOException on strToHeader getting header on ComposeActivty via getExtras");
+				e.printStackTrace();
+				return;
+			}
 			
-			mHeader = (HashMap<String,String>) getIntent().getExtras().getSerializable("headerdata");
-			String followupOption = getIntent().getExtras().getString("multipleFollowup");
+			
+			String followupOption = extras.getString("multipleFollowup");
 			
 			if (followupOption == null || !followupOption.equalsIgnoreCase("CURRENT"))
-				mEdit_Groups.setText(mHeader.get("Newsgroups"));
+				mEdit_Groups.setText(mHeader.getField("Newsgroups").getBody());
 			else
 				mEdit_Groups.setText(mCurrentGroup);
 				
-			
-			
-			if (mHeader.containsKey("Subject")) {
-				String mSubject = mHeader.get("Subject");
+			if (mHeader.getField("Subject") != null) {
+				String mSubject = mHeader.getField("Subject").getBody();
 				if (mSubject != null) {
 					if (!mSubject.toLowerCase().contains("re:")) {
 						mSubject = "Re: " + mSubject;
@@ -95,11 +103,14 @@ public class ComposeActivity extends Activity {
 			mEdit_Body.setText("");
 			
 			// Get the quoted bodytext, set it and set the cursor at the configured position
-			String bodyText = (String) getIntent().getExtras().getString("bodytext");
+			String bodyText = (String) extras.getString("bodytext");
 			boolean replyCursorStart = mPrefs.getBoolean("replyCursorPositionStart", false);
 			
 			String quoteheader = mPrefs.getString("authorline", "On [date], [user] said:");
-			String quotedBody = MessageTextProcessor.quoteBody(bodyText, quoteheader, mHeader.get("From"), mHeader.get("Date"));
+			String quotedBody = MessageTextProcessor.quoteBody(bodyText, 
+															   quoteheader, 
+					                                           mHeader.getField("From").getBody(), 
+					                                           mHeader.getField("Date").getBody());
 			
 			if (bodyText != null && bodyText.length() > 0) {
 				
@@ -202,9 +213,9 @@ public class ComposeActivity extends Activity {
 				String msgid = null;
 				
 				if (!mIsNew) {
-					if (mHeader.containsKey("References"))
-						references = mHeader.get("References");
-					msgid      = mHeader.get("Message-ID");
+					if (mHeader.getField("References") != null)
+						references = mHeader.getField("References").getBody();
+					msgid = mHeader.getField("Message-ID").getBody();
 				}						
 				
 				MessagePoster poster = new MessagePoster(mCurrentGroup, 
