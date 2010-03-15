@@ -1,0 +1,12 @@
+1.7.0
+
+Features:
+- International charsets supported
+- Migrated to mime4j
+- Some usability improvements
+- Informs with separate messages when getting the article numbers
+
+Fixes:
+- Dont put two newlines between the header and the body
+- Dont allow the CPU to sleep when downloading messages
+- Remove odd chars at the end of the body

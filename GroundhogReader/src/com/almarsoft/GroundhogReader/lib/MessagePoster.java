@@ -17,6 +17,7 @@ import org.apache.james.mime4j.util.ContentUtil;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -30,6 +31,7 @@ public class MessagePoster {
 	private String mPrevMsgId;
 	private String mMyMsgId;
 	private String mPostCharset;
+	private PowerManager.WakeLock mWakeLock = null;
 	
 	SharedPreferences mPrefs;
 	Context mContext;
@@ -44,7 +46,9 @@ public class MessagePoster {
 		mGroups = groups.trim();
 		mBody = body;
 		mSubject = subject.trim();
-		mPostCharset = mPrefs.getString("postCharset", "UTF-8");		
+		mPostCharset = mPrefs.getString("postCharset", "UTF-8");
+		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE, "GroundhogSending");
 		
 		// Reply to non-first post in a thread
 		if (references != null && references.length() > 0) 
@@ -72,13 +76,18 @@ public class MessagePoster {
 		String headerText = createHeaderData();
 		String signature  = getSignature();
 
-		ServerManager serverMgr = new ServerManager(mContext);	
+		ServerManager serverMgr = new ServerManager(mContext);
 		mBody = MessageTextProcessor.shortenPostLines(mBody);
 		Charset charset = CharsetUtil.getCharset(mPostCharset);		
 		ByteSequence bytebody = ContentUtil.encode(charset, mBody);
 		mBody = new String(bytebody.toByteArray(), "ISO-8859-1");
-		
-		serverMgr.postArticle(headerText, mBody, signature);
+
+		try{
+			mWakeLock.acquire();
+			serverMgr.postArticle(headerText, mBody, signature);
+		} finally {
+			if (mWakeLock.isHeld()) mWakeLock.release();
+		}
 		
 		// Log the message to check against future replies in the MessageList
 		if (mMyMsgId != null && mCurrentGroup != null)
@@ -109,7 +118,6 @@ public class MessagePoster {
         	name = EncoderUtil.encodeEncodedWord(tmpName, EncoderUtil.Usage.TEXT_TOKEN, 0, headerCharset, null);
         } else 
         	name = tmpName;
-		//name = EncoderUtil.encodeIfNecessary(mPrefs.getString("name", "anonymous"), EncoderUtil.Usage.TEXT_TOKEN, 0);
         
 		email = "<" + mPrefs.getString("email", "nobody@nobody.no").trim() + ">";
 		from = name + " " + email;		
