@@ -910,7 +910,7 @@ public class MessageActivity extends Activity {
     		mBodyText = null;
     		mContent.requestFocus();
     		
-    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody(), getApplicationContext());
+    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody().trim(), getApplicationContext());
     		
     		// Go to the start of the message
     		mScroll.scrollTo(0, 0);
