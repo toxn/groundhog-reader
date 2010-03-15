@@ -6,11 +6,11 @@
 		
 		<ListPreference
 		android:key="readDefaultCharset"
-		android:title="Read Default Charset"
-		android:summary="Default charset for reading"  
+		android:title="@string/read_charset_title"
+		android:summary="@string/read_charset_summary"  
 		android:entries="@array/postCharsetKeys" 
 		android:entryValues="@array/postCharsetValues" 
-		android:dialogTitle="Pick your charset" 
+		android:dialogTitle="@string/read_charset_dialog_title" 
 		/>
 
 	</PreferenceCategory>

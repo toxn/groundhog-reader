@@ -19,7 +19,7 @@
 		android:id="@+id/btn_quoting_done"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:text="Done"
+		android:text="@string/done"
 	/>
 
 

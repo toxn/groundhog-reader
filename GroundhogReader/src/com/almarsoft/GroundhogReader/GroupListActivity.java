@@ -38,6 +38,7 @@ public class GroupListActivity extends ListActivity {
     /** Activity showing the list of subscribed groups. */
 	
 	
+	// XXX YYY ZZZ: Fuck, now I cant translate this, REWORK
 	private final String MAGIC_GROUP_ADD_STRING = "Subscribe to group...";
 	
 	private static final int MENU_ITEM_MARKALLREAD = 1;
@@ -84,9 +85,9 @@ public class GroupListActivity extends ListActivity {
 		mOfflineMode = prefs.getBoolean("offlineMode", false);
 		
 		if (mOfflineMode) 
-			setTitle("Group List (offline mode)");
+			setTitle(getString(R.string.group_offline_mode));
 		else 
-			setTitle("Group List (online mode)");
+			setTitle(getString(R.string.group_online_mode));
 		
     }
 
@@ -105,8 +106,8 @@ public class GroupListActivity extends ListActivity {
 		if (prefs.getBoolean("hostChanged", false)) {
 			// The host  has changed in the prefs, show the dialog and clean the group headers
 			new AlertDialog.Builder(GroupListActivity.this)
-			.setTitle("Group headers")
-			.setMessage("Server change detected - the old headers have been deleted")
+			.setTitle(getString(R.string.group_headers))
+			.setMessage(getString(R.string.server_change_detected))
 		    .setNeutralButton("Close", null)
 		    .show();	
 			
@@ -150,21 +151,21 @@ public class GroupListActivity extends ListActivity {
 	protected Dialog onCreateDialog(int id) {
 		if(id == ID_DIALOG_DELETING){
 			ProgressDialog loadingDialog = new ProgressDialog(this);
-			loadingDialog.setMessage("Deleting...");
+			loadingDialog.setMessage(getString(R.string.deleting_d));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;
 			
 		} else if(id == ID_DIALOG_UNSUBSCRIBING){
 			ProgressDialog loadingDialog = new ProgressDialog(this);
-			loadingDialog.setMessage("Unsubscribing and deleting caches...");
+			loadingDialog.setMessage(getString(R.string.unsubscribing_deleting_caches));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;
 			
 		} else if(id == ID_DIALOG_MARKREAD){
 			ProgressDialog loadingDialog = new ProgressDialog(this);
-			loadingDialog.setMessage("Marking all messages as read and deleting read messages cache...");
+			loadingDialog.setMessage(getString(R.string.marking_read_deleting_caches));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;
@@ -257,15 +258,15 @@ public class GroupListActivity extends ListActivity {
 		MenuItem offline = menu.findItem(R.id.grouplist_menu_offline);
 		
 		if (mOfflineMode) {
-			getAll.setTitle("Sync Messages");
+			getAll.setTitle(getString(R.string.sync_messages));
 			getAll.setIcon(android.R.drawable.ic_menu_upload);
-			offline.setTitle("Set Online Mode");
+			offline.setTitle(getString(R.string.set_online_mode));
 			offline.setIcon(android.R.drawable.presence_online);
 			
 		} else {
-			getAll.setTitle("Get All Headers");
+			getAll.setTitle(getString(R.string.get_all_headers));
 			getAll.setIcon(android.R.drawable.ic_menu_set_as);
-			offline.setTitle("Set Offline Mode");
+			offline.setTitle(getString(R.string.set_offline_mode));
 			offline.setIcon(android.R.drawable.presence_offline);
 		}
 		return (super.onPrepareOptionsMenu(menu));
@@ -295,9 +296,9 @@ public class GroupListActivity extends ListActivity {
 				editor.commit();
 				
 				if (mOfflineMode) 
-					setTitle("Group List (offline mode)");
+					setTitle(getString(R.string.group_offline_mode));
 				else 
-					setTitle("Group List (online mode)");
+					setTitle(getString(R.string.group_online_mode));
 				return true;
 				
 			case R.id.grouplist_menu_clearcache:
@@ -314,8 +315,8 @@ public class GroupListActivity extends ListActivity {
 	
 	private void showClearCacheDialog() {
 		new AlertDialog.Builder(GroupListActivity.this)
-		.setTitle("Clear Cache")
-		.setMessage("Do you want to delete the program cache? All unread messages will be deleted!")
+		.setTitle(getString(R.string.clear_cache))
+		.setMessage(getString(R.string.confirm_delete_cache))
 	    .setPositiveButton("Yes", 
 	    	new DialogInterface.OnClickListener() {
 	    		public void onClick(DialogInterface dlg, int sumthin) { 
@@ -388,7 +389,7 @@ public class GroupListActivity extends ListActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     	new MenuInflater(getApplicationContext()).inflate(R.menu.grouplist_item_menu, menu);
-    	menu.setHeaderTitle("Group menu");
+    	menu.setHeaderTitle(getString(R.string.group_menu));
     	super.onCreateContextMenu(menu, v, menuInfo);
     }
     
@@ -411,7 +412,7 @@ public class GroupListActivity extends ListActivity {
     	// "Mark all as read" => Show confirm dialog and call markAllRead
     	if (order == MENU_ITEM_MARKALLREAD) {
 			new AlertDialog.Builder(GroupListActivity.this)
-			.setTitle("Mark all read")
+			.setTitle(getString(R.string.mark_all_read))
 			.setMessage("Do you want to mark all messages in " + groupname + " as read?")
 		    .setPositiveButton("Yes", 
 		    	new DialogInterface.OnClickListener() {

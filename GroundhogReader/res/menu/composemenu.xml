@@ -8,23 +8,22 @@
 <item android:id="@+id/compose_menu_cancel"
   android:orderInCategory="2"
   android:icon="@android:drawable/ic_menu_close_clear_cancel"
-   android:title="Discard"/>
+   android:title="@string/discard"/>
    
 <item android:id="@+id/compose_menu_deletetext"
-  android:title="Delete all text"
+  android:title="@string/compose_deletetext"
   android:orderInCategory="3"
   android:icon="@android:drawable/ic_input_delete"
    />  
-<item android:title="Increase text size"
+<item android:title="@string/compose_increasesize"
     android:id="@+id/compose_menu_bigtext"
-    android:orderInCategory="4"  />
+    android:orderInCategory="4"/>
     
-
-<item android:title="Decrease text size"
-    android:id="@+id/compose_menu_smalltext"
-    android:orderInCategory="5"  />
+<item android:title="@string/compose_decreasesize"
+    android:id="@+id/compose_menu_smalltext" 
+    android:orderInCategory="5"/>
     
-<item android:title="Change post charset"
+<item android:title="@string/compose_changue_post_charset" 
 	android:id="@+id/compose_menu_charset"
-	android:orderInCategory="6" />    
+	android:orderInCategory="6"/>    
 </menu>

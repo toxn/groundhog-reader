@@ -10,7 +10,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/lblIntro"
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
-	android:text="Status:"
+	android:text="@string/statuscolon"
 	android:textSize="25sp"
 	>
 	</TextView>
@@ -20,7 +20,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:textSize="20sp"
-	android:text="Starting..."
+	android:text="@string/starting_d"
 	android:layout_marginTop="15px"
 	android:layout_marginBottom="15px"
 	>
@@ -38,6 +38,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/btn_cancel"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:text="Cancel"
+	android:text="@string/cancel"
 	/>	
 </LinearLayout>
