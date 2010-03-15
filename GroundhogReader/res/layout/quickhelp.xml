@@ -25,7 +25,7 @@
 		android:id="@+id/btn_close"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:text="Close"
+		android:text="@string/close"
 		android:layout_weight="9"
 	/>				
 		

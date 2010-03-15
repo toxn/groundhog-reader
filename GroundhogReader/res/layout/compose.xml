@@ -18,7 +18,7 @@
 			
 			<TextView android:id="@+id/text_grouplabel"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="Groups: " android:textStyle="italic"
+				android:text="@string/groupscolon" android:textStyle="italic"
 				android:textColor="#000000" android:textSize="6pt"/>
 				
 			<EditText android:id="@+id/edit_groups" android:layout_width="fill_parent"
@@ -35,7 +35,7 @@
 			
 			<TextView android:id="@+id/text_subjectlabel"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:text="Subject: " android:textStyle="italic"
+				android:text="@string/subjectcolon" android:textStyle="italic"
 				android:textColor="#000000" android:textSize="6pt"/>
 				
 			<EditText android:id="@+id/edit_subject"

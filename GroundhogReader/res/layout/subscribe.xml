@@ -20,7 +20,7 @@
 		android:id="@+id/btn_search"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:text="Search Groups"
+		android:text="@string/btn_search_groups"
 	/>
 	    	
 	<ListView

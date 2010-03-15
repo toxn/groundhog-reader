@@ -24,7 +24,7 @@
 			android:id="@+id/text_authorlabel"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Author: "
+			android:text="@string/authorcolon"
 			android:textStyle="italic"
 			android:textColor="#000000"
 		    />
@@ -75,7 +75,7 @@
 					android:id="@+id/text_subjectlabel"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Date: "
+					android:text="@string/datecolon"
 					android:textStyle="italic"
 					android:textColor="#000000"
 				    />
@@ -102,7 +102,7 @@
 					android:id="@+id/text_subjectlabel"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="Subject: "
+					android:text="@string/subjectcolon"
 					android:textStyle="italic"
 					android:textColor="#000000"
 				    />
@@ -136,14 +136,14 @@
 			android:id="@+id/btn_prev"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="Prev"
+			android:text="@string/prev"
 			android:layout_weight="1"
 		/>				
 		<Button
 			android:id="@+id/btn_next"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="Next"
+			android:text="@string/next"
 			android:layout_weight="1"
 		/>
 		

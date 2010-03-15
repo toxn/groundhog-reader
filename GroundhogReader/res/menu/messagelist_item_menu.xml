@@ -1,27 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item android:id="@+id/msglist_item_menu_markthreadread"
-  android:title="Mark thread as read"
   android:orderInCategory="1"
-/>
+android:title="@string/msglist_mark_thread_read"/>
 
 <item android:id="@+id/msglist_item_menu_markthreadunread"
-  android:title="Mark thread as unread"
   android:orderInCategory="2"
-/>
+android:title="@string/msglist_mark_thread_unread"/>
 
 <item android:id="@+id/msglist_item_menu_starthread"
-  android:title="Star/Un-Star thread"
   android:orderInCategory="3"
-/>
+android:title="@string/msglist_star_thread"/>
 
 <item android:id="@+id/msglist_item_menu_ignorethread"
-  android:title="Ban thread"
   android:orderInCategory="4"
-/>
+android:title="@string/msglist_ban_thread"/>
 
 <item android:id="@+id/msglist_item_menu_banuser"
-  android:title="Ban author"
   android:orderInCategory="5"
-/>
+android:title="@string/msglist_ban_author"/>
 
 </menu>

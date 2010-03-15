@@ -67,7 +67,7 @@ public class ComposeActivity extends Activity {
 		mIsNew        = extras.getBoolean("isNew");
 		mCurrentGroup = extras.getString("group");
 		
-		Toast.makeText(getApplicationContext(), "Encoding: " + mPrefs.getString("postCharset", "UTF-8") + " (you can changue it with Menu & Encoding)", Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), getString(R.string.encoding) + ": " + mPrefs.getString("postCharset", "UTF-8") + getString(R.string.change_encoding_tip), Toast.LENGTH_SHORT).show();
 		
 		if (mIsNew) {
 			mEdit_Groups.setText(mCurrentGroup);
@@ -130,7 +130,7 @@ public class ComposeActivity extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		if(id == ID_DIALOG_POSTING){
 			ProgressDialog loadingDialog = new ProgressDialog(this);
-			loadingDialog.setMessage("Posting Message...");
+			loadingDialog.setMessage(getString(R.string.posting_message));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;
@@ -239,8 +239,8 @@ public class ComposeActivity extends Activity {
 		String groups = mEdit_Groups.getText().toString();
 		
 		if (groups == null || groups.trim().length() == 0) {
-			new AlertDialog.Builder(ComposeActivity.this) .setTitle("empty groups!")
-			    .setMessage("You must select some group on the \"Groups\" field!")
+			new AlertDialog.Builder(ComposeActivity.this) .setTitle(getString(R.string.empty_groups))
+			    .setMessage(getString(R.string.must_select_group))
 			    .setNeutralButton("Close", null) .show();
 		}
 		else {
@@ -254,8 +254,8 @@ public class ComposeActivity extends Activity {
 		dismissDialog(ID_DIALOG_POSTING);
 		
 		if (mPostingErrorMessage != null)  {
-			new AlertDialog.Builder(ComposeActivity.this) .setTitle("Error posting!")
-			                        .setMessage(mPostingErrorMessage).setNeutralButton("Close", null) .show();
+			new AlertDialog.Builder(ComposeActivity.this) .setTitle(getString(R.string.error_posting))
+			                        .setMessage(mPostingErrorMessage).setNeutralButton(getString(R.string.close), null) .show();
 			mPostingErrorMessage = null;
 		} 
 		else {

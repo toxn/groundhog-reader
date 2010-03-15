@@ -1,6 +1,7 @@
 package com.almarsoft.GroundhogReader;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -60,6 +61,7 @@ public class MessageActivity extends Activity {
 	private static final int FINISHED_GET_OK = 1;
 	private static final int FETCH_FINISHED_ERROR = 2;
 	private static final int FETCH_FINISHED_NOMESSAGE = 3;
+	private static final int FETCH_FINISHED_NODISK = 4;
 	
 	private ProgressDialog mProgress;
 	
@@ -757,6 +759,9 @@ public class MessageActivity extends Activity {
 				} catch (NNTPNoSuchMessageException e) {
 					updateStatus("Error", FETCH_FINISHED_NOMESSAGE);
 					e.printStackTrace();
+				} catch (FileNotFoundException e) {
+					updateStatus("Error", FETCH_FINISHED_NODISK);
+					e.printStackTrace();
 				} catch (IOException e) {
 					updateStatus("Error", FETCH_FINISHED_ERROR);
 					e.printStackTrace();
@@ -824,7 +829,19 @@ public class MessageActivity extends Activity {
 		    .show();
 			
 			
-    	} else if (ThreadStatus == FETCH_FINISHED_NOMESSAGE) {
+    	}
+    	else if (ThreadStatus == FETCH_FINISHED_NODISK) {
+    		if (mProgress != null) mProgress.dismiss();
+    		
+    		mContent.loadData("Error saving message  (message has been kept unread)", "text/html", "UTF-8");
+    		
+			new AlertDialog.Builder(this)
+			.setTitle("Error")
+			.setMessage("There was an error trying to save the message to the sdcard or disk. Please check your sdcard (message has been kept unread)")					    
+		    .setNeutralButton("Close", null)
+		    .show();
+    	}
+    	else if (ThreadStatus == FETCH_FINISHED_NOMESSAGE) {
     		if (mProgress != null) mProgress.dismiss();
     		
     		mContent.loadData("[[The server doesn't have the message anymore, it's probably too old or was spam]]", "text/html", "UTF-8");
@@ -837,7 +854,8 @@ public class MessageActivity extends Activity {
 			
 			DBUtils.markAsRead(mArticleNumbersArray[mMsgIndexInArray], getApplicationContext());
 			
-    	} else if (ThreadStatus == FINISHED_GET_OK) {
+    	} 
+    	else if (ThreadStatus == FINISHED_GET_OK) {
     		
     		// Show or hide the heart marking favorite authors
             mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody(), getApplicationContext());
@@ -892,7 +910,7 @@ public class MessageActivity extends Activity {
     		mBodyText = null;
     		mContent.requestFocus();
     		
-    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody(), getApplicationContext());
+    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody().trim(), getApplicationContext());
     		
     		// Go to the start of the message
     		mScroll.scrollTo(0, 0);

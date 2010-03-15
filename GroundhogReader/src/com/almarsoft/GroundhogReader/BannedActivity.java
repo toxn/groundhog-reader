@@ -60,8 +60,8 @@ public class BannedActivity extends Activity {
         
         	
         if (bannedStringsSet == null || bannedStringsSet.size() == 0) {
-			new AlertDialog.Builder(this).setTitle("Nothing to do").setMessage("There are no bans")
-			.setNeutralButton("Return", 
+			new AlertDialog.Builder(this).setTitle(getString(R.string.nothing_to_do)).setMessage(getString(R.string.there_are_no_bans))
+			.setNeutralButton(getString(R.string.return_), 
 			    new DialogInterface.OnClickListener() {
 	    			public void onClick(DialogInterface dlg, int sumthin) {
 	    				BannedActivity.this.setResult(RESULT_CANCELED);
