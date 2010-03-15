@@ -196,7 +196,7 @@ public class SubscribeActivity extends Activity {
 			} else {
 
 				searchGroups(searchText);
-				Log.d("SearchButton:", searchText);
+				Log.d(UsenetConstants.APPNAME, "SearchButton:" + searchText);
 			}
 		}
 		

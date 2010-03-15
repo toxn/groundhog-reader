@@ -8,6 +8,12 @@ import java.util.Vector;
 
 import org.apache.commons.net.nntp.Article;
 import org.apache.commons.net.nntp.NNTPNoSuchMessageException;
+import org.apache.james.mime4j.field.address.Mailbox;
+import org.apache.james.mime4j.field.address.MailboxList;
+import org.apache.james.mime4j.message.Header;
+import org.apache.james.mime4j.message.Message;
+import org.apache.james.mime4j.message.TextBody;
+import org.apache.james.mime4j.parser.Field;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -64,12 +70,12 @@ public class MessageActivity extends Activity {
 	// Loaded from the thread, read by the UI updater:
 	private String mBodyText;
 	private String mOriginalText;
-	private String mAuthorText;
 	private String mSubjectText;
+	private String mAuthorText;
 	private String mLastSubject;
-	private String mDateText;
-	private String mCharset = "utf-8";
-	private HashMap<String, String> mHeader;
+	private String mCharset;
+	private Header mHeader;
+	private Message mMessage;
 	private Vector<HashMap<String, String>> mMimePartsVector;
 	private boolean mIsFavorite = false;
 	private boolean mShowFullHeaders = false;
@@ -93,7 +99,6 @@ public class MessageActivity extends Activity {
 	private ServerManager mServerManager;
 	private boolean mOfflineMode;
 	
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
@@ -104,17 +109,10 @@ public class MessageActivity extends Activity {
     	
     	mOfflineMode = mPrefs.getBoolean("offlineMode", false);
     
-        // ZZZ 
-        /*
-        extras = getIntent().getExtras();
+    	Bundle extras = getIntent().getExtras();
     	mMsgIndexInArray     = extras.getInt("msgIndexInArray");
     	mArticleNumbersArray = extras.getLongArray("articleNumbers");
     	mGroup               = extras.getString("group");
-
-        */
-    	mMsgIndexInArray     = getIntent().getExtras().getInt("msgIndexInArray");
-    	mArticleNumbersArray = getIntent().getExtras().getLongArray("articleNumbers");
-    	mGroup               = getIntent().getExtras().getString("group");
 
     	mMainLayout    = (LinearLayout) this.findViewById(R.id.main_message_layout);
     	mLayoutAuthor  = (LinearLayout) this.findViewById(R.id.layout_author);
@@ -126,6 +124,7 @@ public class MessageActivity extends Activity {
         //mHeart.setVisibility(ImageView.INVISIBLE);
         mDate    = (TextView) this.findViewById(R.id.text_date);
         mSubject = (TextView) this.findViewById(R.id.text_subject);
+        mSubjectText = null;
         mLastSubject = null;
         
         mContent = (WebView) this.findViewById(R.id.text_content);
@@ -360,8 +359,15 @@ public class MessageActivity extends Activity {
     		
     		Intent intent_Post = new Intent(MessageActivity.this, ComposeActivity.class);
 			intent_Post.putExtra("isNew", false);
-			intent_Post.putExtra("headerdata", mHeader);
-			intent_Post.putExtra("bodytext", composeText);
+			intent_Post.putExtra("From", mAuthorText);
+			intent_Post.putExtra("Newsgroups", mHeader.getField("Newsgroups").getBody());
+			intent_Post.putExtra("Date", mHeader.getField("Date").getBody());
+			intent_Post.putExtra("Message-ID", mHeader.getField("Message-ID").getBody());
+			if (mHeader.getField("References") != null)
+				intent_Post.putExtra("References", mHeader.getField("References").getBody());
+			if (mSubjectText != null)
+				intent_Post.putExtra("Subject", mSubjectText);
+			intent_Post.putExtra("bodytext", composeText);			
 			if (data != null)
 				intent_Post.putExtra("multipleFollowup", data.getStringExtra("multipleFollowup"));
 			intent_Post.putExtra("group", mGroup);
@@ -412,7 +418,7 @@ public class MessageActivity extends Activity {
 				
 				if (mHeader != null) {
 					String multipleFollowup = mPrefs.getString("multipleFollowup", "ASK");
-			    	String groups = mHeader.get("Newsgroups");
+			    	String groups = mHeader.getField("Newsgroups").getBody();
 			    	String[] groupsArray = null;
 			    	
 			    	// If is configured to ask for multiple followup and there are in fact multiple, show the dialog
@@ -451,7 +457,7 @@ public class MessageActivity extends Activity {
 				
 			case R.id.message_menu_ban:
 				if (mHeader != null) {
-					DBUtils.banUser(mHeader.get("From"), getApplicationContext());
+					DBUtils.banUser(mHeader.getField("From").getBody(), getApplicationContext());
 					Toast.makeText(this, "Author banned, reload on the message list to hide", Toast.LENGTH_LONG).show();
 				} else 
 					Toast.makeText(this, "Can't ban author; no header data", Toast.LENGTH_SHORT).show();
@@ -539,7 +545,7 @@ public class MessageActivity extends Activity {
 			
 			Intent intent_Post = new Intent(MessageActivity.this, ComposeActivity.class);
 			intent_Post.putExtra("isNew", false);
-			intent_Post.putExtra("headerdata", mHeader);
+			intent_Post.putExtra("headerdata", mHeader.toString());
 			intent_Post.putExtra("bodytext", mOriginalText);
 			intent_Post.putExtra("multipleFollowup", multipleFollowup);
 			intent_Post.putExtra("group", mGroup);
@@ -571,7 +577,7 @@ public class MessageActivity extends Activity {
     		return;
     	}
     	
-    	DBUtils.setAuthorFavorite(mIsFavorite, !mIsFavorite, mHeader.get("From"), getApplicationContext());
+    	DBUtils.setAuthorFavorite(mIsFavorite, !mIsFavorite, mHeader.getField("From").toString(), getApplicationContext());
     	mIsFavorite = !mIsFavorite; 
     	
         if (mIsFavorite) {
@@ -586,11 +592,12 @@ public class MessageActivity extends Activity {
     // Forward a message by email using the configured email program
     // ===============================================================
     private void forwardMessage() {
-    	String forwardMsg = "\n\n\nForwarded message originally written by " + mAuthorText + 
+    	String forwardMsg = "\n\n\nForwarded message originally written by " + mHeader.getField("From").getBody() + 
     	                    " on the newsgroup [" +  mGroup + "]: \n\n" + mOriginalText;
     	
     	Intent i = new Intent(Intent.ACTION_SEND);
     	i.putExtra(Intent.EXTRA_TEXT, forwardMsg);
+    	//i.putExtra(Intent.EXTRA_SUBJECT, "FWD: " + mHeader.getField("Subject").getBody());
     	i.putExtra(Intent.EXTRA_SUBJECT, "FWD: " + mSubjectText);
     	i.setType("message/rfc822");
     	startActivity(Intent.createChooser(i, "Title:"));
@@ -611,11 +618,9 @@ public class MessageActivity extends Activity {
     		public void run() {
     			
     	    	try {
-                    /*
-                     * ZZZ: Buena parte de esta mierda se puede utilizar usando org.apache.james.mime4j.message.Message (getCharset, Mime, Encoding, etc
-                     * mServerManager debe devolver un Message, despues hacermos getHeader, getField(), etc
-                     */
 
+    	    		Field tmpfield = null;
+    	    		
     	    		updateStatus("Fetching message body", NOT_FINISHED);
     	    		
     	    		// shortcut
@@ -638,47 +643,39 @@ public class MessageActivity extends Activity {
     	    		// and Content-Transfer-Encoding
     	    		// ===========================================================================================
 
-                    // ZZZ: Mierdas, llama a getMessage y obtiene el mesage completo, luego de alli saca el body
     	    		mHeader = mServerManager.getHeader((Integer)articleData.get("id"), 
     	    				                           (String)articleData.get("server_article_id"), 
-    	    				                           false, isCatched);
+    	    				                           false, isCatched);    	    		
 
     	    		if (mHeader == null)
-    	    			throw new UsenetReaderException("Could not fetch header from server");
-    	    		
-    	    		// Save to the member strings so the UI updater can draw them; getHeader already decodes the header fields
-    	    		mAuthorText  = mHeader.get("From");
-    	    		
-    	    		if (mSubjectText != null)
-    	    			mLastSubject = Article.simplifySubject(mSubjectText);
-    	    		
-    	    		mSubjectText = mHeader.get("Subject");
-    	    		mDateText    = mHeader.get("Date");
-    	    		
+    	    			throw new UsenetReaderException("Could not fetch header from server");    	    		
+
     	    		// Load the bodyText into mBodyText (the UI updater will drawn it)
     	    		// decoding it it needed
+    	    		/*
     	    		String encoding = null;
     	    		
-    	    		if (mHeader.containsKey("Content-Transfer-Encoding"))
-    	    				encoding = mHeader.get("Content-Transfer-Encoding");
+    	    		encoding = mHeader.getField("Content-Transfer-Encoding").getBody();
+    	    		*/
 
     	    		// ===========================================================================================
     	    		// Extract the charset from the Content-Type header or if it's MULTIPART/MIME, the boundary
     	    		// between parts
     	    		// ===========================================================================================
 
-                    // ZZZ: llamar a mHeader.getField("Content-Type").getBody()
     	    		String[] tmpContentArr = null;
     	    		String[] contentTypeParts = null;
     	    		String tmpFirstToken;
     	    		
     	    		String mimeBoundary = null;
-    	    		mCharset = "utf-8";
+    	    		mCharset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
     	    		
-    	    		boolean isMime = mHeader.containsKey("MIME-Version");
+    	    		// ZZZ: Es posible que teniendo el Message todo esto sobre
+    	    		//boolean isMime = (mHeader.getField("MIME-Version") != null);
     	    		
-    	    		if (mHeader.containsKey("Content-Type")) {
-    	    			tmpContentArr = mHeader.get("Content-Type").split(";");
+    	    		Field tmpField = mHeader.getField("Content-Type");
+    	    		if (tmpField != null) {
+    	    			tmpContentArr = tmpField.getBody().split(";");
     	    			int contentLen = tmpContentArr.length;
     	    		
 	    	    		for (int i=0; i<contentLen; i++) {
@@ -702,13 +699,23 @@ public class MessageActivity extends Activity {
     	    		// Get or load the body, extract the mime text/plain part if it is a Mime message
     	    		// and decode if it is QuotedPrintable
     	    		// ===============================================================================
-                    
-                    
-    	    		// ZZZ getBody sera getMessage y obtendra el mensaje completo
-    	    		mBodyText = mServerManager.getBody((Integer)articleData.get("id"), 
-	                                                   (String)articleData.get("server_article_id"), 
-	                                                   false, isCatched);
+    	    		mMessage = mServerManager.getMessage(mHeader, 
+    	    				                             (Integer)articleData.get("id"),
+    	    				                             (String)articleData.get("server_article_id"),
+    	    				                             false, isCatched, mCharset);
+    	    		
+    	    		Vector<Object> body_attachs = MessageTextProcessor.getBodyAndAttachments(mMessage);
+    	    		TextBody textBody = (TextBody)body_attachs.get(0);
+    	    		mBodyText = MessageTextProcessor.readerToString(textBody.getReader()).trim();
+    	    		
+    	    		if (mSubjectText != null)
+    	    			mLastSubject = Article.simplifySubject(mSubjectText);
+    	    		
+    	    		mSubjectText = MessageTextProcessor.decodeSubject(mHeader.getField("Subject"), mCharset, mMessage);
+    	    		
+    	    		// XXX YYY ZZZ Obtener los adjuntos
 
+    	    		/*
 	    			if (mMimePartsVector != null) mMimePartsVector.clear();
     	    		if (isMime && mimeBoundary != null) {
 
@@ -743,6 +750,7 @@ public class MessageActivity extends Activity {
     	    		
     	    		if (encoding != null && encoding.equalsIgnoreCase("quoted-printable")) 
                         mBodyText = QuotedPrintableDecoder.decode(mBodyText);
+                    */
     	    		
     	    		updateStatus("Fetching message body", FINISHED_GET_OK);
     	    		
@@ -832,7 +840,7 @@ public class MessageActivity extends Activity {
     	} else if (ThreadStatus == FINISHED_GET_OK) {
     		
     		// Show or hide the heart marking favorite authors
-            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.get("From"), getApplicationContext());
+            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody(), getApplicationContext());
             
             if (mIsFavorite) 
             	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.love));
@@ -850,7 +858,7 @@ public class MessageActivity extends Activity {
     		mOriginalText = mBodyText;
     		
     		// Justify the text removing artificial '\n' chars so it looks square and nice on the phone screen
-    		// XXX YYY ZZZ: Optimizacion: aqui se puede utilizar de forma intermedia un StringBuffer (sanitize
+    		// XXX: Optimizacion: aqui se puede utilizar de forma intermedia un StringBuffer (sanitize
     		// lo devuelve y se le pasa a prepareHTML)
     		
     		
@@ -868,23 +876,23 @@ public class MessageActivity extends Activity {
     			mLayoutDate.setVisibility(View.VISIBLE);
     			mLayoutSubject.setVisibility(View.VISIBLE);
     			
+    			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
     			mAuthor.setText(mAuthorText);
-    			mDate.setText(mDateText);
+    			mDate.setText(mHeader.getField("Date").getBody());
     			mSubject.setText(mSubjectText);
     			
     		} else {
     			mLayoutAuthor.setVisibility(View.INVISIBLE);
     			mLayoutDate.setVisibility(View.INVISIBLE);
     			mLayoutSubject.setVisibility(View.INVISIBLE);
-    			
-    			mBodyText = MessageTextProcessor.htmlizeFullHeaders(mHeader) + mBodyText;
+    			mBodyText = MessageTextProcessor.htmlizeFullHeaders(mMessage) + mBodyText;
     		}
     		
     		mContent.loadDataWithBaseURL("x-data://base", mBodyText, "text/html", mCharset, null);
     		mBodyText = null;
     		mContent.requestFocus();
     		
-    		DBUtils.markAsRead(mHeader.get("Message-ID"), getApplicationContext());
+    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody(), getApplicationContext());
     		
     		// Go to the start of the message
     		mScroll.scrollTo(0, 0);
@@ -892,7 +900,7 @@ public class MessageActivity extends Activity {
     		if (mProgress != null) mProgress.dismiss();
     		
     		String simplifiedSubject = Article.simplifySubject(mSubjectText);
-    		
+
     		if (mLastSubject != null && (!mLastSubject.equalsIgnoreCase(simplifiedSubject))) {
     			Toast.makeText(getApplicationContext(), "New Subject: \n" + simplifiedSubject, Toast.LENGTH_SHORT).show();
     		}

@@ -20,9 +20,12 @@
 	
 	<item android:title="Manage banned users" android:id="@+id/messagelist_menu_managebannedusers"
 	android:orderInCategory="7"/>
+	
+	<item android:title="Change read charset" android:id="@+id/messagelist_menu_charset"
+	android:orderInCategory="8" />    
 		
 	<item android:title="Global settings" android:id="@+id/messagelist_menu_settings"
-	android:orderInCategory="8" android:icon="@android:drawable/ic_menu_preferences"></item>
+	android:orderInCategory="9" android:icon="@android:drawable/ic_menu_preferences"></item>
 </menu>
 
 

@@ -2,3 +2,5 @@
 .metadata
 .metadata
 GroundhogReader/.metadata
+GroundhogReader/bin/com/almarsoft/GroundhogReader/*.class
+GroundhogReader/bin/com/almarsoft/GroundhogReader/lib

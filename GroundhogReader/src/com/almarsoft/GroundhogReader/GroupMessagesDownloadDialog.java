@@ -99,6 +99,8 @@ public class GroupMessagesDownloadDialog {
 				
 				String group = "[group]";
 				String typeFetch;
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+				
 				try {
 					int groupslen = groups.size();
 					
@@ -172,7 +174,8 @@ public class GroupMessagesDownloadDialog {
 							
 							// Wasn't on the DB, get and insert it
 							if (offlineData == null) { 
-								offlineData = mServerManager.getAndInsertArticleInfo(number);
+								
+								offlineData = mServerManager.getAndInsertArticleInfo(number, prefs.getString("readDefaultCharset", "ISO8859-15"));
 							}
 							
 							// Offline mode: save also the article contents to the cache

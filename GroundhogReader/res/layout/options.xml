@@ -86,6 +86,16 @@
 		android:entryValues="@array/postCharsetValues" 
 		android:dialogTitle="Pick your charset" 
 		/>
+		
+		<ListPreference
+		android:key="readDefaultCharset"
+		android:title="Read Default Charset"
+		android:summary="Default charset for reading"  
+		android:entries="@array/postCharsetKeys" 
+		android:entryValues="@array/postCharsetValues" 
+		android:dialogTitle="Pick your charset" 
+		/>
+		
 		 				
 		<EditTextPreference
 		android:key="signature"
