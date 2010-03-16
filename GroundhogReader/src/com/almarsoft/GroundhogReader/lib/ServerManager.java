@@ -582,11 +582,13 @@ final public class ServerManager {
 	                        throws IOException, ServerAuthException, UsenetReaderException {
 		StringBuilder fullMessage = new StringBuilder();
 		
-		fullMessage.append(header);
-		fullMessage.append("\n\n");
-		fullMessage.append(body);
+		fullMessage.append(header.trim());
+		fullMessage.append("\r\n\r\n");
+		fullMessage.append(body.trim());
 		fullMessage.append(signature);
 		
+		Log.d("XXX", "FullMessage");
+		Log.d("XXX", "|" + fullMessage.toString() + "|");
 		postArticle(fullMessage.toString(), false);
 	}
 

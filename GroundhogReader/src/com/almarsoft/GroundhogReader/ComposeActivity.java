@@ -87,11 +87,9 @@ public class ComposeActivity extends Activity {
 				String prevSubject = extras.getString("Subject");
 				if (!prevSubject.toLowerCase().contains("re:")) {
 					prevSubject = "Re: " + prevSubject;
-				
-				mEdit_Subject.setText(prevSubject);
 				}
+				mEdit_Subject.setText(prevSubject);
 			}
-			
 			
 			String followupOption = extras.getString("multipleFollowup");
 			

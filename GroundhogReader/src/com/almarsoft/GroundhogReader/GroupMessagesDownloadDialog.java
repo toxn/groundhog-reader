@@ -12,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 
 import com.almarsoft.GroundhogReader.lib.DBUtils;
@@ -42,6 +43,7 @@ public class GroupMessagesDownloadDialog {
 	private Thread mServerPosterThread = null;
 	
 	private final Handler mHandler = new Handler();
+	private PowerManager.WakeLock mWakeLock = null;
 
 	// Used to pass information from synchronize() to the other two method-threads
 	private Method mCallback = null;
@@ -53,6 +55,8 @@ public class GroupMessagesDownloadDialog {
 	public GroupMessagesDownloadDialog(ServerManager manager, Context context) {
 		mServerManager = manager;
 		mContext = context;
+		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE, "GroundhogDownloading");
 	}
 	
 	
@@ -66,6 +70,8 @@ public class GroupMessagesDownloadDialog {
     		mServerPosterThread.interrupt();
     		mServerPosterThread = null;
     	}
+    	
+    	if (mWakeLock.isHeld()) mWakeLock.release();
 	}
 	
 	
@@ -76,7 +82,8 @@ public class GroupMessagesDownloadDialog {
 		mCallerInstance = caller;
 		mTmpOfflineMode = offlineMode;
 		mTmpGroups = groups;
-		
+	
+		mWakeLock.acquire();
 		postPendingOutgoingMessages();
 	}
 	
@@ -107,18 +114,10 @@ public class GroupMessagesDownloadDialog {
 					for (int i=0; i<groupslen; i++) {
 						group = groups.get(i);
 						
-						String status;
+						String status = "Asking for new articles";
 						
-						if (mTmpOfflineMode) 
-							typeFetch = "full messages";
-						else                 
-							typeFetch = "headers";
-						
-						status = "Getting " + typeFetch;
-						
-						updateStatus(group, "Getting articles list", NOT_FINISHED, 0, mLimit);
-						mServerManager.selectNewsGroupConnecting(group);
 						updateStatus(group, status, NOT_FINISHED, 0, mLimit);
+						mServerManager.selectNewsGroupConnecting(group);
 
 						long lastFetched, firstToFetch;
 						lastFetched = DBUtils.getGroupLastFetchedNumber(group, mContext);
@@ -146,6 +145,13 @@ public class GroupMessagesDownloadDialog {
 							articleList = alreadyGotArticleList;
 						}
 							
+						if (mTmpOfflineMode) 
+							typeFetch = "full messages";
+						else                 
+							typeFetch = "headers";
+						
+						status = "Getting " + typeFetch;
+						
 						int len = articleList.size();
 						updateStatus(group, status, NOT_FINISHED, 0, len);
 						
@@ -226,7 +232,6 @@ public class GroupMessagesDownloadDialog {
 		};
 		
 		mServerGetterThread.start();
-
 	}
 	
 	// =========================================
@@ -356,6 +361,7 @@ public class GroupMessagesDownloadDialog {
 		}
 
 		if (threadStatus == FINISHED_ERROR) {
+			if (mWakeLock.isHeld()) mWakeLock.release();
 			if (mProgress != null) 
 				dismissDialog(mProgress);
 
@@ -369,8 +375,9 @@ public class GroupMessagesDownloadDialog {
 					.setNeutralButton("Close", null)
 					.show();
 			
-		} else if (threadStatus == FINISHED_INTERRUPTED) {
-			
+		} 
+		else if (threadStatus == FINISHED_INTERRUPTED) {
+			if (mWakeLock.isHeld()) mWakeLock.release();
 			if(mProgress != null)
 				dismissDialog(mProgress);
 			
@@ -379,11 +386,13 @@ public class GroupMessagesDownloadDialog {
 			
 			new AlertDialog.Builder(mContext)
 				.setTitle("Interrupted")
-				.setMessage("Download interrupted (orientation change?)")
+				.setMessage("Download interrupted (Android sent me to sleep, probably)")
 				.setNeutralButton("Close", null)
 				.show();
 
-		} else if (threadStatus == FINISHED_ERROR_AUTH) {
+		}
+		else if (threadStatus == FINISHED_ERROR_AUTH) {
+			if (mWakeLock.isHeld()) mWakeLock.release();
 			if (mProgress != null) 
 				dismissDialog(mProgress);
 
@@ -397,15 +406,16 @@ public class GroupMessagesDownloadDialog {
 					.setNeutralButton("Close", null)
 					.show();
 			
-		} else if (threadStatus == POST_FINISHED_OK) {
-			
+		}
+		else if (threadStatus == POST_FINISHED_OK) {
 			// Posting of pending messages finished, now get the new message or headerInfos
 			mServerPosterThread = null;
 			
 			getArticleInfosFromServer();
 
-		} else if (threadStatus == FETCH_FINISHED_OK) {
-
+		}
+		else if (threadStatus == FETCH_FINISHED_OK) {
+			if (mWakeLock.isHeld()) mWakeLock.release();
 			// The fetching of messages or headers has finished, call the provided callback if != null
 			if (mProgress != null)
 				dismissDialog(mProgress);
@@ -414,7 +424,6 @@ public class GroupMessagesDownloadDialog {
 			mServerPosterThread = null;
 			mTmpGroups = null;
 			mTmpOfflineMode = false;
-			
 			
 			if (mCallback != null && mCallerInstance != null) {
 				try {

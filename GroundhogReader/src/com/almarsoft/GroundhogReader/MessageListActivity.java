@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -81,6 +82,7 @@ public class MessageListActivity extends ListActivity {
 	
 	// packagevisibility because it used by inner class (see dev guide)
 	SharedPreferences mPrefs;
+	private PowerManager.WakeLock mWakeLock = null;
 
 	private final Handler mHandler = new Handler();
 	private final String TIP = "\nTIP: ALT+DEL will delete a line when replying";
@@ -93,6 +95,8 @@ public class MessageListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		
+		Context context = getApplicationContext();
 
 		mNumUnread = 0; // Loaded in OnResume || threadMessagesFromDB()
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -102,9 +106,11 @@ public class MessageListActivity extends ListActivity {
 
 		// Get the selected group from the GroupListActivity-passed bundle
 		mGroup = getIntent().getExtras().getString("selectedGroup");
-		mGroupID = DBUtils.getGroupIdFromName(mGroup, getApplicationContext());
+		mGroupID = DBUtils.getGroupIdFromName(mGroup, context);
 		
-		mServerManager = new ServerManager(getApplicationContext());
+		mServerManager = new ServerManager(context);
+		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE, "GroundhogThreading");		
 		
 		ListView lv = getListView();
 		lv.setCacheColorHint(0);
@@ -115,6 +121,7 @@ public class MessageListActivity extends ListActivity {
 		
 		// Show the progress dialog, get messages from server, write to DB
 		// and call the loading of message from DB and threading when it ends
+		mWakeLock.acquire();
 		threadMessagesFromDB();
 	}
 	
@@ -122,8 +129,9 @@ public class MessageListActivity extends ListActivity {
 	protected void onPause() {
 		super.onPause();
 	
+		if (mWakeLock.isHeld()) mWakeLock.release();
 		Log.d(UsenetConstants.APPNAME, "ListActivity onPause");
-		
+
 		if (mDownloader != null) 
 			mDownloader.interrupt();
 		
@@ -136,6 +144,7 @@ public class MessageListActivity extends ListActivity {
 	protected void onStop() {
 		super.onStop();
 		
+		if (mWakeLock.isHeld()) mWakeLock.release();
 		Log.d(UsenetConstants.APPNAME, "MessageList onStop");
 
     	if (mDbGetterThread != null && mDbGetterThread.isAlive())
@@ -672,14 +681,14 @@ public class MessageListActivity extends ListActivity {
 		}
 		
 		if (threadStatus == FINISHED_INTERRUPTED) {
-			
+			if (mWakeLock.isHeld()) mWakeLock.release();
 			if (mProgress != null) 
 				mProgress.dismiss();
 			
 			mDbGetterThread = null;
 
 		} else if (threadStatus == DBGETTER_FINISHED_OK) {
-			
+			if (mWakeLock.isHeld()) mWakeLock.release();
 			if (mProgress != null) 
 				mProgress.dismiss();
 			
