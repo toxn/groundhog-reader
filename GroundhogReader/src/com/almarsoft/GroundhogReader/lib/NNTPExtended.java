@@ -87,16 +87,21 @@ public class NNTPExtended extends NNTPClient {
 	
 		firstArticle = groupInfo.getFirstArticle();
 		lastArticle  = groupInfo.getLastArticle();
+		
+		if (firstArticle == 0 && lastArticle == 0)
+			return new long[0];
 
-		// See the comment below for first connections
+		// First sync with this group; see the comment below 
 		if (fromArticle == -1)
 			firstToGet = firstArticle;
 		
 		else {
-			if (fromArticle > lastArticle) // No new articles
+			if (fromArticle > lastArticle) { // No new articles
 				return new long[0];
-			else
-				firstToGet = fromArticle;	
+		   }
+			else {
+				firstToGet = fromArticle;
+			}
 		}
 		
 		// Now select the first article and start looping until limit or last article reached
@@ -104,34 +109,40 @@ public class NNTPExtended extends NNTPClient {
 
 		list = new Vector<Long>(limit);
 		
+		// FIRST CONNECTION TO THE GROUP
 		// If this is the first connection we only want the last "limit" articles from the group, 
 		// so we ask for the last message and go backwards until we have "limit" articles or 
 		// the first one.
 		if (fromArticle == -1) {
 			if (!selectArticle(lastArticle, art))
-				return null;
+				return new long[0];
 			
 			for (int i=0; i<limit; i++) {
-				if (!selectPreviousArticle(art))
-					break;
 				list.insertElementAt((long)art.articleNumber, 0);
+				Log.d("XXX", "Insertando articleNumber " + (long)art.articleNumber);
 				
 				if (art.articleNumber == firstToGet)
 					break;
+				
+				if (!selectPreviousArticle(art))
+					break;
 			}	
 		}
+		
+		// NON-FIRST CONNECTION TO THE GROUP
 		// For normal non-first connection we start with the last article we got on the previous session and advance from that
 		// until limit or last article reached
 		else {
 			if (!selectArticle(firstToGet, art))
-				return null;
+				return new long[0];
 			
-			for (int i=0; i<limit; i++) {
-				if (!selectNextArticle(art))
-					break;
+			for (int i=0; i<=limit; i++) {
 				list.add((long)art.articleNumber);
 				
 				if (art.articleNumber == lastArticle)
+					break;
+				
+				if (!selectNextArticle(art))
 					break;
 			}
 		}
