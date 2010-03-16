@@ -14,7 +14,7 @@
 
 
 <string-array name="postCharsetKeys">
-        <item>UTF-8 (recommended)</item>
+        <item>UTF-8</item>
         <item>Big5</item>
         <item>Big5-HKSCS</item>
         <item>ISO8859-1</item>
