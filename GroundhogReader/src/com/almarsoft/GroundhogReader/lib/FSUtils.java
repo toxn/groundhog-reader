@@ -3,12 +3,14 @@ package com.almarsoft.GroundhogReader.lib;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -66,6 +68,27 @@ public class FSUtils {
 		}
 	}	
 
+	// Currently used only for saving attachments
+	public static long writeInputStreamAndGetSize(String directory, String filename, InputStream is) 
+	throws IOException {
+		
+		File outDir = new File(directory);
+		if (!outDir.exists()) outDir.mkdirs();
+		
+		File outFile = new File(directory, filename);
+
+		DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(outFile)));
+		
+		byte buf[]=new byte[1024];
+		int len;
+		while((len=is.read(buf))>0) 
+			dos.write(buf,0,len);
+			
+		dos.close();
+		
+		return outFile.length();
+		
+	}
 	
 	public static long writeByteArrayToDiskFileAndGetSize(byte[] data, String directory, String fileName) throws IOException {
 		
@@ -106,6 +129,7 @@ public class FSUtils {
 	}
 	
 	
+	
 	public static boolean deleteDirectory(String directory) {
 		
 		
@@ -142,6 +166,7 @@ public class FSUtils {
 		
 		return name;
 	}
+	
 
 	
 	// =================================================

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import org.apache.commons.codec.EncoderException;
-import org.apache.james.mime4j.message.Header;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +15,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;

@@ -10,16 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.james.mime4j.codec.DecoderUtil;
-import org.apache.james.mime4j.codec.EncoderUtil;
 import org.apache.james.mime4j.field.address.Mailbox;
 import org.apache.james.mime4j.field.address.MailboxList;
 import org.apache.james.mime4j.message.BinaryBody;
 import org.apache.james.mime4j.message.Body;
 import org.apache.james.mime4j.message.BodyPart;
+import org.apache.james.mime4j.message.Entity;
 import org.apache.james.mime4j.message.Header;
 import org.apache.james.mime4j.message.Message;
 import org.apache.james.mime4j.message.Multipart;
@@ -389,207 +388,6 @@ public class MessageTextProcessor {
 		return retBuf.toString().trim();
 	}
 
-
-	// ===============================================================
-	// Extract the textual part of a mime multipart message body
-	// ===============================================================
-	public static Vector<HashMap<String, String>> extractMimeParts(String bodyText, String boundary) {
-
-		Vector<HashMap<String, String>> mimeParts = new Vector<HashMap<String, String>>(1);
-		Vector<HashMap<String, String>> tmpOtherParts = new Vector<HashMap<String, String>>();
-		HashMap<String, String> bodyMap = new HashMap<String, String>();
-		
-		StringBuilder newBody = new StringBuilder(bodyText.length());
-		
-		String boundaryStart = "--" + boundary;
-		String boundaryFinish = "--" + boundary + "--";
-		String[] lines = bodyText.split("\n");
-		
-		String line = null;
-		int linesLen = lines.length;
-		boolean inPart = false; // Flags if the loop is inside a part
-		boolean inTextPlainPart = false; // Flag if the loop is inside a text/plain part
-		boolean inPartInfo = false; // Flag if we are readeding the metainfo of a part
-		boolean textPlainPartFound = false;
-		boolean firstPart = true;
-		
-		String[] partInfoTokens = null;
-		String contentType = null;
-		String charset       = "ISO-88591-15";
-		String encoding      = "8Bit";
-		String[] contentTypeValueParts = null;
-		String infoName = null;
-		String contentTypeKey = null;
-		String contentTypeValue = null;
-		HashMap<String, String> partData = new HashMap<String, String>();
-		StringBuilder partContent = new StringBuilder();
-		String tline = null;
-		
-		for (int i=0; i<linesLen; i++) {
-			
-			line = lines[i];
-			tline = line.trim();
-			if (tline.equals(boundaryStart)) { // Found boundary and start of part
-				
-				inPart = true;
-				inPartInfo = true;
-				
-				if (!firstPart) {
-					if (!inTextPlainPart) {
-						partData.put("content", partContent.toString());
-						tmpOtherParts.add(partData);
-					}
-					inTextPlainPart = false;
-					
-				} else
-					firstPart = false;
-				
-				partData = new HashMap<String, String>();
-				
-			}
-			
-			
-			else if (tline.equals(boundaryFinish)) {
-				if (!inTextPlainPart) {
-					partData.put("content", partContent.toString());
-					tmpOtherParts.add(partData);
-				}
-			}
-			
-			else if (inPart && !inPartInfo) {
-				if (inTextPlainPart)
-					newBody.append(line + "\n");
-				else
-					partContent.append(line + "\n");
-			}
-			
-			
-			else if (line.trim().length() == 0 && inPart && inPartInfo)
-				inPartInfo = false; // White line, end of the part metadata and start of the part content
-			
-			
-			else if (line.trim().length() > 0  && line.contains(":") && inPart && inPartInfo) {
-				
-				partInfoTokens = line.split(":", 2);
-			
-				// Ex: Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-				infoName = partInfoTokens[0].trim();
-				
-				if (infoName.equalsIgnoreCase("Content-Type")) {
-					
-					String next = partInfoTokens[1];
-					String[] tmpContentTypeTokens;
-					Vector<String> contentTypeTokens = new Vector<String>();
-					
-					boolean finished = false;
-					while (!finished) {
-						tmpContentTypeTokens = next.split(";");
-						for (String s : tmpContentTypeTokens)
-							contentTypeTokens.add(s);
-						
-						if (next.trim().endsWith(";")) {
-							i++;
-							next = lines[i];
-						} else {
-							finished = true;
-						}
-					}
-
-					contentType = contentTypeTokens.get(0).trim();
-					if (contentType.equalsIgnoreCase("text/plain")) {
-						inTextPlainPart = true;
-						textPlainPartFound = true;
-					} 
-					else
-						partData.put("type", contentType);
-					
-					for (String ctToken : contentTypeTokens) {
-
-						contentTypeValueParts = ctToken.split("=", 2);
-						
-						if (contentTypeValueParts.length > 1) {
-							contentTypeKey   = contentTypeValueParts[0].trim();
-							contentTypeValue = contentTypeValueParts[1].replace("\"", "").trim();
-							
-							if (inTextPlainPart)  {
-								if (contentTypeKey.equalsIgnoreCase("charset")) 
-									charset = contentTypeValue;
-								
-							} else { 
-								if (contentTypeKey.equalsIgnoreCase("SizeOnDisk"))
-									partData.put("size", contentTypeValue);
-								else if (contentTypeKey.equalsIgnoreCase("name")) {
-									partData.put("name", contentTypeValue);
-								}
-							}
-							
-						}
-						
-					}
-				}
-				
-				// Content-Transfer-Encoding: QUOTED-PRINTABLE
-				else if (infoName.equalsIgnoreCase("Content-Transfer-Encoding")) {
-					
-					if (inTextPlainPart)
-						encoding = partInfoTokens[1].replace("\"", "").trim();
-					else
-						partData.put("encoding", partInfoTokens[1].replace("\"", "").trim());
-				}
-					
-			}
-		}
-		
-		bodyMap.put("charset", charset);
-		bodyMap.put("encoding", encoding);
-		
-		if (textPlainPartFound) 
-			bodyMap.put("bodyText", newBody.toString());
-		
-   	    else  // Fallback
-			bodyMap.put("bodyText", bodyText);
-		
-		mimeParts.add(bodyMap);
-		
-		int tmpOtherPartsLen = tmpOtherParts.size();
-		byte[] base64data;
-		byte[] decodedData;
-		long size = -1;
-		String path, ext, tmpName;
-		
-		for (int i=0; i<tmpOtherPartsLen; i++) {
-			
-			HashMap<String, String> partData2 = tmpOtherParts.get(i);
-			base64data = partData2.get("content").getBytes();
-			partData2.remove("content");
-			decodedData = Base64.decodeBase64(base64data);
-			base64data = null;
-			
-			partData2.put("md5", DigestUtils.md5Hex(decodedData));
-			
-			// Get the file extension and update the md5filename with it
-			path = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments/";
-			tmpName = partData2.get("name");
-			ext = tmpName.substring(tmpName.lastIndexOf('.')+1, tmpName.length());
-			partData2.put("md5", partData2.get("md5") + "." + ext);
-
-			try {
-				size = FSUtils.writeByteArrayToDiskFileAndGetSize(decodedData, path, partData2.get("md5"));
-			} catch (IOException e) {
-				Log.d(UsenetConstants.APPNAME, "Unable to save attachment " + partData2.get("name") + ":" + e.getMessage());
-				e.printStackTrace();
-				continue;
-			}
-			
-			if (partData2.get("size") == null)
-				partData2.put("size", Long.toString(size));
-			
-			partData2.put("path", path);
-			mimeParts.add(partData2);
-		}
-		
-		return mimeParts;
-	}
 	
 	public static String getHtmlHeader(String charset) {
 		StringBuilder html = new StringBuilder();
@@ -874,11 +672,11 @@ public class MessageTextProcessor {
 		Body body = message.getBody();
 		
 		// attachsVector = vector of maps with {content(BinaryBody), name(String), md5(String), size(long)} keys/values
-		Vector<HashMap<String, Object>> attachsVector = new Vector<HashMap<String, Object>>(1);
+		Vector<HashMap<String, String>> attachsVector = new Vector<HashMap<String, String>>(1);
 		
 		if (body instanceof Multipart) {
-			Log.d("XXX", "Es multipart");
 			Multipart multipart = (Multipart) body;
+			
 			for(BodyPart part : multipart.getBodyParts()) {
 				Body partbody = part.getBody();
 				
@@ -886,7 +684,8 @@ public class MessageTextProcessor {
 					realBody = (TextBody) partbody;
 				}
 				else if (partbody instanceof BinaryBody) {
-					// XXX YYY ZZZ: GUARDAR ADJUNTOS en attachsVector, guardar a disco, etc (no meter en el vector)
+					attachsVector.add(saveBinaryBody((BinaryBody) partbody));
+					partbody.dispose();
 				}				
 			}
 		} 
@@ -896,13 +695,45 @@ public class MessageTextProcessor {
 		else if (body instanceof Message) {
 		}
 		else if (body instanceof BinaryBody) {
-			// XXX YYY ZZZ: GUARDAR ADJUNTOS en attachsVector, guardar a disco, etc (no meter en el vector)
-			// liberar la memoria también de los adjuntos
+			attachsVector.add(saveBinaryBody((BinaryBody) body));
+			body.dispose();
 		}
 		
 		body_attachs.add(realBody);
 		body_attachs.add(attachsVector);
 		return body_attachs;
+	}
+
+	
+	// ========================================================
+	// Save an attachment to disk/sdcard and return a data hashmap with its information
+	// ========================================================
+	
+	private static HashMap<String, String> saveBinaryBody(BinaryBody body) {
+		
+		HashMap<String, String> partData = new HashMap<String, String>();
+		Entity parent = body.getParent();
+		long size = 0;
+		
+		// I prefer to name the file as an md5 for privacy reasons (not much privacy because it can be opened from the SDCARD, but protects from potential onlookers)
+		
+		String path    = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments/";
+		String fname = parent.getFilename();
+		String ext      = fname.substring(fname.lastIndexOf('.')+1, fname.length());
+		partData.put("md5", DigestUtils.md5Hex(parent.getFilename()) + "." + ext);
+		try {
+			size = FSUtils.writeInputStreamAndGetSize(path, partData.get("md5"), body.getInputStream());
+		} catch (IOException e) {
+			Log.w(UsenetConstants.APPNAME, "Unable to save attachment " + partData.get("md5")+ ":" + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		partData.put("size", Long.toString(size));
+		partData.put("name", fname);
+		partData.put("path", path);
+		partData.put("type", parent.getMimeType());
+		
+		return partData;
 	}
 }
 

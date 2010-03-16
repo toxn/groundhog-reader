@@ -9,8 +9,6 @@ import java.util.Vector;
 
 import org.apache.commons.net.nntp.Article;
 import org.apache.commons.net.nntp.NNTPNoSuchMessageException;
-import org.apache.james.mime4j.field.address.Mailbox;
-import org.apache.james.mime4j.field.address.MailboxList;
 import org.apache.james.mime4j.message.Header;
 import org.apache.james.mime4j.message.Message;
 import org.apache.james.mime4j.message.TextBody;
@@ -47,7 +45,6 @@ import android.widget.Toast;
 import com.almarsoft.GroundhogReader.lib.DBUtils;
 import com.almarsoft.GroundhogReader.lib.FSUtils;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
-import com.almarsoft.GroundhogReader.lib.QuotedPrintableDecoder;
 import com.almarsoft.GroundhogReader.lib.ServerAuthException;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
@@ -179,6 +176,7 @@ public class MessageActivity extends Activity {
         mButton_Next.setFocusable(false);
         mContent.requestFocus();
     }
+    
     
     private WebViewClient mWebViewClient = new WebViewClient() {
         @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -376,7 +374,6 @@ public class MessageActivity extends Activity {
 			startActivityForResult(intent_Post, UsenetConstants.COMPOSEMESSAGEINTENT);
     	}
     }
-
 	
 	
 	// ================================================
@@ -486,7 +483,8 @@ public class MessageActivity extends Activity {
 		}
 		return false;
 	}    
-    
+
+	
     @Override 
     public void onConfigurationChanged(Configuration newConfig) { 
       //ignore orientation change because it would cause the message body to be reloaded
@@ -599,7 +597,6 @@ public class MessageActivity extends Activity {
     	
     	Intent i = new Intent(Intent.ACTION_SEND);
     	i.putExtra(Intent.EXTRA_TEXT, forwardMsg);
-    	//i.putExtra(Intent.EXTRA_SUBJECT, "FWD: " + mHeader.getField("Subject").getBody());
     	i.putExtra(Intent.EXTRA_SUBJECT, "FWD: " + mSubjectText);
     	i.setType("message/rfc822");
     	startActivity(Intent.createChooser(i, "Title:"));
@@ -617,12 +614,10 @@ public class MessageActivity extends Activity {
 	        // Main thread activity, get the messages and update the UI
 	        // ========================================================
     		
-    		public void run() {
+    		@SuppressWarnings("unchecked")
+			public void run() {
     			
     	    	try {
-
-    	    		Field tmpfield = null;
-    	    		
     	    		updateStatus("Fetching message body", NOT_FINISHED);
     	    		
     	    		// shortcut
@@ -652,14 +647,6 @@ public class MessageActivity extends Activity {
     	    		if (mHeader == null)
     	    			throw new UsenetReaderException("Could not fetch header from server");    	    		
 
-    	    		// Load the bodyText into mBodyText (the UI updater will drawn it)
-    	    		// decoding it it needed
-    	    		/*
-    	    		String encoding = null;
-    	    		
-    	    		encoding = mHeader.getField("Content-Transfer-Encoding").getBody();
-    	    		*/
-
     	    		// ===========================================================================================
     	    		// Extract the charset from the Content-Type header or if it's MULTIPART/MIME, the boundary
     	    		// between parts
@@ -669,11 +656,7 @@ public class MessageActivity extends Activity {
     	    		String[] contentTypeParts = null;
     	    		String tmpFirstToken;
     	    		
-    	    		String mimeBoundary = null;
     	    		mCharset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
-    	    		
-    	    		// ZZZ: Es posible que teniendo el Message todo esto sobre
-    	    		//boolean isMime = (mHeader.getField("MIME-Version") != null);
     	    		
     	    		Field tmpField = mHeader.getField("Content-Type");
     	    		if (tmpField != null) {
@@ -685,15 +668,8 @@ public class MessageActivity extends Activity {
 	    	    			contentTypeParts = tmpContentArr[i].split("=", 2);
 	    	    			tmpFirstToken = contentTypeParts[0].trim();
 	    	    			
-	    	    			if (contentTypeParts.length > 1 && tmpFirstToken.equalsIgnoreCase("charset")) {
-	    	    				
+	    	    			if (contentTypeParts.length > 1 && tmpFirstToken.equalsIgnoreCase("charset")) 
 	    	    				mCharset = contentTypeParts[1].replace("\"", "").trim();
-	    	    				
-	    	    			} else if (contentTypeParts.length > 1 && tmpFirstToken.equalsIgnoreCase("boundary")) {
-	    	    				
-    	    					mimeBoundary = contentTypeParts[1].replace("\"", "").trim();
-	    	    			}
-	    	    			
 	    	    		}
     	    		}
     	    		
@@ -708,6 +684,11 @@ public class MessageActivity extends Activity {
     	    		
     	    		Vector<Object> body_attachs = MessageTextProcessor.getBodyAndAttachments(mMessage);
     	    		TextBody textBody = (TextBody)body_attachs.get(0);
+    	    		//boolean isMime = (mHeader.getField("MIME-Version") != null);
+    	    		if (mHeader.getField("MIME-Version") != null)
+    	    			mMimePartsVector  = (Vector<HashMap<String, String>>)body_attachs.get(1);
+    	    		
+    	    		
     	    		mBodyText = MessageTextProcessor.readerToString(textBody.getReader()).trim();
     	    		
     	    		if (mSubjectText != null)
@@ -715,21 +696,6 @@ public class MessageActivity extends Activity {
     	    		
     	    		mSubjectText = MessageTextProcessor.decodeSubject(mHeader.getField("Subject"), mCharset, mMessage);
     	    		
-    	    		// XXX YYY ZZZ Obtener los adjuntos
-
-    	    		/*
-	    			if (mMimePartsVector != null) mMimePartsVector.clear();
-    	    		if (isMime && mimeBoundary != null) {
-
-    	    			mMimePartsVector = MessageTextProcessor.extractMimeParts(mBodyText, mimeBoundary);
-    	    			
-    	    			// The bodyText HashMap is always the first element of the Vector
-    	    			mBodyText = mMimePartsVector.get(0).get("bodyText");
-    	    			mCharset  = mMimePartsVector.get(0).get("charset"); 
-    	    			encoding  = mMimePartsVector.get(0).get("encoding");
-    	    			mMimePartsVector.removeElementAt(0);
-    	    		}
-
     	    		// Check for uuencoded attachments
     	    		Vector<HashMap<String, String>> uuattachData = MessageTextProcessor.getUUEncodedAttachments(mBodyText);
     	    		
@@ -749,10 +715,6 @@ public class MessageActivity extends Activity {
     	    				
     	    			}
     	    		}
-    	    		
-    	    		if (encoding != null && encoding.equalsIgnoreCase("quoted-printable")) 
-                        mBodyText = QuotedPrintableDecoder.decode(mBodyText);
-                    */
     	    		
     	    		updateStatus("Fetching message body", FINISHED_GET_OK);
     	    		
@@ -872,7 +834,6 @@ public class MessageActivity extends Activity {
 
     		// Save a copy of the body for the reply so we don't break netiquette rules with
     		// the justification applied in sanitizeLinebreaks
-
     		mOriginalText = mBodyText;
     		
     		// Justify the text removing artificial '\n' chars so it looks square and nice on the phone screen
