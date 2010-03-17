@@ -663,7 +663,6 @@ public class MessageTextProcessor {
 	// and only a reference to the filepath (as an md5) is passed.
 	// =============================================================================================
 	
-	// XXX YYY ZZZ: Sacar los adjuntos uuencoded aqui tambien
 	public static Vector<Object> getBodyAndAttachments(Message message) {
 		
 		Vector<Object> body_attachs = new Vector<Object>(2);
