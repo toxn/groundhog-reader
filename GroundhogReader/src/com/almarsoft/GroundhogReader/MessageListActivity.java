@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -162,7 +163,7 @@ public class MessageListActivity extends ListActivity {
 		Log.d(UsenetConstants.APPNAME, "ListActivity onResume");
 		
 		// ==================================================================================
-		// Detect server hostname changes in the settings (if true, go to the
+		// Detect server hostname or charset changes in the settings (if true, go to the
 		// (grouplist activity which will handle better the change, cleanup the
 		// headers, etc)
 		// ==================================================================================
@@ -171,6 +172,15 @@ public class MessageListActivity extends ListActivity {
 			// The host has changed in the prefs, go to the GroupList
 			startActivity(new Intent(MessageListActivity.this, GroupListActivity.class));
 		}
+		
+		boolean mustThread = false;
+		if (mPrefs.getBoolean("readCharsetChanged", false))  {			
+			mustThread = true;
+			Editor editor = mPrefs.edit();
+			editor.putBoolean("readCharsetChanged", false);
+			editor.commit();
+		}
+		
 		
 		// ====================================================================================
 		// Get all the favorites and load them to a set
@@ -190,6 +200,11 @@ public class MessageListActivity extends ListActivity {
 		
 		if (mServerManager == null)
 			mServerManager = new ServerManager(getApplicationContext());
+		
+		if (mustThread) {
+			mWakeLock.acquire();
+			threadMessagesFromDB();
+		}
 	}
 	
 	

@@ -3,7 +3,8 @@
 Features.
 - Spanish translation added
 - Buttons on GroupList to add a new group and go to settings
-- Use more icons and less text on menus and buttons
+- Reload the messagelist when the user changues the read charset
+- Migrated MessageActivity to AsyncTask (it rocks)
 
 Fixes:
 - Fix the favorite author toggling and banning from the message view

@@ -10,9 +10,12 @@ import android.preference.PreferenceManager;
 public class OptionsActivity extends PreferenceActivity {
 	
 	private SharedPreferences mPrefs; 
-	
+
+	// Used to detect changes
 	private String oldHost;
 	private String newHost;
+	private String oldReadCharset;
+	private String newReadCharset;
 	
 
 	@Override
@@ -63,15 +66,16 @@ public class OptionsActivity extends PreferenceActivity {
 	
 	@Override
 	protected void onResume() {
-		oldHost = mPrefs.getString("host", null);
+		oldHost      = mPrefs.getString("host", null);
+		oldReadCharset = mPrefs.getString("readDefaultCharset", null);
 		super.onResume();
 	}
 	
 
 	@Override
 	protected void onPause() {
-		newHost = mPrefs.getString("host", null);
 		
+		newHost = mPrefs.getString("host", null);
 		if (oldHost != null && newHost != null) {
 			if (!oldHost.equalsIgnoreCase(newHost)) {
 				// Host changed, store it in hostchanged so other activities can detect it
@@ -79,7 +83,16 @@ public class OptionsActivity extends PreferenceActivity {
 				editor.putBoolean("hostChanged", true);
 				editor.commit();
 			} 
-			
+		}
+		
+		newReadCharset = mPrefs.getString("readDefaultCharset", null);
+		if (oldReadCharset != null && newReadCharset != null) {
+			if (!oldReadCharset.equalsIgnoreCase(newReadCharset)) {
+				// Charset changed, store it in charsetChanged so other activities can detect it
+				Editor editor = mPrefs.edit();
+				editor.putBoolean("readCharsetChanged", true);
+				editor.commit();
+			}
 		}
 		super.onPause();
 	}

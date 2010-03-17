@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -54,7 +55,6 @@ import com.almarsoft.GroundhogReader.lib.UsenetReaderException;
 public class MessageActivity extends Activity {
     /** Activity showing one message */
 	
-	private static final int NOT_FINISHED = 0;
 	private static final int FINISHED_GET_OK = 1;
 	private static final int FETCH_FINISHED_ERROR = 2;
 	private static final int FETCH_FINISHED_NOMESSAGE = 3;
@@ -596,164 +596,19 @@ public class MessageActivity extends Activity {
     	i.setType("message/rfc822");
     	startActivity(Intent.createChooser(i, "Title:"));
     }
+
     
-    
-    // ====================================================================
-    // Get the body on a thread; the thread will update the UI
-    // ====================================================================
+    // Create the progress dialog and call the AsyncTask
     private void loadMessage() {
-    	
-    	Thread serverGetterThread = new Thread() {
-    		
-	        // ========================================================
-	        // Main thread activity, get the messages and update the UI
-	        // ========================================================
-    		
-    		@SuppressWarnings("unchecked")
-			public void run() {
-    			
-    	    	try {
-    	    		updateStatus(getString(R.string.fetching_body), NOT_FINISHED);
-    	    		
-    	    		// shortcut
-    	    		long serverMsgNumber = mArticleNumbersArray[mMsgIndexInArray];
-    	    		Hashtable<String, Object> articleData = DBUtils.getHeaderRecordCatchedData(mGroup, serverMsgNumber, MessageActivity.this);
-    	    		boolean isCatched = (Boolean) articleData.get("catched");
-    	    		
-    	    		if (!isCatched) { // This also connects if its unconnected
-    	    			
-    	    			mServerManager.selectNewsGroup(mGroup, mOfflineMode);
-    	    			
-    	    		} else { // This wont connect (since the message is catched), so the loading will be faster even in online mode
-    	    			
-    	    			mServerManager.selectNewsGroupWithoutConnect(mGroup);
-    	    			
-    	    		}
-    	    		
-    	    		// ===========================================================================================
-    	    		// Get or load the header, and from the header, the from, subject, date,
-    	    		// and Content-Transfer-Encoding
-    	    		// ===========================================================================================
-
-    	    		mHeader = mServerManager.getHeader((Integer)articleData.get("id"), 
-    	    				                           (String)articleData.get("server_article_id"), 
-    	    				                           false, isCatched);    	    		
-
-    	    		if (mHeader == null)
-    	    			throw new UsenetReaderException(getString(R.string.could_not_fetch_header));    	    		
-
-    	    		// ===========================================================================================
-    	    		// Extract the charset from the Content-Type header or if it's MULTIPART/MIME, the boundary
-    	    		// between parts
-    	    		// ===========================================================================================
-
-    	    		String[] tmpContentArr = null;
-    	    		String[] contentTypeParts = null;
-    	    		String tmpFirstToken;
-    	    		
-    	    		mCharset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
-    	    		
-    	    		Field tmpField = mHeader.getField("Content-Type");
-    	    		if (tmpField != null) {
-    	    			tmpContentArr = tmpField.getBody().trim().split(";");
-    	    			int contentLen = tmpContentArr.length;
-    	    		
-	    	    		for (int i=0; i<contentLen; i++) {
-	    	    			
-	    	    			contentTypeParts = tmpContentArr[i].split("=", 2);
-	    	    			tmpFirstToken = contentTypeParts[0].trim();
-	    	    			
-	    	    			if (contentTypeParts.length > 1 && tmpFirstToken.equalsIgnoreCase("charset")) 
-	    	    				mCharset = contentTypeParts[1].replace("\"", "").trim();
-	    	    		}
-    	    		}
-    	    		
-    	    		// ===============================================================================
-    	    		// Get or load the body, extract the mime text/plain part if it is a Mime message
-    	    		// and decode if it is QuotedPrintable
-    	    		// ===============================================================================
-    	    		mMessage = mServerManager.getMessage(mHeader, 
-    	    				                             (Integer)articleData.get("id"),
-    	    				                             (String)articleData.get("server_article_id"),
-    	    				                             false, isCatched, mCharset);
-    	    		
-    	    		Vector<Object> body_attachs = MessageTextProcessor.getBodyAndAttachments(mMessage);
-    	    		TextBody textBody = (TextBody)body_attachs.get(0);
-    	    		
-    	    		if (mHeader.getField("MIME-Version") != null)
-    	    			mMimePartsVector  = (Vector<HashMap<String, String>>)body_attachs.get(1);
-    	    		
-    	    		
-    	    		mBodyText = MessageTextProcessor.readerToString(textBody.getReader()).trim();
-    	    		
-    	    		if (mSubjectText != null)
-    	    			mLastSubject = Article.simplifySubject(mSubjectText);
-    	    		
-    	    		mSubjectText = MessageTextProcessor.decodeSubject(mHeader.getField("Subject"), mCharset, mMessage);
-    	    		
-    	    		// Check for uuencoded attachments
-    	    		Vector<HashMap<String, String>> uuattachData = MessageTextProcessor.getUUEncodedAttachments(mBodyText);
-    	    		
-    	    		if (uuattachData != null) {
-    	    			mBodyText = uuattachData.get(0).get("body");
-    	    			uuattachData.removeElementAt(0);
-    	    			
-    	    			if (uuattachData.size() > 0) {
-    	    				if (mMimePartsVector == null || mMimePartsVector.size() == 0) 
-    	    					mMimePartsVector = uuattachData;
-    	    				else {
-    	    					// Join the two vectors
-    	    					for (HashMap<String, String> attach : uuattachData) {
-    	    						mMimePartsVector.add(attach);
-    	    					}
-    	    				}
-    	    				
-    	    			}
-    	    		}
-    	    		
-    	    		updateStatus(getString(R.string.fetching_body), FINISHED_GET_OK);
-    	    		
-				} catch (NNTPNoSuchMessageException e) {
-					updateStatus(getString(R.string.error), FETCH_FINISHED_NOMESSAGE);
-					e.printStackTrace();
-				} catch (FileNotFoundException e) {
-					updateStatus(getString(R.string.error), FETCH_FINISHED_NODISK);
-					e.printStackTrace();
-				} catch (IOException e) {
-					updateStatus(getString(R.string.error), FETCH_FINISHED_ERROR);
-					e.printStackTrace();
-				} catch (ServerAuthException e) {
-					updateStatus(getString(R.string.error), FETCH_FINISHED_ERROR);
-					e.printStackTrace();
-				} catch (UsenetReaderException e) {
-					updateStatus(getString(R.string.error), FETCH_FINISHED_ERROR);
-					e.printStackTrace();
-				}
-    		}
-    	};
-    	
-    	serverGetterThread.start();
 		mProgress = new ProgressDialog(this);
 		mProgress.setMessage(MessageActivity.this.getString(R.string.requesting_message));
 		mProgress.setTitle(MessageActivity.this.getString(R.string.message));
-		mProgress.show();   	
+		mProgress.show();  
+		
+		new LoadMessageTask().execute(mArticleNumbersArray[mMsgIndexInArray]);
     }
     
-    
-    // =========================================================
-    // Sent an update the the UI (progress dialog) from a thread
-    // =========================================================
 
-    private void updateStatus(final String textStatus, final int threadStatus) {
-    	mHandler.post(new Runnable() { 
-    		public void run() { 
-    			updateResultsInUi(textStatus, threadStatus); 
-    			} 
-    		}
-    	);
-    }
-    
-    
     private void toggleFullHeaders() {
     	
     	mShowFullHeaders = !mShowFullHeaders;
@@ -761,124 +616,248 @@ public class MessageActivity extends Activity {
     }
     
     
-    // ===================================================================================
-    // UI updater from Threads; check the status, progress and message and display them
-    // Also: Downloader thread finished => Call the loading of messages from the DB thread
-    // Loading of Msgs from DB finished => Set the listview adapter to display messages
-    // ===================================================================================
-   
-	private void updateResultsInUi(String TextStatus, int ThreadStatus) {
+    
+    
+    // ====================================================
+    // ====================================================
+    // AsyncTask to load the message and display it
+    // ====================================================
+    // ====================================================
+    
+    private class LoadMessageTask extends AsyncTask<Long, String, Integer > {
     	
-    	if (mProgress != null) {
-    		mProgress.setMessage(TextStatus);
-    	}
+    	private String mErrorMsg;
     	
-    	if (ThreadStatus == FETCH_FINISHED_ERROR) {
-    		if (mProgress != null) mProgress.dismiss();
+    	@SuppressWarnings("unchecked")
+		protected Integer doInBackground(Long... serverMsgNumbers ) {
     		
-    		mContent.loadData(getString(R.string.error_loading_kept_unread), "text/html", "UTF-8");
+    		mErrorMsg = "";
     		
-			new AlertDialog.Builder(this)
-			.setTitle("Error")
-			.setMessage(getString(R.string.error_loading_kept_unread_long))
-		    .setNeutralButton("Close", null)
-		    .show();
-			
-			
-    	}
-    	else if (ThreadStatus == FETCH_FINISHED_NODISK) {
-    		if (mProgress != null) mProgress.dismiss();
-    		
-    		mContent.loadData(getString(R.string.error_saving_kept_unread), "text/html", "UTF-8");
-    		
-			new AlertDialog.Builder(this)
-			.setTitle("Error")
-			.setMessage(getString(R.string.error_saving_kept_unread_long))					    
-		    .setNeutralButton(getString(R.string.close), null)
-		    .show();
-    	}
-    	else if (ThreadStatus == FETCH_FINISHED_NOMESSAGE) {
-    		if (mProgress != null) mProgress.dismiss();
-    		
-    		mContent.loadData(getString(R.string.server_doesnt_have_message_long), "text/html", "UTF-8");
-    		
-			new AlertDialog.Builder(this)
-			.setTitle(getString(R.string.error))
-			.setMessage(getString(R.string.server_doesnt_have_message))
-		    .setNeutralButton(getString(R.string.close), null)
-		    .show();
-			
-			DBUtils.markAsRead(mArticleNumbersArray[mMsgIndexInArray], getApplicationContext());
-			
-    	} 
-    	else if (ThreadStatus == FINISHED_GET_OK) {
-    		
-    		// Show or hide the heart marking favorite authors
-            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody().trim(), getApplicationContext());
-            
-            if (mIsFavorite) 
-            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.love));
-            else 
-            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.nullimage));
-            
-            
-            mHeart.invalidate();
-            mLayoutAuthor.invalidate();
-            mMainLayout.invalidate();
+    		try {
+	    		publishProgress(getString(R.string.fetching_body));
+	    		
+	    		long serverMsgNumber = serverMsgNumbers[0];  		
+	    		Hashtable<String, Object> articleData = DBUtils.getHeaderRecordCatchedData(mGroup, serverMsgNumber, MessageActivity.this);
+	    		boolean isCatched = (Boolean) articleData.get("catched");
+	    		
+	    		if (!isCatched) 
+	    			mServerManager.selectNewsGroup(mGroup, mOfflineMode);
+    		    else  // This wont connect (since the message is catched), so the loading will be faster even in online mode
+    		    	mServerManager.selectNewsGroupWithoutConnect(mGroup);
+	    		
+	    		// ===========================================================================================
+	    		// Get or load the header, and from the header, the from, subject, date,
+	    		// and Content-Transfer-Encoding
+	    		// ===========================================================================================
 
-    		// Save a copy of the body for the reply so we don't break netiquette rules with
-    		// the justification applied in sanitizeLinebreaks
-    		mOriginalText = mBodyText;
-    		
-    		// Justify the text removing artificial '\n' chars so it looks square and nice on the phone screen
-    		// XXX: Optimizacion: aqui se puede utilizar de forma intermedia un StringBuffer (sanitize
-    		// lo devuelve y se le pasa a prepareHTML)
-    		
-    		
-    		mBodyText = MessageTextProcessor.sanitizeLineBreaks(mBodyText);
-    		mBodyText = MessageTextProcessor.getHtmlHeader(mCharset) + 
-    		            MessageTextProcessor.getAttachmentsHtml(mMimePartsVector)  + 
-    		            MessageTextProcessor.prepareHTML(mBodyText);
-    		
-    		
-    		// Show the nice, short, headers or the ugly full headers if the user selected that
-    		if (!mShowFullHeaders) {
-    			mLayoutAuthor.setVisibility(View.VISIBLE);
-    			mLayoutDate.setVisibility(View.VISIBLE);
-    			mLayoutSubject.setVisibility(View.VISIBLE);
-    			
-    			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
-    			mAuthor.setText(mAuthorText);
-    			mDate.setText(mHeader.getField("Date").getBody().trim());
-    			mSubject.setText(mSubjectText);
-    			
-    		} else {
-    			mLayoutAuthor.setVisibility(View.INVISIBLE);
-    			mLayoutDate.setVisibility(View.INVISIBLE);
-    			mLayoutSubject.setVisibility(View.INVISIBLE);
-    			mBodyText = MessageTextProcessor.htmlizeFullHeaders(mMessage) + mBodyText;
-    		}
-    		
-    		mContent.loadDataWithBaseURL("x-data://base", mBodyText, "text/html", mCharset, null);
-    		mBodyText = null;
-    		mContent.requestFocus();
-    		
-    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody().trim(), getApplicationContext());
-    		
-    		// Go to the start of the message
-    		mScroll.scrollTo(0, 0);
-    		
-    		if (mProgress != null) mProgress.dismiss();
-    		
-    		String simplifiedSubject = Article.simplifySubject(mSubjectText);
+	    		mHeader = mServerManager.getHeader((Integer)articleData.get("id"), 
+	    				                           (String)articleData.get("server_article_id"), 
+	    				                           false, isCatched);    	    		
 
-    		if (mLastSubject != null && (!mLastSubject.equalsIgnoreCase(simplifiedSubject))) {
-    			Toast.makeText(getApplicationContext(), getString(R.string.new_subject) + simplifiedSubject, Toast.LENGTH_SHORT).show();
-    		}
-    		
-            // Intercept "attachment://" url clicks
-            mContent.setWebViewClient(mWebViewClient);
-            
-    	}
+	    		if (mHeader == null)
+	    			throw new UsenetReaderException(getString(R.string.could_not_fetch_header));
+	    		
+	    		// ===========================================================================================
+	    		// Extract the charset from the Content-Type header or if it's MULTIPART/MIME, the boundary
+	    		// between parts
+	    		// ===========================================================================================
+
+	    		String[] tmpContentArr = null;
+	    		String[] contentTypeParts = null;
+	    		String tmpFirstToken;
+	    		
+	    		mCharset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
+	    		
+	    		Field tmpField = mHeader.getField("Content-Type");
+	    		if (tmpField != null) {
+	    			tmpContentArr = tmpField.getBody().trim().split(";");
+	    			int contentLen = tmpContentArr.length;
+	    		
+    	    		for (int i=0; i<contentLen; i++) {
+    	    			contentTypeParts = tmpContentArr[i].split("=", 2);
+    	    			tmpFirstToken = contentTypeParts[0].trim();
+    	    			
+    	    			if (contentTypeParts.length > 1 && tmpFirstToken.equalsIgnoreCase("charset")) 
+    	    				mCharset = contentTypeParts[1].replace("\"", "").trim();
+    	    		}
+	    		}
+	    		
+	    		// ===============================================================================
+	    		// Get or load the body, extract the mime text/plain part if it is a Mime message
+	    		// and decode if it is QuotedPrintable
+	    		// ===============================================================================
+	    		mMessage = mServerManager.getMessage(mHeader, 
+	    				                             (Integer)articleData.get("id"),
+	    				                             (String)articleData.get("server_article_id"),
+	    				                             false, isCatched, mCharset);
+	    		
+	    		Vector<Object> body_attachs = MessageTextProcessor.getBodyAndAttachments(mMessage);
+	    		TextBody textBody = (TextBody)body_attachs.get(0);
+	    		
+	    		if (mHeader.getField("MIME-Version") != null)
+	    			mMimePartsVector  = (Vector<HashMap<String, String>>)body_attachs.get(1);
+	    		
+	    		mBodyText = MessageTextProcessor.readerToString(textBody.getReader()).trim();
+	    		
+	    		if (mSubjectText != null)
+	    			mLastSubject = Article.simplifySubject(mSubjectText);
+	    		
+	    		mSubjectText = MessageTextProcessor.decodeSubject(mHeader.getField("Subject"), mCharset, mMessage);
+	    		
+	    		// Check for uuencoded attachments
+	    		Vector<HashMap<String, String>> uuattachData = MessageTextProcessor.getUUEncodedAttachments(mBodyText);
+	    		
+	    		if (uuattachData != null) {
+	    			mBodyText = uuattachData.get(0).get("body");
+	    			uuattachData.removeElementAt(0);
+	    			
+	    			if (uuattachData.size() > 0) {
+	    				if (mMimePartsVector == null || mMimePartsVector.size() == 0) 
+	    					mMimePartsVector = uuattachData;
+	    				else {
+	    					// Join the two vectors
+	    					for (HashMap<String, String> attach : uuattachData) {
+	    						mMimePartsVector.add(attach);
+	    					}
+	    				}
+	    				
+	    			}
+	    		}
+	    		
+	    		return FINISHED_GET_OK;
+    	
+		} catch (NNTPNoSuchMessageException e) {
+			mErrorMsg = getString(R.string.error);
+			e.printStackTrace();
+			return FETCH_FINISHED_NOMESSAGE;
+		} catch (FileNotFoundException e) {
+			mErrorMsg = getString(R.string.error);
+			e.printStackTrace();			
+			return FETCH_FINISHED_NODISK;
+		} catch (IOException e) {
+			mErrorMsg = getString(R.string.error);
+			e.printStackTrace();			
+			return FETCH_FINISHED_ERROR;
+		} catch (ServerAuthException e) {
+			mErrorMsg = getString(R.string.error);
+			e.printStackTrace();			
+			return FETCH_FINISHED_ERROR;
+		} catch (UsenetReaderException e) {
+			mErrorMsg = getString(R.string.error);
+			e.printStackTrace();			
+			return FETCH_FINISHED_ERROR;
+		}
+    }
+    	
+    	
+	    protected void onProgressUpdate(String... message) {
+	    	mProgress.setMessage(message[0]);
+	    }
+    
+    
+	    protected void onPostExecute(Integer result) { 
+	    	
+	    	if (mProgress != null) mProgress.dismiss();
+	    	
+	    	switch(result) {
+	    	
+		    	case FINISHED_GET_OK:
+		    		// Show or hide the heart marking favorite authors
+		            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody().trim(), getApplicationContext());
+		            
+		            if (mIsFavorite) 
+		            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.love));
+		            else 
+		            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.nullimage));
+		            
+		            
+		            mHeart.invalidate();
+		            mLayoutAuthor.invalidate();
+		            mMainLayout.invalidate();
+		
+		    		// Save a copy of the body for the reply so we don't break netiquette rules with
+		    		// the justification applied in sanitizeLinebreaks
+		    		mOriginalText = mBodyText;
+		    		
+		    		// Justify the text removing artificial '\n' chars so it looks square and nice on the phone screen
+		    		// XXX: Optimizacion: aqui se puede utilizar de forma intermedia un StringBuffer (sanitize
+		    		// lo devuelve y se le pasa a prepareHTML)
+		    		mBodyText = MessageTextProcessor.sanitizeLineBreaks(mBodyText);
+		    		mBodyText = MessageTextProcessor.getHtmlHeader(mCharset) + 
+		    		            MessageTextProcessor.getAttachmentsHtml(mMimePartsVector)  + 
+		    		            MessageTextProcessor.prepareHTML(mBodyText);
+		    		
+		    		
+		    		// Show the nice, short, headers or the ugly full headers if the user selected that
+		    		if (!mShowFullHeaders) {
+		    			mLayoutAuthor.setVisibility(View.VISIBLE);
+		    			mLayoutDate.setVisibility(View.VISIBLE);
+		    			mLayoutSubject.setVisibility(View.VISIBLE);
+		    			
+		    			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
+		    			mAuthor.setText(mAuthorText);
+		    			mDate.setText(mHeader.getField("Date").getBody().trim());
+		    			mSubject.setText(mSubjectText);
+		    			
+		    		} else {
+		    			mLayoutAuthor.setVisibility(View.INVISIBLE);
+		    			mLayoutDate.setVisibility(View.INVISIBLE);
+		    			mLayoutSubject.setVisibility(View.INVISIBLE);
+		    			mBodyText = MessageTextProcessor.htmlizeFullHeaders(mMessage) + mBodyText;
+		    		}
+		    		
+		    		mContent.loadDataWithBaseURL("x-data://base", mBodyText, "text/html", mCharset, null);
+		    		mBodyText = null;
+		    		mContent.requestFocus();
+		    		
+		    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody().trim(), getApplicationContext());
+		    		
+		    		// Go to the start of the message
+		    		mScroll.scrollTo(0, 0);
+		    		
+		    		String simplifiedSubject = Article.simplifySubject(mSubjectText);
+		
+		    		if (mLastSubject != null && (!mLastSubject.equalsIgnoreCase(simplifiedSubject))) {
+		    			Toast.makeText(getApplicationContext(), getString(R.string.new_subject) + simplifiedSubject, Toast.LENGTH_SHORT).show();
+		    		}
+		    		
+		            // Intercept "attachment://" url clicks
+		            mContent.setWebViewClient(mWebViewClient);
+		            break;	    	
+	    	
+	    		case FETCH_FINISHED_ERROR:
+		    		if (mProgress != null) mProgress.dismiss();
+		    		
+		    		mContent.loadData(getString(R.string.error_loading_kept_unread), "text/html", "UTF-8");
+		    		
+					new AlertDialog.Builder(MessageActivity.this)
+					.setTitle(getString(R.string.error))
+					.setMessage(getString(R.string.error_loading_kept_unread_long) + ":" + mErrorMsg)
+				    .setNeutralButton(getString(R.string.close), null)
+				    .show();
+					break;
+	    	
+	    	case FETCH_FINISHED_NODISK:
+		    		mContent.loadData(getString(R.string.error_saving_kept_unread), "text/html", "UTF-8");
+		    		
+					new AlertDialog.Builder(MessageActivity.this)
+					.setTitle(getString(R.string.error))
+					.setMessage(getString(R.string.error_saving_kept_unread_long) + ":" + mErrorMsg)					    
+				    .setNeutralButton(getString(R.string.close), null)
+				    .show();
+					break;
+	    	
+	    	case FETCH_FINISHED_NOMESSAGE:
+		    		mContent.loadData(getString(R.string.server_doesnt_have_message_long), "text/html", "UTF-8");
+		    		
+					new AlertDialog.Builder(MessageActivity.this)
+					.setTitle(getString(R.string.error))
+					.setMessage(getString(R.string.server_doesnt_have_message) + ":" + mErrorMsg)
+				    .setNeutralButton(getString(R.string.close), null)
+				    .show();
+					
+					DBUtils.markAsRead(mArticleNumbersArray[mMsgIndexInArray], getApplicationContext());
+	    	}
+	    }
     }
 }
