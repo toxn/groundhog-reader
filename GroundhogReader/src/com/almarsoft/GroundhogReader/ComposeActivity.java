@@ -12,8 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,12 +35,10 @@ public class ComposeActivity extends Activity {
 	private EditText mEdit_Body;
 	
 	private boolean mIsNew;
-	private String mPostingErrorMessage = null;
 	private String mCurrentGroup = null;
 	private String mMessageID = null;
 	private String mReferences = null;
 	
-	private final Handler mHandler = new Handler();
 	private SharedPreferences mPrefs;
 
 	
@@ -197,39 +195,65 @@ public class ComposeActivity extends Activity {
     
 	private void postMessage() {
 		
-		Thread messagePosterThread = new Thread() {
+		AsyncTask<Void, Void, Void> messagePosterTask = new AsyncTask<Void, Void, Void>() {
 			
-			public void run() {
-
+			String mPostingErrorMessage = null;
+			
+			@Override
+			protected Void doInBackground(Void... arg0) {
 				MessagePoster poster = new MessagePoster(mCurrentGroup, 
-						                                 mEdit_Groups.getText().toString(), 
-						                          		 mEdit_Body.getText().toString(), 
-						                                 mEdit_Subject.getText().toString(), 
-						                                 mReferences, mMessageID, ComposeActivity.this);
-				
+								                        mEdit_Groups.getText().toString(), 
+								                 		 mEdit_Body.getText().toString(), 
+								                        mEdit_Subject.getText().toString(), 
+								                        mReferences, mMessageID, ComposeActivity.this);
+
 				try {
-					
 					poster.postMessage();
-				} catch (SocketException e) {
-					e.printStackTrace();
-					mPostingErrorMessage = e.toString();
-				} catch (EncoderException e) {
-					e.printStackTrace();
-					mPostingErrorMessage = e.toString();
-				} catch (IOException e) {
-					e.printStackTrace();
-					mPostingErrorMessage = e.toString();
-				} catch (ServerAuthException e) {
-					e.printStackTrace();
-					mPostingErrorMessage = e.toString();
-				} catch (UsenetReaderException e) {
-					e.printStackTrace();
-					mPostingErrorMessage = e.toString();
 				}
 				
-				mHandler.post(new Runnable() { public void run() { updateResultsInUi(); } });
+				catch (SocketException e) {
+				e.printStackTrace();
+				mPostingErrorMessage = e.toString();
+				}
+				
+				catch (EncoderException e) {
+				e.printStackTrace();
+				mPostingErrorMessage = e.toString();
+				}
+				
+				catch (IOException e) {
+				e.printStackTrace();
+				mPostingErrorMessage = e.toString();
+				}
+				
+				catch (ServerAuthException e) {
+				e.printStackTrace();
+				mPostingErrorMessage = e.toString();
+				}
+				
+				catch (UsenetReaderException e) {
+				e.printStackTrace();
+				mPostingErrorMessage = e.toString();
+				}
+
+				return null;
 			}
-		};
+			
+			protected void onPostExecute(Void arg0) {
+				dismissDialog(ID_DIALOG_POSTING);
+				
+				if (mPostingErrorMessage != null)  {
+					new AlertDialog.Builder(ComposeActivity.this) .setTitle(getString(R.string.error_posting))
+					                        .setMessage(mPostingErrorMessage).setNeutralButton(getString(R.string.close), null) .show();
+					mPostingErrorMessage = null;
+				} 
+				else {
+					setResult(RESULT_OK);
+					finish();
+				}
+			}
+
+		}; // End messagePosterTask
 		
 		String groups = mEdit_Groups.getText().toString();
 		
@@ -239,25 +263,11 @@ public class ComposeActivity extends Activity {
 			    .setNeutralButton("Close", null) .show();
 		}
 		else {
-	    	messagePosterThread.start();
 	    	showDialog(ID_DIALOG_POSTING);
+	    	messagePosterTask.execute();
 		}
 	}
-	
-	
-	private void updateResultsInUi() {
-		dismissDialog(ID_DIALOG_POSTING);
-		
-		if (mPostingErrorMessage != null)  {
-			new AlertDialog.Builder(ComposeActivity.this) .setTitle(getString(R.string.error_posting))
-			                        .setMessage(mPostingErrorMessage).setNeutralButton(getString(R.string.close), null) .show();
-			mPostingErrorMessage = null;
-		} 
-		else {
-			setResult(RESULT_OK);
-			finish();
-		}		
-	}
+
 	
 	private void setComposeSizeFromPrefs(int increase) {
     	

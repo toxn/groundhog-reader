@@ -14,8 +14,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -58,7 +58,6 @@ public class GroupListActivity extends ListActivity {
 	// before the operation and assign to null once it has been used (at the start of the callback, not in the next line!!!)
 	private GroupMessagesDownloadDialog mDownloader = null;
 	private ServerManager mServerManager;
-	private final Handler mHandler = new Handler();
 	
 	private Button addButton;
 	private Button settingsButton;
@@ -353,25 +352,24 @@ public class GroupListActivity extends ListActivity {
 	
 	private void clearCache() {
 		
-		Thread cacheDeleterThread = new Thread() {
-			
-			public void run() {
+		AsyncTask<Void, Void, Void> cacheDeleterTask = new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... arg0) {
 				DBUtils.deleteAllMessages(GroupListActivity.this.getApplicationContext());
 				FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups");
 				FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments");
-				
-				mHandler.post(new Runnable() { 
-					public void run() {
-						updateGroupList();
-						dismissDialog(ID_DIALOG_DELETING);
-						} 
-					}
-				);
+				return null;
 			}
+			
+			protected void onPostExecute(Void arg0) {
+				updateGroupList();
+				dismissDialog(ID_DIALOG_DELETING);
+			}
+
 		};
 		
-		cacheDeleterThread.start();
 		showDialog(ID_DIALOG_DELETING);
+		cacheDeleterTask.execute();
 	}
 
 	
@@ -468,44 +466,56 @@ public class GroupListActivity extends ListActivity {
     
     
     private void markAllRead(final String group) {
-    	Thread readMarkerThread = new Thread() {
-    		public void run() {
+    	/*
+		AsyncTask<Void, Void, Void> markAllReadTask = new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... arg0) {
 	    		DBUtils.groupMarkAllRead(group, GroupListActivity.this.getApplicationContext());
 	    		DBUtils.deleteReadMessages(GroupListActivity.this.getApplicationContext());
-	    		
-	    		mHandler.post(new Runnable() {
-	    			public void run() {
-	    				updateGroupList();
-	    				dismissDialog(ID_DIALOG_MARKREAD);
-	    			}
-	    		});
-    		}	
-    	};
-    	
-    	readMarkerThread.start();
-    	showDialog(ID_DIALOG_MARKREAD);
+				return null;
+			}
+			
+			protected void onPostExecute(Void arg0) {
+				updateGroupList();
+				dismissDialog(ID_DIALOG_MARKREAD);
+			}
+
+		};
+		*/
+		
+    	///
+		showDialog(ID_DIALOG_MARKREAD);
+		DBUtils.groupMarkAllRead(group, GroupListActivity.this.getApplicationContext());
+		DBUtils.deleteReadMessages(GroupListActivity.this.getApplicationContext());
+		updateGroupList();
+		dismissDialog(ID_DIALOG_MARKREAD);
+
+    	///
+
+		//markAllReadTask.execute();
     }
     
     
     private void unsubscribe(final String group) {
-    	
-    	Thread unsubscribeThread = new Thread() {
-    		public void run() {
+
+		AsyncTask<Void, Void, Void> unsubscribeTask = new AsyncTask<Void, Void, Void>() {
+			@Override
+			protected Void doInBackground(Void... arg0) {
     			DBUtils.unsubscribeGroup(group, GroupListActivity.this.getApplicationContext());
-    			
-    			mHandler.post(new Runnable() {
-    				public void run() {
-    					updateGroupList();
-    					dismissDialog(ID_DIALOG_UNSUBSCRIBING);
-    					}
-    				}
-    			);
-    		}
-    	};
-    	
-    	unsubscribeThread.start();
-    	showDialog(ID_DIALOG_UNSUBSCRIBING);
+				return null;
+			}
+			
+			protected void onPostExecute(Void arg0) {
+				updateGroupList();
+				dismissDialog(ID_DIALOG_UNSUBSCRIBING);
+			}
+
+		};
+		
+		showDialog(ID_DIALOG_UNSUBSCRIBING);
+		unsubscribeTask.execute();    	
     }
+    
     // ==================================================================================================
     // OnItem Clicked Listener (start the MessageListActivity and pass the clicked group name
     // ==================================================================================================
