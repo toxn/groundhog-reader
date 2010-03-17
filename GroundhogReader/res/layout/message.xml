@@ -135,7 +135,7 @@
 		<Button
 			android:id="@+id/btn_prev"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="wrap_content"			
 			android:text="@string/prev"
 			android:layout_weight="1"
 		/>				
@@ -143,7 +143,7 @@
 			android:id="@+id/btn_next"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/next"
+			android:text="@string/next"			
 			android:layout_weight="1"
 		/>
 		

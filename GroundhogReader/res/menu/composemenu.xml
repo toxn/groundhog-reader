@@ -10,18 +10,19 @@
   android:icon="@android:drawable/ic_menu_close_clear_cancel"
    android:title="@string/discard"/>
    
-<item android:id="@+id/compose_menu_deletetext"
-  android:title="@string/compose_deletetext"
-  android:orderInCategory="3"
-  android:icon="@android:drawable/ic_input_delete"
-   />  
 <item android:title="@string/compose_increasesize"
     android:id="@+id/compose_menu_bigtext"
-    android:orderInCategory="4"/>
+    android:orderInCategory="3"/>
     
 <item android:title="@string/compose_decreasesize"
     android:id="@+id/compose_menu_smalltext" 
-    android:orderInCategory="5"/>
+    android:orderInCategory="4"/>
+    
+<item android:id="@+id/compose_menu_deletetext"
+  android:title="@string/compose_deletetext"
+  android:orderInCategory="5"
+  android:icon="@android:drawable/ic_input_delete"
+   />     
     
 <item android:title="@string/compose_changue_post_charset" 
 	android:id="@+id/compose_menu_charset"

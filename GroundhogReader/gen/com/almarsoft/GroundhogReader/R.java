@@ -46,12 +46,12 @@ public final class R {
         public static final int btn_prev=0x7f080016;
         public static final int btn_quoting_done=0x7f080027;
         public static final int btn_search=0x7f08002b;
-        public static final int compose_menu_bigtext=0x7f080037;
+        public static final int compose_menu_bigtext=0x7f080036;
         public static final int compose_menu_cancel=0x7f080035;
         public static final int compose_menu_charset=0x7f080039;
-        public static final int compose_menu_deletetext=0x7f080036;
+        public static final int compose_menu_deletetext=0x7f080038;
         public static final int compose_menu_send=0x7f080034;
-        public static final int compose_menu_smalltext=0x7f080038;
+        public static final int compose_menu_smalltext=0x7f080037;
         public static final int edit_body=0x7f080009;
         public static final int edit_groups=0x7f080006;
         public static final int edit_subject=0x7f080008;

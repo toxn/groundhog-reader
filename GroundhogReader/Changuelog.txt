@@ -1,3 +1,13 @@
+1.8.0
+
+Features.
+- Spanish translation added
+- Buttons on GroupList to add a new group and go to settings
+- Use more icons and less text on menus and buttons
+
+Fixes:
+- Fix the favorite author toggling and banning from the message view
+
 1.7.0
 
 Features:

@@ -358,11 +358,11 @@ public class MessageActivity extends Activity {
     		Intent intent_Post = new Intent(MessageActivity.this, ComposeActivity.class);
 			intent_Post.putExtra("isNew", false);
 			intent_Post.putExtra("From", mAuthorText);
-			intent_Post.putExtra("Newsgroups", mHeader.getField("Newsgroups").getBody());
-			intent_Post.putExtra("Date", mHeader.getField("Date").getBody());
-			intent_Post.putExtra("Message-ID", mHeader.getField("Message-ID").getBody());
+			intent_Post.putExtra("Newsgroups", mHeader.getField("Newsgroups").getBody().trim());
+			intent_Post.putExtra("Date", mHeader.getField("Date").getBody().trim());
+			intent_Post.putExtra("Message-ID", mHeader.getField("Message-ID").getBody().trim());
 			if (mHeader.getField("References") != null)
-				intent_Post.putExtra("References", mHeader.getField("References").getBody());
+				intent_Post.putExtra("References", mHeader.getField("References").getBody().trim());
 			if (mSubjectText != null)
 				intent_Post.putExtra("Subject", mSubjectText);
 			intent_Post.putExtra("bodytext", composeText);			
@@ -415,7 +415,7 @@ public class MessageActivity extends Activity {
 				
 				if (mHeader != null) {
 					String multipleFollowup = mPrefs.getString("multipleFollowup", "ASK");
-			    	String groups = mHeader.getField("Newsgroups").getBody();
+			    	String groups = mHeader.getField("Newsgroups").getBody().trim();
 			    	String[] groupsArray = null;
 			    	
 			    	// If is configured to ask for multiple followup and there are in fact multiple, show the dialog
@@ -454,7 +454,7 @@ public class MessageActivity extends Activity {
 				
 			case R.id.message_menu_ban:
 				if (mHeader != null) {
-					DBUtils.banUser(mHeader.getField("From").getBody(), getApplicationContext());
+					DBUtils.banUser(mHeader.getField("From").getBody().trim(), getApplicationContext());
 					Toast.makeText(this, getString(R.string.author_banned_reload_tohide), Toast.LENGTH_LONG).show();
 				} else 
 					Toast.makeText(this, getString(R.string.cant_ban_no_header_data), Toast.LENGTH_SHORT).show();
@@ -542,7 +542,6 @@ public class MessageActivity extends Activity {
 			
 			Intent intent_Post = new Intent(MessageActivity.this, ComposeActivity.class);
 			intent_Post.putExtra("isNew", false);
-			intent_Post.putExtra("headerdata", mHeader.toString());
 			intent_Post.putExtra("bodytext", mOriginalText);
 			intent_Post.putExtra("multipleFollowup", multipleFollowup);
 			intent_Post.putExtra("group", mGroup);
@@ -573,7 +572,7 @@ public class MessageActivity extends Activity {
     		return;
     	}
     	
-    	DBUtils.setAuthorFavorite(mIsFavorite, !mIsFavorite, mHeader.getField("From").toString(), getApplicationContext());
+    	DBUtils.setAuthorFavorite(mIsFavorite, !mIsFavorite, mHeader.getField("From").getBody().trim(), getApplicationContext());
     	mIsFavorite = !mIsFavorite; 
     	
         if (mIsFavorite) {
@@ -588,7 +587,7 @@ public class MessageActivity extends Activity {
     // Forward a message by email using the configured email program
     // ===============================================================
     private void forwardMessage() {
-    	String forwardMsg = "\n\n\nForwarded message originally written by " + mHeader.getField("From").getBody() + 
+    	String forwardMsg = "\n\n\nForwarded message originally written by " + mHeader.getField("From").getBody().trim() + 
     	                    " on the newsgroup [" +  mGroup + "]: \n\n" + mOriginalText;
     	
     	Intent i = new Intent(Intent.ACTION_SEND);
@@ -656,7 +655,7 @@ public class MessageActivity extends Activity {
     	    		
     	    		Field tmpField = mHeader.getField("Content-Type");
     	    		if (tmpField != null) {
-    	    			tmpContentArr = tmpField.getBody().split(";");
+    	    			tmpContentArr = tmpField.getBody().trim().split(";");
     	    			int contentLen = tmpContentArr.length;
     	    		
 	    	    		for (int i=0; i<contentLen; i++) {
@@ -680,7 +679,7 @@ public class MessageActivity extends Activity {
     	    		
     	    		Vector<Object> body_attachs = MessageTextProcessor.getBodyAndAttachments(mMessage);
     	    		TextBody textBody = (TextBody)body_attachs.get(0);
-    	    		//boolean isMime = (mHeader.getField("MIME-Version") != null);
+    	    		
     	    		if (mHeader.getField("MIME-Version") != null)
     	    			mMimePartsVector  = (Vector<HashMap<String, String>>)body_attachs.get(1);
     	    		
@@ -815,7 +814,7 @@ public class MessageActivity extends Activity {
     	else if (ThreadStatus == FINISHED_GET_OK) {
     		
     		// Show or hide the heart marking favorite authors
-            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody(), getApplicationContext());
+            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody().trim(), getApplicationContext());
             
             if (mIsFavorite) 
             	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.love));
@@ -836,9 +835,7 @@ public class MessageActivity extends Activity {
     		// lo devuelve y se le pasa a prepareHTML)
     		
     		
-            // XXX: NO reutilizar mBodyText tanto, ahorra memoria pero es una mierda
     		mBodyText = MessageTextProcessor.sanitizeLineBreaks(mBodyText);
-    		
     		mBodyText = MessageTextProcessor.getHtmlHeader(mCharset) + 
     		            MessageTextProcessor.getAttachmentsHtml(mMimePartsVector)  + 
     		            MessageTextProcessor.prepareHTML(mBodyText);
@@ -852,7 +849,7 @@ public class MessageActivity extends Activity {
     			
     			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
     			mAuthor.setText(mAuthorText);
-    			mDate.setText(mHeader.getField("Date").getBody());
+    			mDate.setText(mHeader.getField("Date").getBody().trim());
     			mSubject.setText(mSubjectText);
     			
     		} else {
