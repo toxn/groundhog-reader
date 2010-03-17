@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 import org.apache.commons.codec.EncoderException;
@@ -45,7 +46,7 @@ public class MessagePoster {
 		mGroups = groups.trim();
 		mBody = body;
 		mSubject = subject.trim();
-		mPostCharset = mPrefs.getString("postCharset", "UTF-8");
+		mPostCharset = mPrefs.getString("postCharset", "ISO8859_15");
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE, "GroundhogSending");
 		
@@ -107,7 +108,7 @@ public class MessagePoster {
         String references, from, name, email, date;
 
         Date now = new Date();
-        Format formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
+        Format formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
         date = formatter.format(now);
          
         Charset headerCharset = CharsetUtil.getCharset(mPostCharset);

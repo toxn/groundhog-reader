@@ -119,7 +119,6 @@ public class NNTPExtended extends NNTPClient {
 			
 			for (int i=0; i<limit; i++) {
 				list.insertElementAt((long)art.articleNumber, 0);
-				Log.d("XXX", "Insertando articleNumber " + (long)art.articleNumber);
 				
 				if (art.articleNumber == firstToGet)
 					break;

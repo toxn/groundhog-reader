@@ -180,7 +180,7 @@ public class MessageActivity extends Activity {
     
     private WebViewClient mWebViewClient = new WebViewClient() {
         @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        	
+        
           // Workaround for an Android bug, sometimes if the url doesn't contain a server address it doesn't works
           if (url.startsWith("attachment://fake.com/")) {
         	  MessageActivity.this.attachClicked(url.replace("attachment://fake.com/", ""));
@@ -189,8 +189,6 @@ public class MessageActivity extends Activity {
           
           else {
         	 Intent intent = new Intent();
-        	 //ComponentName comp = new ComponentName("com.android.browser", "com.android.browser.BrowserActivity");
-        	 //intent.setComponent(comp); 
 			 intent.setAction(android.content.Intent.ACTION_VIEW);
 			 intent.addCategory("android.intent.category.BROWSABLE"); 
 			 Uri myUri = Uri.parse(url);

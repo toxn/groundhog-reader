@@ -64,7 +64,7 @@ public class ComposeActivity extends Activity {
 		mIsNew        = extras.getBoolean("isNew");
 		mCurrentGroup = extras.getString("group");
 		
-		Toast.makeText(getApplicationContext(), getString(R.string.encoding) + ": " + mPrefs.getString("postCharset", "UTF-8") + getString(R.string.change_encoding_tip), Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), getString(R.string.encoding) + ": " + mPrefs.getString("postCharset", "ISO8859_15") + getString(R.string.change_encoding_tip), Toast.LENGTH_SHORT).show();
 		
 		if (mIsNew) {
 			mEdit_Groups.setText(mCurrentGroup);
