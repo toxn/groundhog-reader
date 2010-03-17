@@ -31,8 +31,6 @@ public class GroupMessagesDownloadDialog {
 	private static final int FINISHED_INTERRUPTED = 4;
 	private static final int POST_FINISHED_OK = 5;
 	
-	private final String TIP = "\nTIP: ALT+DEL will delete a line when replying";
-	
 	private ServerManager mServerManager;
 	private Context mContext;
 	private String mError = "";
@@ -114,7 +112,7 @@ public class GroupMessagesDownloadDialog {
 					for (int i=0; i<groupslen; i++) {
 						group = groups.get(i);
 						
-						String status = "Asking for new articles";
+						String status = mContext.getString(R.string.asking_new_articles);
 						
 						updateStatus(group, status, NOT_FINISHED, 0, mLimit);
 						mServerManager.selectNewsGroupConnecting(group);
@@ -146,11 +144,12 @@ public class GroupMessagesDownloadDialog {
 						}
 							
 						if (mTmpOfflineMode) 
-							typeFetch = "full messages";
+							typeFetch = mContext.getString(R.string.full_messages);
 						else                 
-							typeFetch = "headers";
-						
-						status = "Getting " + typeFetch;
+							typeFetch = mContext.getString(R.string.headers);
+
+			    		String msg = mContext.getString(R.string.getting_something);
+			    		status = java.text.MessageFormat.format(msg, typeFetch);
 						
 						int len = articleList.size();
 						updateStatus(group, status, NOT_FINISHED, 0, len);
@@ -165,7 +164,7 @@ public class GroupMessagesDownloadDialog {
 							number = articleList.get(j);
 							
 							if (isInterrupted()) {
-								updateStatus(group, "Interrupted", FINISHED_INTERRUPTED, 100, 100);
+								updateStatus(group, mContext.getString(R.string.interrupted), FINISHED_INTERRUPTED, 100, 100);
 								this.stop();
 								return;
 							}
@@ -211,19 +210,21 @@ public class GroupMessagesDownloadDialog {
 					}
 				} catch (IOException e) {
 					mError = e.toString() + " " + group;
-					updateStatus("Error", "Error", FINISHED_ERROR, 0, 100);
+					String error = mContext.getString(R.string.error);
+					updateStatus(error, error, FINISHED_ERROR, 0, 100);
 					e.printStackTrace();
 					this.stop();
 					return;
 				} catch (UsenetReaderException e) {
 					mError = e.toString() + " " + group;
-					updateStatus("Error", "Error", FINISHED_ERROR, 0, 100);
+					String error = mContext.getString(R.string.error);
+					updateStatus(error, error, FINISHED_ERROR, 0, 100);
 					e.printStackTrace();
 					this.stop();
 					return;
 				} catch (ServerAuthException e) {
 					mError = e.toString() + " " + group;;
-					updateStatus("Auth error", "Error", FINISHED_ERROR_AUTH, 0, 100);
+					updateStatus(mContext.getString(R.string.auth_error), mContext.getString(R.string.error), FINISHED_ERROR_AUTH, 0, 100);
 					e.printStackTrace();
 					this.stop();
 					return;
@@ -242,15 +243,14 @@ public class GroupMessagesDownloadDialog {
 			public void run() {
 				
 				try {
-					String postTitle = "Posting";
-					String postCont  = "Posting pending messages";
-					
+					String postTitle   = mContext.getString(R.string.posting);
+					String postCont  = mContext.getString(R.string.posting_pending_messages);
 					
 					Vector<Long> pendingIds = DBUtils.getPendingOutgoingMessageIds(mContext);
 					int pendingSize = pendingIds.size();
 					
 					if (pendingIds == null || pendingSize == 0) {
-						updateStatus(postTitle, "Finished", POST_FINISHED_OK, 0, 0);
+						updateStatus(postTitle, mContext.getString(R.string.finished), POST_FINISHED_OK, 0, 0);
 						this.stop();
 						return; 
 					}
@@ -264,7 +264,7 @@ public class GroupMessagesDownloadDialog {
 					for (int i=0; i<pendingSize; i++) {
 						
 						if (isInterrupted()) {
-							updateStatus(postTitle, "Interrupted", FINISHED_INTERRUPTED, 100, 100);
+							updateStatus(postTitle, mContext.getString(R.string.interrupted), FINISHED_INTERRUPTED, 100, 100);
 							this.stop();
 							return;
 						}
@@ -290,13 +290,14 @@ public class GroupMessagesDownloadDialog {
 					
 				} catch (IOException e) {
 					mError = e.toString() + " (posting)";
-					updateStatus("Error", "Error", FINISHED_ERROR, 0, 100);
+					String error = mContext.getString(R.string.error);
+					updateStatus(error, error, FINISHED_ERROR, 0, 100);
 					e.printStackTrace();
 					this.stop();
 					return;
 				} catch (ServerAuthException e) {
 					mError = e.toString() + " (posting)";
-					updateStatus("Auth error", "Error", FINISHED_ERROR_AUTH, 0, 100);
+					updateStatus(mContext.getString(R.string.auth_error), mContext.getString(R.string.error), FINISHED_ERROR_AUTH, 0, 100);
 					e.printStackTrace();
 					this.stop();
 					return;
@@ -306,7 +307,7 @@ public class GroupMessagesDownloadDialog {
 		
 		
 		mProgress = new ProgressDialog(mContext);
-		mProgress.setMessage("" + TIP);
+		mProgress.setMessage("");
 		mProgress.setTitle(mTmpGroups.firstElement());
 		mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mProgress.setMax(mLimit);
@@ -352,9 +353,10 @@ public class GroupMessagesDownloadDialog {
 	
 	private void updateResultsInUi(String textStatus, int threadStatus, String currentGroup, int current, int total) {
 		
-
+		String close = mContext.getString(R.string.close);
+		
 		if (mProgress != null) {
-			mProgress.setMessage(textStatus + TIP);
+			mProgress.setMessage(textStatus);
 			mProgress.setTitle(currentGroup);
 			mProgress.setMax(total);
 			mProgress.setProgress(current);
@@ -368,11 +370,10 @@ public class GroupMessagesDownloadDialog {
 			mServerGetterThread = null;
 			mServerPosterThread = null;
 			
-
 			new AlertDialog.Builder(mContext)
-					.setTitle("Error")
-					.setMessage("There was an error trying to get or post the messages. Please check your connection settings:\n" + mError)
-					.setNeutralButton("Close", null)
+					.setTitle(mContext.getString(R.string.error))
+					.setMessage(mContext.getString(R.string.error_post_check_settings) + mError)
+					.setNeutralButton(close, null)
 					.show();
 			
 		} 
@@ -385,9 +386,9 @@ public class GroupMessagesDownloadDialog {
 			mServerPosterThread = null;
 			
 			new AlertDialog.Builder(mContext)
-				.setTitle("Interrupted")
-				.setMessage("Download interrupted (Android sent me to sleep, probably)")
-				.setNeutralButton("Close", null)
+				.setTitle(mContext.getString(R.string.interrupted))
+				.setMessage(mContext.getString(R.string.download_interrupted_sleep))
+				.setNeutralButton(close, null)
 				.show();
 
 		}
@@ -399,11 +400,10 @@ public class GroupMessagesDownloadDialog {
 			mServerGetterThread = null;
 			mServerPosterThread = null;
 			
-			
 			new AlertDialog.Builder(mContext)
-					.setTitle("Auth Error")
-					.setMessage( "There was an error trying to authenticate. Please check your user and password with your server:\n" + mError)
-					.setNeutralButton("Close", null)
+					.setTitle(mContext.getString(R.string.auth_error))
+					.setMessage(mContext.getString(R.string.error_authenticating_check_pass) + mError)
+					.setNeutralButton(close, null)
 					.show();
 			
 		}

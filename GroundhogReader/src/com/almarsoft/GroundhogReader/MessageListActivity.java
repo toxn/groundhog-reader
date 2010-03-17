@@ -85,7 +85,6 @@ public class MessageListActivity extends ListActivity {
 	private PowerManager.WakeLock mWakeLock = null;
 
 	private final Handler mHandler = new Handler();
-	private final String TIP = "\nTIP: ALT+DEL will delete a line when replying";
 	
 	private ServerManager mServerManager;
 	private GroupMessagesDownloadDialog mDownloader = null;
@@ -196,7 +195,7 @@ public class MessageListActivity extends ListActivity {
 	
 	private void checkNoUnread() {
 		if (mNumUnread == 0) 
-			Toast.makeText(this, "No unread messages, use Menu->Sync to get more", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getString(R.string.no_unread_use_sync), Toast.LENGTH_LONG).show();
 	}
 
 	
@@ -300,7 +299,7 @@ public class MessageListActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		new MenuInflater(getApplicationContext()).inflate( R.menu.messagelist_item_menu, menu);
-		menu.setHeaderTitle("Article menu");
+		menu.setHeaderTitle(getString(R.string.article_menu));
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
@@ -336,13 +335,13 @@ public class MessageListActivity extends ListActivity {
 
 		if (order == MENU_ITEM_BANTHREAD) {
 			banThread(header);
-			Toast.makeText( this, "Future thread messages will be ignored, use Menu->More->'Manage banned threads' to unignore", 
+			Toast.makeText( this, getString(R.string.thread_ignore), 
 					        Toast.LENGTH_LONG).show();
 		}
 
 		if (order == MENU_ITEM_BANUSER) {
 			banUser(header);
-			Toast.makeText(this, "Author banned, reload on the message list to hide", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getString(R.string.author_banned_reload_tohide), Toast.LENGTH_LONG).show();
 		}
 		
 		
@@ -453,18 +452,18 @@ public class MessageListActivity extends ListActivity {
 			if (resultCode == RESULT_OK) { // Message Send activity returns here from
 									// "new post" (instead of reply)
     			if (mOfflineMode && !mPrefs.getBoolean("postDirectlyInOfflineMode", false))
-    				Toast.makeText(getApplicationContext(), "Message stored in outbox, will be send in next sync", Toast.LENGTH_SHORT).show();
+    				Toast.makeText(getApplicationContext(), getString(R.string.stored_outbox_send_next_sync), Toast.LENGTH_SHORT).show();
     			else
-    				Toast.makeText(getApplicationContext(), "Message send", Toast.LENGTH_SHORT).show();
+    				Toast.makeText(getApplicationContext(), getString(R.string.message_sent), Toast.LENGTH_SHORT).show();
 			}
 			
 		} else if (requestCode == UsenetConstants.BANNEDACTIVITYINTENT) {
 			if (resultCode == RESULT_OK) {
-				Toast.makeText(getApplicationContext(), "Future messages from unignored threads will be fetched", Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), getString(R.string.future_unignored_willbe_fetched), Toast.LENGTH_LONG).show();
 			}
 
 			else if (resultCode == RESULT_CANCELED) {
-				Toast.makeText(getApplicationContext(), "Nothing to unban", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_unban), Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -507,10 +506,12 @@ public class MessageListActivity extends ListActivity {
 	// option)
 	// ==========================================================================
 	private void markAllRead() {
-
-		new AlertDialog.Builder(this).setTitle("Mark read").setMessage(
-				"Do you mark all messages in " + mGroup + " as read?")
-				.setPositiveButton("Yes",
+		
+		String msg = getResources().getString(R.string.mark_read_question);
+		msg = java.text.MessageFormat.format(msg, mGroup);
+		
+		new AlertDialog.Builder(this).setTitle(getString(R.string.mark_all_read)).setMessage(msg)
+				.setPositiveButton(getString(R.string.yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dlg, int sumthin) {
 								if (mHeaderItemsList != null) {
@@ -525,7 +526,7 @@ public class MessageListActivity extends ListActivity {
 									threadMessagesFromDB();
 								}
 							}
-						}).setNegativeButton("No",
+						}).setNegativeButton(getString(R.string.no),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dlg, int sumthin) {
 								return;
@@ -576,7 +577,7 @@ public class MessageListActivity extends ListActivity {
 				SQLiteDatabase db = dbhelper.getReadableDatabase();
 				
 				// Space cleanup: delete all read messages from the DB and catched files
-				updateStatus("Deleting read messages and caches", NOT_FINISHED, 100, 100);
+				updateStatus(getString(R.string.deleting_messages_caches), NOT_FINISHED, 100, 100);
 				DBUtils.deleteReadMessages(getApplicationContext());
 				FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments");
 				
@@ -599,20 +600,22 @@ public class MessageListActivity extends ListActivity {
 
 				int numArticles = cur.getCount();
 				Article[] articles = new Article[numArticles];
+				
+				String threadingMsg = getString(R.string.threading_messages);
 
-				act.updateStatus("Threading all unread messages", NOT_FINISHED, 0, numArticles);
+				act.updateStatus(threadingMsg, NOT_FINISHED, 0, numArticles);
 
 				cur.moveToFirst();
 				Article currentArticle;
 				
 				for (int i = 0; i < numArticles; i++) {
 					if (isInterrupted()) {
-						act.updateStatus("Interrupted", FINISHED_INTERRUPTED, i, numArticles);
+						act.updateStatus(getString(R.string.interrupted), FINISHED_INTERRUPTED, i, numArticles);
 						cur.close(); db.close(); dbhelper.close();
 						return;
 					}
 					
-					act.updateStatus("Threading all unread messages", NOT_FINISHED, i, numArticles);
+					act.updateStatus(threadingMsg, NOT_FINISHED, i, numArticles);
 					currentArticle = new Article();
 					currentArticle.setArticleId(cur.getString(0));
 					currentArticle.setArticleNumber(cur.getInt(1));
@@ -649,14 +652,14 @@ public class MessageListActivity extends ListActivity {
 				articles = null;
 				mNumUnread = numArticles;
 				DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
-				act.updateStatus("Threading messages", DBGETTER_FINISHED_OK, numArticles, numArticles);
+				act.updateStatus(threadingMsg, DBGETTER_FINISHED_OK, numArticles, numArticles);
 			}
 		};
 
 		mDbGetterThread.start();
 		mProgress = new ProgressDialog(this);
-		mProgress.setMessage("Threading all unread messages" + TIP);
-		mProgress.setTitle("Messages");
+		mProgress.setMessage(getString(R.string.threading_messages));
+		mProgress.setTitle(getString(R.string.messages));
 		mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mProgress.show();
 	}
@@ -674,7 +677,7 @@ public class MessageListActivity extends ListActivity {
 	private void updateResultsInUi(String textStatus, int threadStatus, int current, int total) {
 		
 		if (mProgress != null) {
-			mProgress.setMessage(textStatus + TIP);
+			mProgress.setMessage(textStatus);
 			mProgress.setMax(current);
 			mProgress.setProgress(total);
 			

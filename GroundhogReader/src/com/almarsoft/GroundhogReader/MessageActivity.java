@@ -148,7 +148,7 @@ public class MessageActivity extends Activity {
 						mMsgIndexInArray--;
 						loadMessage();
 					} else {
-						Toast.makeText(MessageActivity.this, "You're already at the first message", Toast.LENGTH_SHORT).show();
+						Toast.makeText(MessageActivity.this, getString(R.string.at_first_message), Toast.LENGTH_SHORT).show();
 					}
 	
 				}
@@ -162,7 +162,7 @@ public class MessageActivity extends Activity {
 					mMsgIndexInArray++;
 					loadMessage();
 				} else {
-					Toast.makeText(MessageActivity.this, "There are no more messages in the group", Toast.LENGTH_SHORT).show();
+					Toast.makeText(MessageActivity.this, getString(R.string.no_more_messages), Toast.LENGTH_SHORT).show();
 				}
 
 			}
@@ -218,9 +218,9 @@ public class MessageActivity extends Activity {
     	
     	if (attachPart != null && md5 != null) {
 	    		
-			new AlertDialog.Builder(this).setTitle("Attachment").setMessage(
-					"Open or save attachment?")
-				.setPositiveButton("Open",
+			new AlertDialog.Builder(this).setTitle(getString(R.string.attachment)).setMessage(
+					getString(R.string.open_save_attach_question))
+				.setPositiveButton(getString(R.string.open),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dlg, int sumthin) {
 							 Intent intent = new Intent(); 
@@ -232,15 +232,15 @@ public class MessageActivity extends Activity {
 							 startActivity(intent); 
 						}
 					}
-				).setNegativeButton("Save",	
+				).setNegativeButton(getString(R.string.save),	
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dlg, int sumthin) {
 							try {
 								String finalPath = FSUtils.saveAttachment(md5, attachPart.get("name"));
-								Toast.makeText(MessageActivity.this, "Saved to " + finalPath, Toast.LENGTH_LONG).show();
+								Toast.makeText(MessageActivity.this, getString(R.string.saved_to) + finalPath, Toast.LENGTH_LONG).show();
 							} catch(IOException e) { 	
 								e.printStackTrace();
-								Toast.makeText(MessageActivity.this, "Could not save: " + e.toString(), Toast.LENGTH_LONG).show();
+								Toast.makeText(MessageActivity.this, getString(R.string.could_not_save_colon) + e.toString(), Toast.LENGTH_LONG).show();
 							}
 						}
 					})
@@ -335,17 +335,17 @@ public class MessageActivity extends Activity {
     		if (resultCode == RESULT_OK) { 
     			
     			if (mOfflineMode && !mPrefs.getBoolean("postDirectlyInOfflineMode", false))
-    				Toast.makeText(getApplicationContext(), "Message stored in outbox, will be send in next sync", Toast.LENGTH_SHORT).show();
+    				Toast.makeText(getApplicationContext(), getString(R.string.stored_outbox_send_next_sync), Toast.LENGTH_SHORT).show();
     			else
-    				Toast.makeText(getApplicationContext(), "Message send", Toast.LENGTH_SHORT).show();
+    				Toast.makeText(getApplicationContext(), getString(R.string.message_sent), Toast.LENGTH_SHORT).show();
     		}
     		else if (resultCode == RESULT_CANCELED) 
-    			Toast.makeText(getApplicationContext(), "Message discarded", Toast.LENGTH_SHORT).show();
+    			Toast.makeText(getApplicationContext(), getString(R.string.message_discarded), Toast.LENGTH_SHORT).show();
     		
     	} else if (intentCode == UsenetConstants.BANNEDACTIVITYINTENT) {
     		
-    		if (resultCode == RESULT_OK) Toast.makeText(getApplicationContext(), "Use reload on the message list to see un-banned authors", Toast.LENGTH_LONG).show();
-    		else if (resultCode == RESULT_CANCELED) Toast.makeText(getApplicationContext(), "Nothing to unban", Toast.LENGTH_SHORT).show();
+    		if (resultCode == RESULT_OK) Toast.makeText(getApplicationContext(), getString(R.string.reload_tosee_unbanned_authors), Toast.LENGTH_LONG).show();
+    		else if (resultCode == RESULT_CANCELED) Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_unban), Toast.LENGTH_SHORT).show();
     		
     	} else if (intentCode == UsenetConstants.QUOTINGINTENT) {
     		
@@ -431,7 +431,7 @@ public class MessageActivity extends Activity {
 			    	
 			    	startPostingOrQuotingActivity(multipleFollowup);
 				} else
-					Toast.makeText(this, "Can't reply; no header data", Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, getString(R.string.cant_reply_no_header_data), Toast.LENGTH_SHORT).show();
 				
 		    	return true;
 				
@@ -441,7 +441,7 @@ public class MessageActivity extends Activity {
 				
 			case R.id.message_menu_markunread:
 				DBUtils.markAsUnRead(mArticleNumbersArray[mMsgIndexInArray], getApplicationContext());
-				Toast.makeText(this, "Message marked as unread", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getString(R.string.message_marked_unread), Toast.LENGTH_SHORT).show();
 				return true;
 				
 			case R.id.message_menu_forward:
@@ -455,9 +455,9 @@ public class MessageActivity extends Activity {
 			case R.id.message_menu_ban:
 				if (mHeader != null) {
 					DBUtils.banUser(mHeader.getField("From").getBody(), getApplicationContext());
-					Toast.makeText(this, "Author banned, reload on the message list to hide", Toast.LENGTH_LONG).show();
+					Toast.makeText(this, getString(R.string.author_banned_reload_tohide), Toast.LENGTH_LONG).show();
 				} else 
-					Toast.makeText(this, "Can't ban author; no header data", Toast.LENGTH_SHORT).show();
+					Toast.makeText(this, getString(R.string.cant_ban_no_header_data), Toast.LENGTH_SHORT).show();
 						
 				return true;
 				
@@ -497,15 +497,14 @@ public class MessageActivity extends Activity {
     		buf.append(g + "\n");
     	
 		new AlertDialog.Builder(this).setTitle("Multiple followup").setMessage(
-				"The message goes to more than one group. Do you want to followup to all " +
-				"or only to the current group? The groups are:\n" + buf.toString())
-			.setPositiveButton("All",
+				getString(R.string.followup_multigroup_question) + buf.toString())
+			.setPositiveButton(getString(R.string.followup_all_groups),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dlg, int sumthin) {
 						startPostingOrQuotingActivity("ALL");
 						}
 					}
-			).setNegativeButton("Current",	
+			).setNegativeButton(getString(R.string.followup_current_group),	
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dlg, int sumthin) {
 						startPostingOrQuotingActivity("CURRENT");
@@ -518,7 +517,7 @@ public class MessageActivity extends Activity {
     private void startPostingOrQuotingActivity(String multipleFollowup) {
     	
     	if (mHeader == null) {
-    		Toast.makeText(this, "Can't reply; no header data", Toast.LENGTH_SHORT);
+    		Toast.makeText(this, getString(R.string.cant_reply_no_header_data), Toast.LENGTH_SHORT);
     		return;
     	}
     		
@@ -554,16 +553,15 @@ public class MessageActivity extends Activity {
     
     private void userInfoNotSet() {
     	
-		new AlertDialog.Builder(this).setTitle("User info unset").setMessage(
-				"You must fill your name and email (can be fake) on the settings (on the User Info section). " +
-				"Do you want to go to the settings now?")
-				.setPositiveButton("Yes",
+		new AlertDialog.Builder(this).setTitle(getString(R.string.user_info_unset)).setMessage(
+				getString(R.string.must_fill_name_email_goto_settings))
+				.setPositiveButton(getString(R.string.yes),
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dlg, int sumthin) {
 								startActivity(new Intent(MessageActivity.this, OptionsActivity.class));
 								}
 							}
-						).setNegativeButton("No", null)
+						).setNegativeButton(getString(R.string.no), null)
 						.show();
     }
     
@@ -571,7 +569,7 @@ public class MessageActivity extends Activity {
     private void toggleFavoriteAuthor() {
 
     	if (mHeader == null) {
-    		Toast.makeText(this, "Can't make favorite; no header data", Toast.LENGTH_SHORT);
+    		Toast.makeText(this, getString(R.string.cant_make_favorite_no_header), Toast.LENGTH_SHORT);
     		return;
     	}
     	
@@ -616,7 +614,7 @@ public class MessageActivity extends Activity {
 			public void run() {
     			
     	    	try {
-    	    		updateStatus("Fetching message body", NOT_FINISHED);
+    	    		updateStatus(getString(R.string.fetching_body), NOT_FINISHED);
     	    		
     	    		// shortcut
     	    		long serverMsgNumber = mArticleNumbersArray[mMsgIndexInArray];
@@ -643,7 +641,7 @@ public class MessageActivity extends Activity {
     	    				                           false, isCatched);    	    		
 
     	    		if (mHeader == null)
-    	    			throw new UsenetReaderException("Could not fetch header from server");    	    		
+    	    			throw new UsenetReaderException(getString(R.string.could_not_fetch_header));    	    		
 
     	    		// ===========================================================================================
     	    		// Extract the charset from the Content-Type header or if it's MULTIPART/MIME, the boundary
@@ -714,22 +712,22 @@ public class MessageActivity extends Activity {
     	    			}
     	    		}
     	    		
-    	    		updateStatus("Fetching message body", FINISHED_GET_OK);
+    	    		updateStatus(getString(R.string.fetching_body), FINISHED_GET_OK);
     	    		
 				} catch (NNTPNoSuchMessageException e) {
-					updateStatus("Error", FETCH_FINISHED_NOMESSAGE);
+					updateStatus(getString(R.string.error), FETCH_FINISHED_NOMESSAGE);
 					e.printStackTrace();
 				} catch (FileNotFoundException e) {
-					updateStatus("Error", FETCH_FINISHED_NODISK);
+					updateStatus(getString(R.string.error), FETCH_FINISHED_NODISK);
 					e.printStackTrace();
 				} catch (IOException e) {
-					updateStatus("Error", FETCH_FINISHED_ERROR);
+					updateStatus(getString(R.string.error), FETCH_FINISHED_ERROR);
 					e.printStackTrace();
 				} catch (ServerAuthException e) {
-					updateStatus("Error", FETCH_FINISHED_ERROR);
+					updateStatus(getString(R.string.error), FETCH_FINISHED_ERROR);
 					e.printStackTrace();
 				} catch (UsenetReaderException e) {
-					updateStatus("Error", FETCH_FINISHED_ERROR);
+					updateStatus(getString(R.string.error), FETCH_FINISHED_ERROR);
 					e.printStackTrace();
 				}
     		}
@@ -737,8 +735,8 @@ public class MessageActivity extends Activity {
     	
     	serverGetterThread.start();
 		mProgress = new ProgressDialog(this);
-		mProgress.setMessage("Requesting message");
-		mProgress.setTitle("Message");
+		mProgress.setMessage(MessageActivity.this.getString(R.string.requesting_message));
+		mProgress.setTitle(MessageActivity.this.getString(R.string.message));
 		mProgress.show();   	
     }
     
@@ -779,12 +777,11 @@ public class MessageActivity extends Activity {
     	if (ThreadStatus == FETCH_FINISHED_ERROR) {
     		if (mProgress != null) mProgress.dismiss();
     		
-    		mContent.loadData("Error loading message body (message has been kept unread)", "text/html", "UTF-8");
+    		mContent.loadData(getString(R.string.error_loading_kept_unread), "text/html", "UTF-8");
     		
 			new AlertDialog.Builder(this)
 			.setTitle("Error")
-			.setMessage("There was an error trying to retrieve the message body. Please " +
-					    "check your server settings and connection status (this message will be kept unread.)")
+			.setMessage(getString(R.string.error_loading_kept_unread_long))
 		    .setNeutralButton("Close", null)
 		    .show();
 			
@@ -793,23 +790,23 @@ public class MessageActivity extends Activity {
     	else if (ThreadStatus == FETCH_FINISHED_NODISK) {
     		if (mProgress != null) mProgress.dismiss();
     		
-    		mContent.loadData("Error saving message  (message has been kept unread)", "text/html", "UTF-8");
+    		mContent.loadData(getString(R.string.error_saving_kept_unread), "text/html", "UTF-8");
     		
 			new AlertDialog.Builder(this)
 			.setTitle("Error")
-			.setMessage("There was an error trying to save the message to the sdcard or disk. Please check your sdcard (message has been kept unread)")					    
-		    .setNeutralButton("Close", null)
+			.setMessage(getString(R.string.error_saving_kept_unread_long))					    
+		    .setNeutralButton(getString(R.string.close), null)
 		    .show();
     	}
     	else if (ThreadStatus == FETCH_FINISHED_NOMESSAGE) {
     		if (mProgress != null) mProgress.dismiss();
     		
-    		mContent.loadData("[[The server doesn't have the message anymore, it's probably too old or was spam]]", "text/html", "UTF-8");
+    		mContent.loadData(getString(R.string.server_doesnt_have_message_long), "text/html", "UTF-8");
     		
 			new AlertDialog.Builder(this)
-			.setTitle("Error")
-			.setMessage("The server doesn't have the message anymore.")
-		    .setNeutralButton("Close", null)
+			.setTitle(getString(R.string.error))
+			.setMessage(getString(R.string.server_doesnt_have_message))
+		    .setNeutralButton(getString(R.string.close), null)
 		    .show();
 			
 			DBUtils.markAsRead(mArticleNumbersArray[mMsgIndexInArray], getApplicationContext());
@@ -879,7 +876,7 @@ public class MessageActivity extends Activity {
     		String simplifiedSubject = Article.simplifySubject(mSubjectText);
 
     		if (mLastSubject != null && (!mLastSubject.equalsIgnoreCase(simplifiedSubject))) {
-    			Toast.makeText(getApplicationContext(), "New Subject: \n" + simplifiedSubject, Toast.LENGTH_SHORT).show();
+    			Toast.makeText(getApplicationContext(), getString(R.string.new_subject) + simplifiedSubject, Toast.LENGTH_SHORT).show();
     		}
     		
             // Intercept "attachment://" url clicks

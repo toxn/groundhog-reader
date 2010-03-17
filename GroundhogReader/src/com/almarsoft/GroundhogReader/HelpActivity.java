@@ -68,7 +68,7 @@ public class HelpActivity extends Activity {
 		if(id == ID_DIALOG_LOADING){
 			
 			ProgressDialog loadingDialog = new ProgressDialog(this);
-			loadingDialog.setMessage("Loading help...");
+			loadingDialog.setMessage(getString(R.string.loading_help_d));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;

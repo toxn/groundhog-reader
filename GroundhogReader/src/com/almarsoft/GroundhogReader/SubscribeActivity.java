@@ -127,17 +127,19 @@ public class SubscribeActivity extends Activity {
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 			
 			mGroupName = mSearchResultsStr[position];
+			String msg = getResources().getString(R.string.subscribe_question); // contains {0}, {1}, and {2} in the XML file
+			msg = java.text.MessageFormat.format(msg, mGroupName);
 			
 			// Show a confirmation dialog		
 			new AlertDialog.Builder(SubscribeActivity.this)
-			.setTitle("Add Group")
-			.setMessage("Do you want to subscribe to the group " + mGroupName + "?")    							    		 
-		    .setPositiveButton("Yes", 
+			.setTitle(getString(R.string.add_group))
+			.setMessage(msg)    							    		 
+		    .setPositiveButton(getString(R.string.yes), 
 		    	new DialogInterface.OnClickListener(){
 		    		public void onClick(DialogInterface dlg, int sumthin){ subscribeGroup(mGroupName); } 
 		        } 
 		     )		     
-		     .setNegativeButton("No", null)		     		    		 
+		     .setNegativeButton(getString(R.string.no), null)		     		    		 
 		     .show();		
         				
 		}
@@ -150,19 +152,22 @@ public class SubscribeActivity extends Activity {
 			
 			// First check that the user is not already subscribed to the group
 			if (DBUtils.isGroupSubscribed(mGroupName, getApplicationContext())) {
+				String msg = getResources().getString(R.string.already_subscribed_long);
+				msg = java.text.MessageFormat.format(msg, mGroupName);
+				
 				// Already subscribed
 				new AlertDialog.Builder(SubscribeActivity.this)
-				.setTitle("Already subscribed!")
-				.setMessage("You are already subscribed to " + mGroupName + "!")    							    		 
+				.setTitle(getString(R.string.already_subscribed_excl))
+				.setMessage(msg)    							    		 
 			    .setNeutralButton("Close", null)  
 			    .show();
 				return;
 			}
 			
 			DBUtils.subscribeGroup(mGroupName, getApplicationContext());
-		       
-			Toast.makeText(SubscribeActivity.this, "You've subscribed to " + mGroupName + 
-					                               "; use the BACK button for the group list", Toast.LENGTH_LONG).show();
+			String msg2 = getResources().getString(R.string.subscribed_ok);
+			msg2 = java.text.MessageFormat.format(msg2, mGroupName); 
+			Toast.makeText(SubscribeActivity.this, msg2, Toast.LENGTH_LONG).show();
 			
 		}
     	
@@ -188,9 +193,9 @@ public class SubscribeActivity extends Activity {
 			if (searchText.length() < 3) {
 				
 				new AlertDialog.Builder(SubscribeActivity.this)
-				.setTitle("Too Short!")
-				.setMessage("The search text must be at least 3 chars long")    							    		 
-			    .setNeutralButton("Close", null)
+				.setTitle(getString(R.string.too_short_excl))
+				.setMessage(getString(R.string.too_short_three_chars))    							    		 
+			    .setNeutralButton(getString(R.string.close), null)
 			    .show();			
 			     								
 			} else {
@@ -229,7 +234,7 @@ public class SubscribeActivity extends Activity {
 			    		
 		        		String host = prefs.getString("host", null);
 		        		if (host == null) {
-		        			updateStatus("Not configured", NOT_CONFIGURED);
+		        			updateStatus(getString(R.string.not_configured), NOT_CONFIGURED);
 		        			return;
 		        		} 
 		        			
@@ -240,13 +245,13 @@ public class SubscribeActivity extends Activity {
 		        		}
 		        		
 		        		mTmpSearchText = null;		        		
-		        		updateStatus("Finished", FINISHED_OK);		        			
+		        		updateStatus(getString(R.string.finished), FINISHED_OK);		        			
 		        		
 			    	} catch (IOException e) {
-		        		updateStatus("Error!", FINISHED_ERROR);
+		        		updateStatus(getString(R.string.error), FINISHED_ERROR);
 		        		e.printStackTrace();
 		        	} catch (ServerAuthException e) {
-		        		updateStatus("Auth Error", FINISHED_AUTH_ERROR);
+		        		updateStatus(getString(R.string.auth_error), FINISHED_AUTH_ERROR);
 		        	}
 			    	
 			    }
@@ -268,35 +273,32 @@ public class SubscribeActivity extends Activity {
 	    	if (threadStatus == FINISHED_ERROR) {
 	    		
 				new AlertDialog.Builder(SubscribeActivity.this)
-				.setTitle("Error")
-				.setMessage("There was an error retrieving the results. " +
-						    "Check your connection settings (specially server host, port and login information) " +
-						    "or your signal. Do you want to go to the settings now?")    							    		 
-			    .setPositiveButton("Yes", 
+				.setTitle(getString(R.string.error))
+				.setMessage(getString(R.string.error_retrieving_check_connection))    							    		 
+			    .setPositiveButton(getString(R.string.yes), 
 				    	new DialogInterface.OnClickListener(){
 				    		public void onClick(DialogInterface dlg, int sumthin){ 
 								startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class)); 
 				    		} 
 				        } 
 				     )		     
-			    .setNegativeButton("No", null)		     		    		 
+			    .setNegativeButton(getString(R.string.no), null)		     		    		 
 			    .show();			
 				
 	    	}
 	    	if (threadStatus == FINISHED_AUTH_ERROR) {
 	    		
 				new AlertDialog.Builder(SubscribeActivity.this)
-				.setTitle("Auth Error")
-				.setMessage("There was an error authenticating with the server; check your username and password settings. " + 
-						    "Do you want to go to the settings now?")    							    		 
-			    .setPositiveButton("Yes", 
+				.setTitle(getString(R.string.auth_error))
+				.setMessage(getString(R.string.error_auth_check_pass_go_settings))    							    		 
+			    .setPositiveButton(getString(R.string.yes), 
 				    	new DialogInterface.OnClickListener(){
 				    		public void onClick(DialogInterface dlg, int sumthin){ 
 								startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class)); 
 				    		} 
 				        } 
 				     )		     
-			    .setNegativeButton("No", null)		     		    		 
+			    .setNegativeButton(getString(R.string.no), null)		     		    		 
 			    .show();		
 				
 	    	}
@@ -323,17 +325,16 @@ public class SubscribeActivity extends Activity {
 	    		
 	    		// The host is not configured
 				new AlertDialog.Builder(SubscribeActivity.this)
-				.setTitle("Go to settings")
-				.setMessage("Your usenet server hostname is not configured. Do you want "+
-						    "to configure the program now?")    							    		 
-			    .setPositiveButton("Yes", 
+				.setTitle(getString(R.string.go_to_settings))
+				.setMessage(getString(R.string.hostname_not_configured_goto_settings))    							    		 
+			    .setPositiveButton(getString(R.string.yes), 
 			    	new DialogInterface.OnClickListener(){
 			    		public void onClick(DialogInterface dlg, int sumthin){ 
 							startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class)); 
 			    		} 
 			        } 
 			     )		     
-			     .setNegativeButton("No", null)		     		    		 
+			     .setNegativeButton(getString(R.string.no), null)		     		    		 
 			     .show();			    		
 	    	}
 	    }
