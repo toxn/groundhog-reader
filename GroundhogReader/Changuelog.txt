@@ -3,7 +3,11 @@
 Features.
 - Spanish translation added
 - Buttons on GroupList to add a new group and go to settings
+
+Usability:
 - Reload the messagelist when the user changues the read charset
+
+Maintenance:
 - Migrated MessageActivity to AsyncTask (it rocks). Only 9 threads more
   to go...
 
