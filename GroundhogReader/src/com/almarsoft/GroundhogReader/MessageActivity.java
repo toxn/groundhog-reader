@@ -857,6 +857,7 @@ public class MessageActivity extends Activity {
 				    .show();
 					
 					DBUtils.markAsRead(mArticleNumbersArray[mMsgIndexInArray], getApplicationContext());
+					break;
 	    	}
 	    }
     }
