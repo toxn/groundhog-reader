@@ -675,7 +675,8 @@ public class MessageListActivity extends ListActivity {
 		if (mDownloader != null) 
 			mDownloader = null;
 
-		mLoadDBTask = new LoadFromDBAndThreadTask();		
+		mLoadDBTask = new LoadFromDBAndThreadTask();
+		mLoadDBTask.execute();
 	}
 
 	

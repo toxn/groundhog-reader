@@ -1,3 +1,9 @@
+1.9.0
+
+- Russian translation
+- Internal rework
+- Small usability improvements
+
 1.8.0
 
 Features.
