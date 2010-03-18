@@ -60,8 +60,6 @@ public class MessageActivity extends Activity {
 	private static final int FETCH_FINISHED_NOMESSAGE = 3;
 	private static final int FETCH_FINISHED_NODISK = 4;
 	
-	private ProgressDialog mProgress;
-	
 	private int mMsgIndexInArray;
 	private long[] mArticleNumbersArray;
 	private String mGroup;
@@ -600,11 +598,6 @@ public class MessageActivity extends Activity {
     
     // Create the progress dialog and call the AsyncTask
     private void loadMessage() {
-		mProgress = new ProgressDialog(this);
-		mProgress.setMessage(MessageActivity.this.getString(R.string.requesting_message));
-		mProgress.setTitle(MessageActivity.this.getString(R.string.message));
-		mProgress.show();  
-		
 		new LoadMessageTask().execute(mArticleNumbersArray[mMsgIndexInArray]);
     }
     
@@ -627,6 +620,13 @@ public class MessageActivity extends Activity {
     private class LoadMessageTask extends AsyncTask<Long, String, Integer > {
     	
     	private String mErrorMsg;
+    	private ProgressDialog mProgress = null;
+    	
+    	@Override
+    	protected void onPreExecute() {
+    		MessageActivity mi = MessageActivity.this;
+    		mProgress = ProgressDialog.show(mi, MessageActivity.this.getString(R.string.message), mi.getString(R.string.requesting_message));
+    	}
     	
     	@SuppressWarnings("unchecked")
 		protected Integer doInBackground(Long... serverMsgNumbers ) {
@@ -749,7 +749,7 @@ public class MessageActivity extends Activity {
 		}
     }
     	
-    	
+    	@Override
 	    protected void onProgressUpdate(String... message) {
 	    	mProgress.setMessage(message[0]);
 	    }
