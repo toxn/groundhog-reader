@@ -361,6 +361,7 @@ public class GroupMessagesDownloadDialog {
 			switch (result) {
 			
 			case POST_FINISHED_OK:
+				mWakeLock.acquire();
 				getArticleInfosFromServer();
 				break;
 			
