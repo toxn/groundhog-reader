@@ -161,22 +161,35 @@ public class MessageTextProcessor {
     }
 	
     
+    private static String getBlockQuotes(int level, boolean isopen) {
+    	StringBuilder res = new StringBuilder();
+    	String tagopen = "<blockquote style=\"margin: 0pt 0pt 0pt 0.2ex; border-left: 2px solid #00008B; padding-left: 0.5ex;\">";
+    	String tagclose = "</blockquote>";
+    	
+    	for (int i=0; i<level; i++) {
+    		if (isopen) res.append(tagopen);
+    		else res.append(tagclose);
+    	}
+    	
+    	return res.toString();
+    }
+    
     public static String prepareHTML(String inputText) {
     	
     	StringBuilder html = new StringBuilder(inputText.length());
 
     	String[] lines = inputText.split("\n");
     	String line;
-    	boolean lastWasQuote = false;
     	String quoteColor;
-    	int lastQuoteColor = -1;
     	int linesLen = lines.length;
-    	int colorhash;
+    	int quoteLevel = 0;
+    	int lastQuoteLevel;
     	//StringWriter ws = new StringWriter();
     	
     	for (int i=0; i < linesLen; i++) {
     		
     		line = lines[i];
+    		
     		
     		// Remove empty quoting lines like ">\n" and ">> \n"
     		
@@ -185,34 +198,38 @@ public class MessageTextProcessor {
     			continue;
     		}
     		
-    		if (line.length() > 1 && (line.charAt(0) == '>')) {
+    		lastQuoteLevel = quoteLevel;
+    		quoteLevel = getQuotingLevel(line);
+    		if (quoteLevel > 0) {
     			// We're in quote 
-    			quoteColor = getQuotingColor(line);
     			
-    			colorhash = quoteColor.hashCode();
-    			if (lastWasQuote && (colorhash == lastQuoteColor)) {
+    			quoteColor = getQuotingColor(quoteLevel);
+    			line             = removeStartingQuotes(line);
+    			
+    			if (quoteLevel == lastQuoteLevel) {
     				// We're at the same quoting level; use a <BR> so we don't break the paragraph
+    				
     				html.append("</I> <BR/>\n<I>");
-    				lastWasQuote = true;
     				
     			} else {
     				// First line of different quoting level; use a </P> and change the color
-    				if (lastWasQuote) html.append("</I>");
+    				if (lastQuoteLevel > 0) html.append("</I>");
     				
-    				html.append("<P/>\n<P style=\"BACKGROUND-COLOR: ");
+    				html.append("<P/>\n");
+    				html.append(getBlockQuotes(lastQuoteLevel, false));
+    				html.append(getBlockQuotes(quoteLevel, true));
+    				html.append("<P style=\"BACKGROUND-COLOR: ");
     				html.append(quoteColor);
 					html.append("\"><I>");
     							
-    				lastWasQuote = true;
-    				lastQuoteColor = colorhash;
     			}
     		}
     		else { 
-    			if (lastWasQuote) {
+    			if (lastQuoteLevel > 0) {
     				// We're not in quote and last was quote, close the <i>
     				html.append("</I></P>");
-    				lastWasQuote = false;
     			}
+    			html.append(getBlockQuotes(lastQuoteLevel, false));
     			html.append("<P>\n");
     			
     		}
@@ -281,10 +298,7 @@ public class MessageTextProcessor {
 		return emptyQuote;
 	}
 
-
-	private static String getQuotingColor(String line) {
-    	String color = "yellow";
-    	
+    private static int getQuotingLevel(String line) {
     	int count = 0;
     	int lineLen = line.length();
     	
@@ -294,14 +308,34 @@ public class MessageTextProcessor {
     		count++;
     	}
     	
-    	if      (count == 1) color = "palegreen";
-    	else if (count == 2) color = "lightblue";
-    	else if (count == 3) color = "lightcoral";
-    	else if (count >= 4) color = "violet";
-    	return color;
+    	return count;
     }
-	
-	
+    
+    private static String removeStartingQuotes(String line) {
+    	int idx = 0;
+    	try{ 
+    		while(line.charAt(idx) == '>') 
+    			idx++;
+    	} catch (IndexOutOfBoundsException e) {
+    		if (idx == 0) return line;
+    		else idx--;
+    	}
+    	return line.substring(idx);
+    }
+
+	private static String getQuotingColor(int level) {
+    	
+    	switch(level) {
+    		case 0: return "white";
+    		case 1: return "palegreen";
+    		case 2: return "lightblue";
+    		case 3: return "lightcoral";
+    	}
+    	
+    	// More than 3
+    	return "violet";
+	}
+    	
 	// =======================================================
 	// Converts a header as String into a mime4j Header object
 	// =======================================================
