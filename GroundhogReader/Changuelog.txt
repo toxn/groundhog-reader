@@ -1,8 +1,14 @@
 1.9.0
 
+Usability:
 - Russian translation
-- Internal rework
 - Small usability improvements
+
+Refactor:
+- Convert all thread code to AsyncTask
+
+Fixes:
+- Fix for broken colored quoting on some messages
 
 1.8.0
 

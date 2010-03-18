@@ -100,6 +100,7 @@ public class MessageTextProcessor {
     // Remove all \n except the ones that are after a point. We do this
     // because the screen is probably going to be less than 70 chars anyway, so 
     // we let the GUI reflow the new lines, which makes the text looks "justified".
+	// (we'll split the lines at 70 again before posting, this is only for reading)
     // =============================================================================
     public static String sanitizeLineBreaks(String inputText) {
     	
@@ -130,17 +131,12 @@ public class MessageTextProcessor {
     				hasNext = false;
     			}
     			
+
     			if (charcur == '\n') {
-    				/* We want to eliminate artificial newlines, used by the newsreaders to comply with
-    				 * the 70-chars long rule. But we don't want to remove good placed newlines, so our heuristic
-    				 * rules are:
-    				 * 
-    				 * 1. Dont justify lines next to quoted text
-    				 * 2. Dont remove newlines close to '.', '!', '?' (natural line terminators)
-    				 * 3. Dont remove newlines that have newlines before or after it (formatting newlines)
-    				 */
-					if( previousLine.charAt(0) != '>'
-						&&(charprev != '.')
+    				
+					//if( previousLine.charAt(0) != '>'
+						if((charprev != '.')
+						&& (hasNext && charnext != '>')
 					    && (charprev != '!')
 					    && (charprev != ':')
 						&& (charprev != '?')
