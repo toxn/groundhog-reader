@@ -227,6 +227,7 @@ public final class R {
         public static final int getting_something=0x7f05008a;
         public static final int global_settings=0x7f05004f;
         public static final int go_to_settings=0x7f0500c6;
+        public static final int group=0x7f0500c8;
         public static final int group_headers=0x7f050071;
         public static final int group_menu=0x7f05007b;
         public static final int group_offline_mode=0x7f05006f;

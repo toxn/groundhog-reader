@@ -78,8 +78,6 @@ public class MessageListActivity extends ListActivity {
 	HashSet<String> mMyPostsSet;
 	HashSet<String> mReadSet;
 	
-	private Thread mDbGetterThread;
-	
 	// packagevisibility because it used by inner class (see dev guide)
 	SharedPreferences mPrefs;
 	private PowerManager.WakeLock mWakeLock = null;
@@ -87,6 +85,7 @@ public class MessageListActivity extends ListActivity {
 	private ServerManager mServerManager;
 	private GroupMessagesDownloadDialog mDownloader = null;
 	private boolean mOfflineMode;
+	private LoadFromDBAndThreadTask mLoadDBTask = null;
 	
 
 	@Override
@@ -138,6 +137,7 @@ public class MessageListActivity extends ListActivity {
     	mServerManager = null;
 	}
 
+	
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -145,8 +145,8 @@ public class MessageListActivity extends ListActivity {
 		if (mWakeLock.isHeld()) mWakeLock.release();
 		Log.d(UsenetConstants.APPNAME, "MessageList onStop");
 
-    	if (mDbGetterThread != null && mDbGetterThread.isAlive())
-    			mDbGetterThread.interrupt();
+    	if (mLoadDBTask != null && mLoadDBTask.getStatus() != AsyncTask.Status.FINISHED)
+    			mLoadDBTask.cancel(true);
 	}
 	
 	
@@ -546,23 +546,6 @@ public class MessageListActivity extends ListActivity {
 							}
 						}).show();
 	}
-
-
-	// =========================================================
-	// Sent an update the the UI (progress dialog) from a thread
-	// =========================================================
-	// packagevisibility because it used by inner class (see dev guide)
-    
-	/*
-	void updateStatus(final String textStatus, final int threadStatus, final int current, final int total) {
-		mHandler.post(new Runnable() { 
-			public void run() { 
-				updateResultsInUi(textStatus, threadStatus, current, total); 
-			}
-		}
-		);
-	}
-	*/
 	
 	
 	private class LoadFromDBAndThreadTask extends AsyncTask<Void, Integer, Integer > {
@@ -611,7 +594,7 @@ public class MessageListActivity extends ListActivity {
 			
 			for (int i = 0; i < numArticles; i++) {
 				if (isCancelled()) {
-					cur.close(); db.close(); dbhelper.close();
+					cur.close(); db.close(); dbhelper.close();					
 					return FINISHED_INTERRUPTED;
 				}
 				
@@ -677,6 +660,8 @@ public class MessageListActivity extends ListActivity {
 				// Nothing currently done, but left as stub
 				break;
 			}
+			
+			mLoadDBTask = null;
 		}
 		
 	}
@@ -690,7 +675,7 @@ public class MessageListActivity extends ListActivity {
 		if (mDownloader != null) 
 			mDownloader = null;
 
-		new LoadFromDBAndThreadTask().execute();
+		mLoadDBTask = new LoadFromDBAndThreadTask();		
 	}
 
 	
