@@ -466,7 +466,7 @@ public class GroupListActivity extends ListActivity {
     
     
     private void markAllRead(final String group) {
-    	/*
+    	
 		AsyncTask<Void, Void, Void> markAllReadTask = new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... arg0) {
@@ -481,18 +481,9 @@ public class GroupListActivity extends ListActivity {
 			}
 
 		};
-		*/
 		
-    	///
 		showDialog(ID_DIALOG_MARKREAD);
-		DBUtils.groupMarkAllRead(group, GroupListActivity.this.getApplicationContext());
-		DBUtils.deleteReadMessages(GroupListActivity.this.getApplicationContext());
-		updateGroupList();
-		dismissDialog(ID_DIALOG_MARKREAD);
-
-    	///
-
-		//markAllReadTask.execute();
+		markAllReadTask.execute();
     }
     
     
