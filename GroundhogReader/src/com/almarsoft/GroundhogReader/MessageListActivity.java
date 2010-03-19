@@ -22,8 +22,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -55,7 +55,7 @@ import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 
 public class MessageListActivity extends ListActivity {
 
-	private static final int NOT_FINISHED = 0;
+	//private static final int NOT_FINISHED = 0;
 	private static final int DBGETTER_FINISHED_OK = 1;
 	private static final int FINISHED_INTERRUPTED = 2;
 
@@ -69,7 +69,6 @@ public class MessageListActivity extends ListActivity {
 	String mGroup;
 	private int mGroupID;
 
-	private ProgressDialog mProgress;
 	private int mNumUnread;
 	private ArrayList<HeaderItemClass> mHeaderItemsList = null;
 	private long[] mNumbersArray;
@@ -79,17 +78,15 @@ public class MessageListActivity extends ListActivity {
 	HashSet<String> mMyPostsSet;
 	HashSet<String> mReadSet;
 	
-	private Thread mDbGetterThread;
-	
 	// packagevisibility because it used by inner class (see dev guide)
 	SharedPreferences mPrefs;
 	private PowerManager.WakeLock mWakeLock = null;
 
-	private final Handler mHandler = new Handler();
-	
 	private ServerManager mServerManager;
 	private GroupMessagesDownloadDialog mDownloader = null;
 	private boolean mOfflineMode;
+	private LoadFromDBAndThreadTask mLoadDBTask = null;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -140,6 +137,7 @@ public class MessageListActivity extends ListActivity {
     	mServerManager = null;
 	}
 
+	
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -147,8 +145,8 @@ public class MessageListActivity extends ListActivity {
 		if (mWakeLock.isHeld()) mWakeLock.release();
 		Log.d(UsenetConstants.APPNAME, "MessageList onStop");
 
-    	if (mDbGetterThread != null && mDbGetterThread.isAlive())
-    			mDbGetterThread.interrupt();
+    	if (mLoadDBTask != null && mLoadDBTask.getStatus() != AsyncTask.Status.FINISHED)
+    			mLoadDBTask.cancel(true);
 	}
 	
 	
@@ -548,177 +546,138 @@ public class MessageListActivity extends ListActivity {
 							}
 						}).show();
 	}
-
-
-	// =========================================================
-	// Sent an update the the UI (progress dialog) from a thread
-	// =========================================================
-	// packagevisibility because it used by inner class (see dev guide)
-    
 	
-	void updateStatus(final String textStatus, final int threadStatus, final int current, final int total) {
-		mHandler.post(new Runnable() { 
-			public void run() { 
-				updateResultsInUi(textStatus, threadStatus, current, total); 
-			}
-		}
-		);
-	}
+	
+	private class LoadFromDBAndThreadTask extends AsyncTask<Void, Integer, Integer > {
 
+		private ProgressDialog mProgress = null;
+		
+		@Override
+		protected void onPreExecute() {
+			MessageListActivity mi = MessageListActivity.this;
+			mProgress = ProgressDialog.show(mi, mi.getString(R.string.message), mi.getString(R.string.threading_messages));
+		}
+		
+		@Override
+		protected Integer doInBackground(Void... arg0) {
+			
+			MessageListActivity act = MessageListActivity.this;
+			String charset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
+			DBHelper dbhelper = new DBHelper(getApplicationContext());
+			SQLiteDatabase db = dbhelper.getReadableDatabase();
+			
+			// Space cleanup: delete all read messages from the DB and catched files
+			DBUtils.deleteReadMessages(getApplicationContext());
+			FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments");
+			
+			// Get the msgIds of all my posts to check for replies on fillListNonRecursive; load them on a set
+			
+			if (act.mPrefs.getBoolean("markReplies", true)) {
+				act.mMyPostsSet = DBUtils.getGroupSentMessagesSet(act.mGroup, getApplicationContext());
+			}
+			
+			// Now get all the headers with read=0
+			// This is not moved to a single function in DBUtils because this way we can update realistically the 
+			// progressDialog
+			Cursor cur = db .rawQuery(
+							"SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
+									+ " FROM headers "
+									+ " WHERE subscribed_group_id="
+									+ mGroupID
+									+ " AND read=0", null);
+
+			int numArticles = cur.getCount();
+			Article[] articles = new Article[numArticles];
+
+			cur.moveToFirst();
+			Article currentArticle;
+			
+			for (int i = 0; i < numArticles; i++) {
+				if (isCancelled()) {
+					cur.close(); db.close(); dbhelper.close();					
+					return FINISHED_INTERRUPTED;
+				}
+				
+				currentArticle = new Article();
+				currentArticle.setArticleId(cur.getString(0));
+				currentArticle.setArticleNumber(cur.getInt(1));
+				currentArticle.setDate(cur.getString(2));
+				currentArticle.setFrom(MessageTextProcessor.decodeHeaderInArticleInfo(cur.getString(3), charset));
+				currentArticle.setSubject(MessageTextProcessor.decodeHeaderInArticleInfo(cur.getString(4), charset));
+				currentArticle.setSimplifiedSubject(cur.getString(5));
+
+				String dbrefs = cur.getString(5);
+				String[] artRefs = dbrefs.split(" ");
+				int artRefsLen = artRefs.length;
+				
+				for (int j = 0; j < artRefsLen; j++) {
+					currentArticle.addReference(artRefs[j]);
+				}
+				articles[i] = currentArticle;
+
+				cur.moveToNext();
+			}
+
+			cur.close(); db.close(); dbhelper.close();
+			
+			mHeaderItemsList = new ArrayList<HeaderItemClass>();
+			
+			if (articles.length > 0) {
+				Threader threader = new Threader();
+				// XXX: This crash the stack if there are lots of messages, reimplement using a iterative version
+				Article root = (Article) threader.thread(articles);
+
+				fillListNonRecursive(root, 0, null);
+				fillNumbersArray();
+			}
+			
+			articles = null;
+			mNumUnread = numArticles;
+			DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
+			
+			return DBGETTER_FINISHED_OK;
+		}
+		
+		@Override
+		protected void onPostExecute(Integer resultObj) {
+			
+			if (mWakeLock.isHeld()) mWakeLock.release();
+			if (mProgress != null)   mProgress.dismiss();
+			
+			int result = resultObj.intValue();
+			
+			switch(result) {
+
+			case DBGETTER_FINISHED_OK:
+				if (mHeaderItemsList != null) {
+					setListAdapter(new ArticleAdapter(MessageListActivity.this, R.layout.messagelist_item, mHeaderItemsList));
+					setGroupTitle();
+				}
+				checkNoUnread();
+				break;
+				
+			case FINISHED_INTERRUPTED:
+				// Nothing currently done, but left as stub
+				break;
+			}
+			
+			mLoadDBTask = null;
+		}
+		
+	}
+	
 	// ========================================================
 	// Get the messages from the database, thread them and
-	// connect the adapter
+	// connect the adapter, using an async task
 	// ========================================================
 	public void threadMessagesFromDB() {
 		
 		if (mDownloader != null) 
 			mDownloader = null;
 
-		mDbGetterThread = new Thread() {
-
-			// ===========================================================================
-			// DB thread, get the message's articleInfos and store them on a
-			// String Vector
-			// ===========================================================================
-
-			public void run() {
-				
-				// Faster since this way it doesnt have to search the members (see developer guide)
-				MessageListActivity act = MessageListActivity.this;
-				
-				String charset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
-				
-				DBHelper dbhelper = new DBHelper(getApplicationContext());
-				SQLiteDatabase db = dbhelper.getReadableDatabase();
-				
-				// Space cleanup: delete all read messages from the DB and catched files
-				updateStatus(getString(R.string.deleting_messages_caches), NOT_FINISHED, 100, 100);
-				DBUtils.deleteReadMessages(getApplicationContext());
-				FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments");
-				
-				// Get the msgIds of all my posts to check for replies on fillListNonRecursive; load them on a set
-				
-				if (act.mPrefs.getBoolean("markReplies", true)) {
-					act.mMyPostsSet = DBUtils.getGroupSentMessagesSet(act.mGroup, getApplicationContext());
-				}
-				
-				// Now get all the headers with read=0
-				
-				// This is not moved to a single function in DBUtils because this way we can update realistically the 
-				// progressDialog
-				Cursor cur = db .rawQuery(
-								"SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
-										+ " FROM headers "
-										+ " WHERE subscribed_group_id="
-										+ mGroupID
-										+ " AND read=0", null);
-
-				int numArticles = cur.getCount();
-				Article[] articles = new Article[numArticles];
-				
-				String threadingMsg = getString(R.string.threading_messages);
-
-				act.updateStatus(threadingMsg, NOT_FINISHED, 0, numArticles);
-
-				cur.moveToFirst();
-				Article currentArticle;
-				
-				for (int i = 0; i < numArticles; i++) {
-					if (isInterrupted()) {
-						act.updateStatus(getString(R.string.interrupted), FINISHED_INTERRUPTED, i, numArticles);
-						cur.close(); db.close(); dbhelper.close();
-						return;
-					}
-					
-					act.updateStatus(threadingMsg, NOT_FINISHED, i, numArticles);
-					currentArticle = new Article();
-					currentArticle.setArticleId(cur.getString(0));
-					currentArticle.setArticleNumber(cur.getInt(1));
-					currentArticle.setDate(cur.getString(2));
-					currentArticle.setFrom(MessageTextProcessor.decodeHeaderInArticleInfo(cur.getString(3), charset));
-					currentArticle.setSubject(MessageTextProcessor.decodeHeaderInArticleInfo(cur.getString(4), charset));
-					currentArticle.setSimplifiedSubject(cur.getString(5));
-
-					String dbrefs = cur.getString(5);
-					String[] artRefs = dbrefs.split(" ");
-					int artRefsLen = artRefs.length;
-					
-					for (int j = 0; j < artRefsLen; j++) {
-						currentArticle.addReference(artRefs[j]);
-					}
-					articles[i] = currentArticle;
-
-					cur.moveToNext();
-				}
-
-				cur.close(); db.close(); dbhelper.close();
-				
-				mHeaderItemsList = new ArrayList<HeaderItemClass>();
-				
-				if (articles.length > 0) {
-					Threader threader = new Threader();
-					// XXX YYY ZZZ: Esto peta el stack si hay muchos, hay que reimplementar norecursivo
-					Article root = (Article) threader.thread(articles);
-
-					fillListNonRecursive(root, 0, null);
-					fillNumbersArray();
-				}
-				
-				articles = null;
-				mNumUnread = numArticles;
-				DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
-				act.updateStatus(threadingMsg, DBGETTER_FINISHED_OK, numArticles, numArticles);
-			}
-		};
-
-		mDbGetterThread.start();
-		mProgress = new ProgressDialog(this);
-		mProgress.setMessage(getString(R.string.threading_messages));
-		mProgress.setTitle(getString(R.string.messages));
-		mProgress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		mProgress.show();
+		mLoadDBTask = new LoadFromDBAndThreadTask();
+		mLoadDBTask.execute();
 	}
-
-
-	// ===================================================================================
-	// UI updater from Threads; check the status, progress and message and
-	// display them
-	// Also: Downloader thread finished => Call the loading of messages from the
-	// DB thread
-	// Loading of Msgs from DB finished => Set the listview adapter to display
-	// messages
-	// ===================================================================================
-
-	private void updateResultsInUi(String textStatus, int threadStatus, int current, int total) {
-		
-		if (mProgress != null) {
-			mProgress.setMessage(textStatus);
-			mProgress.setMax(current);
-			mProgress.setProgress(total);
-			
-		}
-		
-		if (threadStatus == FINISHED_INTERRUPTED) {
-			if (mWakeLock.isHeld()) mWakeLock.release();
-			if (mProgress != null) 
-				mProgress.dismiss();
-			
-			mDbGetterThread = null;
-
-		} else if (threadStatus == DBGETTER_FINISHED_OK) {
-			if (mWakeLock.isHeld()) mWakeLock.release();
-			if (mProgress != null) 
-				mProgress.dismiss();
-			
-			mDbGetterThread = null;
-
-			if (mHeaderItemsList != null) {
-				setListAdapter(new ArticleAdapter(this, R.layout.messagelist_item, mHeaderItemsList));
-				setGroupTitle();
-			}
-			checkNoUnread();
-		}
-	}	
 
 	
 	// =======================================================================================

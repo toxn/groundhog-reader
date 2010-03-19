@@ -169,7 +169,7 @@
 <string name="must_fill_name_email_goto_settings">Debe rellenar su nombre y email (puede ser falso) en las opciones. Desea abrir las opciones?</string>
 <string name="user_info_unset">Información de usuario incompleta</string>
 <string name="cant_make_favorite_no_header">No puedo hacer favorito; sin datos de cabecera</string>
-<string name="fetching_body">Bajando cuerpo del mensaje</string>
+<string name="fetching_body">Obteniendo cuerpo del mensaje</string>
 <string name="could_not_fetch_header">No se pudo obtener la cabecera del servidor</string>
 <string name="requesting_message">Pidiendo mensaje</string>
 <string name="message">Mensaje</string>

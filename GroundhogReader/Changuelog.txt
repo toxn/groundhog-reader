@@ -1,3 +1,16 @@
+1.9.0
+
+Features:
+- Awesome new quoted text display
+
+Usability:
+- Russian translation
+- Small usability improvements
+
+Refactor:
+- Convert all thread code to AsyncTask
+
+
 1.8.0
 
 Features.

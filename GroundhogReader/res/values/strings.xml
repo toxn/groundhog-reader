@@ -201,4 +201,5 @@
 <string name="error_auth_check_pass_go_settings">There was an error authenticating with the server; check your username and password settings. Do you want to go to the settings now?</string>
 <string name="go_to_settings">Go to settings</string>
 <string name="hostname_not_configured_goto_settings">Your usenet server hostname is not configured. Do you want to configure the program now?</string>
+<string name="group">Group</string>
 </resources>
