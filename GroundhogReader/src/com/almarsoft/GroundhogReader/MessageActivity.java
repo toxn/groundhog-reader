@@ -70,7 +70,7 @@ public class MessageActivity extends Activity {
 	private String mSubjectText;
 	private String mAuthorText;
 	private String mLastSubject;
-	private String mCharset;
+	private String mCharset = null;
 	private Header mHeader;
 	private Message mMessage;
 	private Vector<HashMap<String, String>> mMimePartsVector;
@@ -761,81 +761,81 @@ public class MessageActivity extends Activity {
 	    	
 	    	switch(result) {
 	    	
-		    	case FINISHED_GET_OK:
-		    		// Show or hide the heart marking favorite authors
-		            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody().trim(), getApplicationContext());
-		            
-		            if (mIsFavorite) 
-		            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.love));
-		            else 
-		            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.nullimage));
-		            
-		            
-		            mHeart.invalidate();
-		            mLayoutAuthor.invalidate();
-		            mMainLayout.invalidate();
-		
-		    		// Save a copy of the body for the reply so we don't break netiquette rules with
-		    		// the justification applied in sanitizeLinebreaks
-		    		mOriginalText = mBodyText;
-		    		
-		    		// Justify the text removing artificial '\n' chars so it looks square and nice on the phone screen
-		    		// XXX: Optimizacion: aqui se puede utilizar de forma intermedia un StringBuffer (sanitize
-		    		// lo devuelve y se le pasa a prepareHTML)
-		    		mBodyText = MessageTextProcessor.sanitizeLineBreaks(mBodyText);
-		    		mBodyText = MessageTextProcessor.getHtmlHeader(mCharset) + 
-		    		            MessageTextProcessor.getAttachmentsHtml(mMimePartsVector)  + 
-		    		            MessageTextProcessor.prepareHTML(mBodyText);
-		    		
-		    		
-		    		// Show the nice, short, headers or the ugly full headers if the user selected that
-		    		if (!mShowFullHeaders) {
-		    			mLayoutAuthor.setVisibility(View.VISIBLE);
-		    			mLayoutDate.setVisibility(View.VISIBLE);
-		    			mLayoutSubject.setVisibility(View.VISIBLE);
-		    			
-		    			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
-		    			mAuthor.setText(mAuthorText);
-		    			mDate.setText(mHeader.getField("Date").getBody().trim());
-		    			mSubject.setText(mSubjectText);
-		    			
-		    		} else {
-		    			mLayoutAuthor.setVisibility(View.INVISIBLE);
-		    			mLayoutDate.setVisibility(View.INVISIBLE);
-		    			mLayoutSubject.setVisibility(View.INVISIBLE);
-		    			mBodyText = MessageTextProcessor.htmlizeFullHeaders(mMessage) + mBodyText;
-		    		}
-		    		
-		    		mContent.loadDataWithBaseURL("x-data://base", mBodyText, "text/html", mCharset, null);
-		    		mBodyText = null;
-		    		mContent.requestFocus();
-		    		
-		    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody().trim(), getApplicationContext());
-		    		
-		    		// Go to the start of the message
-		    		mScroll.scrollTo(0, 0);
-		    		
-		    		String simplifiedSubject = Article.simplifySubject(mSubjectText);
-		
-		    		if (mLastSubject != null && (!mLastSubject.equalsIgnoreCase(simplifiedSubject))) {
-		    			Toast.makeText(getApplicationContext(), getString(R.string.new_subject) + simplifiedSubject, Toast.LENGTH_SHORT).show();
-		    		}
-		    		
-		            // Intercept "attachment://" url clicks
-		            mContent.setWebViewClient(mWebViewClient);
-		            break;	    	
+	    	case FINISHED_GET_OK:
+	    		// Show or hide the heart marking favorite authors
+	            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody().trim(), getApplicationContext());
+	            
+	            if (mIsFavorite) 
+	            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.love));
+	            else 
+	            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.nullimage));
+	            
+	            
+	            mHeart.invalidate();
+	            mLayoutAuthor.invalidate();
+	            mMainLayout.invalidate();
+	
+	    		// Save a copy of the body for the reply so we don't break netiquette rules with
+	    		// the justification applied in sanitizeLinebreaks
+	    		mOriginalText = mBodyText;
+	    		
+	    		// Justify the text removing artificial '\n' chars so it looks square and nice on the phone screen
+	    		// XXX: Optimizacion: aqui se puede utilizar de forma intermedia un StringBuffer (sanitize
+	    		// lo devuelve y se le pasa a prepareHTML)
+	    		mBodyText = MessageTextProcessor.sanitizeLineBreaks(mBodyText);
+	    		mBodyText = MessageTextProcessor.getHtmlHeader(mCharset) + 
+	    		            MessageTextProcessor.getAttachmentsHtml(mMimePartsVector)  + 
+	    		            MessageTextProcessor.prepareHTML(mBodyText);
+	    		
+	    		
+	    		// Show the nice, short, headers or the ugly full headers if the user selected that
+	    		if (!mShowFullHeaders) {
+	    			mLayoutAuthor.setVisibility(View.VISIBLE);
+	    			mLayoutDate.setVisibility(View.VISIBLE);
+	    			mLayoutSubject.setVisibility(View.VISIBLE);
+	    			
+	    			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
+	    			mAuthor.setText(mAuthorText);
+	    			mDate.setText(mHeader.getField("Date").getBody().trim());
+	    			mSubject.setText(mSubjectText);
+	    			
+	    		} else {
+	    			mLayoutAuthor.setVisibility(View.INVISIBLE);
+	    			mLayoutDate.setVisibility(View.INVISIBLE);
+	    			mLayoutSubject.setVisibility(View.INVISIBLE);
+	    			mBodyText = MessageTextProcessor.htmlizeFullHeaders(mMessage) + mBodyText;
+	    		}
+	    		
+	    		mContent.loadDataWithBaseURL("x-data://base", mBodyText, "text/html", mCharset, null);
+	    		mBodyText = null;
+	    		mContent.requestFocus();
+	    		
+	    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody().trim(), getApplicationContext());
+	    		
+	    		// Go to the start of the message
+	    		mScroll.scrollTo(0, 0);
+	    		
+	    		String simplifiedSubject = Article.simplifySubject(mSubjectText);
+	
+	    		if (mLastSubject != null && (!mLastSubject.equalsIgnoreCase(simplifiedSubject))) {
+	    			Toast.makeText(getApplicationContext(), getString(R.string.new_subject) + simplifiedSubject, Toast.LENGTH_SHORT).show();
+	    		}
+	    		
+	            // Intercept "attachment://" url clicks
+	            mContent.setWebViewClient(mWebViewClient);
+	            break;	    	
 	    	
-	    		case FETCH_FINISHED_ERROR:
-		    		if (mProgress != null) mProgress.dismiss();
-		    		
-		    		mContent.loadData(getString(R.string.error_loading_kept_unread), "text/html", "UTF-8");
-		    		
-					new AlertDialog.Builder(MessageActivity.this)
-					.setTitle(getString(R.string.error))
-					.setMessage(getString(R.string.error_loading_kept_unread_long) + ":" + mErrorMsg)
-				    .setNeutralButton(getString(R.string.close), null)
-				    .show();
-					break;
+    		case FETCH_FINISHED_ERROR:
+	    		if (mProgress != null) mProgress.dismiss();
+	    		
+	    		mContent.loadData(getString(R.string.error_loading_kept_unread), "text/html", "UTF-8");
+	    		
+				new AlertDialog.Builder(MessageActivity.this)
+				.setTitle(getString(R.string.error))
+				.setMessage(getString(R.string.error_loading_kept_unread_long) + ":" + mErrorMsg)
+			    .setNeutralButton(getString(R.string.close), null)
+			    .show();
+				break;
 	    	
 	    	case FETCH_FINISHED_NODISK:
 		    		mContent.loadData(getString(R.string.error_saving_kept_unread), "text/html", "UTF-8");

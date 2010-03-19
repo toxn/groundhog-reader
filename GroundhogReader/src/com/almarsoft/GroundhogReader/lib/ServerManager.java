@@ -584,9 +584,6 @@ final public class ServerManager {
 		fullMessage.append("\r\n\r\n");
 		fullMessage.append(body.trim());
 		fullMessage.append(signature);
-		
-		Log.d("XXX", "FullMessage");
-		Log.d("XXX", "|" + fullMessage.toString() + "|");
 		postArticle(fullMessage.toString(), false);
 	}
 

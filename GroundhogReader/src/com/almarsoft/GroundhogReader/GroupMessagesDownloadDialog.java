@@ -98,9 +98,9 @@ public class GroupMessagesDownloadDialog {
 	
 	private class ServerArticleInfoGetterTask extends AsyncTask<Void, Integer, Integer > {
 
-		ProgressDialog mProgress = null;
-		String mStatusMsg             = null;
-		String mCurrentGroup        = null;
+		private ProgressDialog mProgress = null;
+		private String mStatusMsg             = null;
+		private String mCurrentGroup        = null;
 		// XXX: Nasty nasty nasty, it should be better for the task to receive these as parameters		
 		final Vector<String> groups = mTmpGroups;
 		
@@ -300,7 +300,7 @@ public class GroupMessagesDownloadDialog {
 	
 	private class MessagePosterTask extends AsyncTask<Void, Void, Integer > {
 
-		ProgressDialog mProgress = null;
+		private ProgressDialog mProgress = null;
 		String mError = null;
 		
 		@Override
