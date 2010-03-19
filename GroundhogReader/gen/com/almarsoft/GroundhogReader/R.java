@@ -42,8 +42,8 @@ public final class R {
         public static final int btn_banned_done=0x7f080004;
         public static final int btn_cancel=0x7f080031;
         public static final int btn_close=0x7f080025;
-        public static final int btn_next=0x7f080017;
-        public static final int btn_prev=0x7f080016;
+        public static final int btn_next=0x7f080016;
+        public static final int btn_prev=0x7f080017;
         public static final int btn_quoting_done=0x7f080027;
         public static final int btn_search=0x7f08002b;
         public static final int compose_menu_bigtext=0x7f080036;

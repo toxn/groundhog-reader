@@ -1,3 +1,6 @@
+1.9.1
+- Bugfix for the "next" & "prev" buttons inversion on the messageview.
+
 1.9.0
 
 Features:

@@ -663,7 +663,6 @@ public class MessageListActivity extends ListActivity {
 			
 			mLoadDBTask = null;
 		}
-		
 	}
 	
 	// ========================================================

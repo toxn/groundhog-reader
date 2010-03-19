@@ -6,8 +6,8 @@
 <string name="subjectcolon">Asunto: </string>
 <string name="authorcolon">Autor: </string>
 <string name="datecolon">Fecha: </string>
-<string name="prev">Siguiente</string>
-<string name="next">Anterior</string>
+<string name="prev">Anterior</string>
+<string name="next">Siguiente</string>
 <string name="server_address_title">Dirección Servidor</string>
 <string name="server_address_summary">Pincha para meter la dirección del servidor</string>
 <string name="server_address_dialog_title">Dirección servidor:</string>
