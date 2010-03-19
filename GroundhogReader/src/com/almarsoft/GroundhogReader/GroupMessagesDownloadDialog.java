@@ -22,6 +22,15 @@ import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 import com.almarsoft.GroundhogReader.lib.UsenetReaderException;
 
+
+/*  FIXME XXX FIXME XXX: 
+ * This activity has a NASTY coupling of network/database work (the AsyncTasks) with the GUI. The excuse is that I didn't 
+ * knew how to do callbacks in Java when I implemented it, but now that I know I should separate the tasks to different 
+ * classes handling them, and communicating with the Dialog vía the callbacks provided.
+ * 
+ */
+
+
 public class GroupMessagesDownloadDialog {
 	
 	private static final int FINISHED_ERROR = 1;
