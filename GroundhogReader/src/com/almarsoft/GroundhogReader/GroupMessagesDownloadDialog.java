@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.almarsoft.GroundhogReader.lib.DBUtils;
 import com.almarsoft.GroundhogReader.lib.FSUtils;
@@ -64,11 +65,12 @@ public class GroupMessagesDownloadDialog {
 	public void interrupt() {
 		if (mWakeLock.isHeld()) mWakeLock.release();
     	
-		if (mServerArticleInfoGetterTask != null && mServerArticleInfoGetterTask.getStatus() != AsyncTask.Status.FINISHED)
-			mServerArticleInfoGetterTask.cancel(true);
+		if (mServerArticleInfoGetterTask != null && mServerArticleInfoGetterTask.getStatus() != AsyncTask.Status.FINISHED) {
+			mServerArticleInfoGetterTask.cancel(false);
+		}
     	
 		if (mMessagePosterTask != null && mMessagePosterTask.getStatus() != AsyncTask.Status.FINISHED)
-			mServerArticleInfoGetterTask.cancel(true);
+			mServerArticleInfoGetterTask.cancel(false);
 	}
 	
 	
@@ -179,8 +181,12 @@ public class GroupMessagesDownloadDialog {
 						number = articleList.get(j);
 						
 						if (isCancelled()) {
-							mStatusMsg = mContext.getString(R.string.interrupted);
-							publishProgress(100, 100);
+							if (j > 0) 
+								DBUtils.storeGroupLastFetchedMessageNumber(group, lastFetched, mContext);
+							
+							if (mProgress != null)
+								mProgress.dismiss();
+							
 							return FINISHED_INTERRUPTED;
 						}
 						publishProgress(j, len);
@@ -212,11 +218,12 @@ public class GroupMessagesDownloadDialog {
 								continue;
 							}
 						}
+						
+						lastFetched = number;
 					}
 
-					if (articleListLen > 0) {
+					if (articleListLen > 0) 
 						DBUtils.storeGroupLastFetchedMessageNumber(group, articleList.lastElement(), mContext);
-					}
 					
 					if (groups.lastElement().equalsIgnoreCase(group))
 						return FETCH_FINISHED_OK;
@@ -288,7 +295,6 @@ public class GroupMessagesDownloadDialog {
 				.setNeutralButton(close, null)
 				.show();
 				break;
-
 			}
 			mServerArticleInfoGetterTask = null;
 		}
@@ -328,6 +334,10 @@ public class GroupMessagesDownloadDialog {
 					
 					if (isCancelled()) {
 						mError = mContext.getString(R.string.download_interrupted_sleep);
+						
+						if (mProgress != null)
+							mProgress.dismiss();
+						
 						return FINISHED_INTERRUPTED;
 					}
 					

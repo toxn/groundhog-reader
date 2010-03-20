@@ -376,15 +376,17 @@ public class GroupListActivity extends ListActivity {
 	@SuppressWarnings("unchecked")
 	private void getAllMessages() {
 		
-		int groupslen = mGroupsArray.length - 1;
+		int groupslen = mGroupsArray.length;
 		
 		if (groupslen == 0) 
 			return;
 		
 		Vector<String> groupVector = new Vector<String>(groupslen);
 		
-		for (int i=0; i < groupslen; i++)
+		for (int i=0; i < groupslen; i++) {
 			groupVector.add(mGroupsArray[i]);
+			Log.d("XXX", "Aniadiendo " + mGroupsArray[i]);
+		}
 		
 		Class[] noargs = new Class[0];
 		

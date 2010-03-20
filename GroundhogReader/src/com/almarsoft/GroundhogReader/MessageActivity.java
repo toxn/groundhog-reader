@@ -794,7 +794,9 @@ public class MessageActivity extends Activity {
 	    			mLayoutDate.setVisibility(View.VISIBLE);
 	    			mLayoutSubject.setVisibility(View.VISIBLE);
 	    			
+	    			Log.d("XXX", "mHeader.getFieldFrom: |" + mHeader.getField("From").getBody() + "|");
 	    			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
+	    			Log.d("XXX", "Despues de decodeFrom: |" + mAuthorText + "|");
 	    			mAuthor.setText(mAuthorText);
 	    			mDate.setText(mHeader.getField("Date").getBody().trim());
 	    			mSubject.setText(mSubjectText);

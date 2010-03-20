@@ -31,7 +31,6 @@ public class DBUtils {
 
     
     public static void markAsRead(long server_article_number, Context context) {
-    	
     	DBHelper dbhelper = new DBHelper(context);
     	SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
     	dbwriter.execSQL("UPDATE headers SET read=1 WHERE server_article_number="+server_article_number);
