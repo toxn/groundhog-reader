@@ -567,6 +567,9 @@ public class MessageListActivity extends ListActivity {
 			SQLiteDatabase db = dbhelper.getReadableDatabase();
 			
 			// Space cleanup: delete all read messages from the DB and catched files
+			// XXX ZZZ: Aqui hay que expirar por fecha, no borrar, puede que sea mas lento y convenga hacerlo solo cuando
+			// se carga un grupo, siempre y cuando no hagan más de 3600 segundos desde la última expiración
+			// (hay que guardar también la fecha de la última expiración.)
 			DBUtils.deleteReadMessages(getApplicationContext());
 			FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments");
 			
@@ -577,6 +580,7 @@ public class MessageListActivity extends ListActivity {
 			}
 			
 			// Now get all the headers with read=0
+			// XXX ZZZ: Cuando la opción "showReadMessages" esté activada, no poner lo de read=0
 			// This is not moved to a single function in DBUtils because this way we can update realistically the 
 			// progressDialog
 			Cursor cur = db .rawQuery(

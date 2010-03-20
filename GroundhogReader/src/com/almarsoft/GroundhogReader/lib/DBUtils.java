@@ -440,6 +440,7 @@ public class DBUtils {
 	
 	// XXX YYY ZZZ: Esto podria ser lento al construir todo el rato db y dbwrite, hay que verlo y ver 
 	// si se puede cachear aunque sea como miembro static
+	// XXX ZZZ: aqui hay que convertir articleInfo.getDate() en fecha unix y meterla en el campo "unixdate" (o como la llame)
 	public static long insertArticleToGroupID(int groupID, Article articleInfo, String finalRefs, 
 			                                  String finalFrom, String finalSubject, Context context) {
 		
@@ -644,6 +645,8 @@ public class DBUtils {
 
 
 	// Delete all the read messages from the cache and from the DB
+	// XXX ZZZ: Cambiar por "expireReadMessages" que toma como argumento adicional el diferencial de fecha en segundos. 
+	// Hay que guardar el campo date como una fecha real...
 	public static void deleteReadMessages(Context context) {
 		
 		DBHelper db = new DBHelper(context);
