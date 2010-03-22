@@ -3,6 +3,7 @@
 <!--  Layout principal, contiene las opciones (con su layout y scroll) y el layout de los botones -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
 	<PreferenceCategory android:title="@string/category_connection">   
 	    
 		<EditTextPreference

@@ -3,9 +3,9 @@ package com.almarsoft.GroundhogReader;
 import java.lang.reflect.Method;
 import java.util.Vector;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,10 +25,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.almarsoft.GroundhogReader.lib.DBHelper;
 import com.almarsoft.GroundhogReader.lib.DBUtils;
@@ -36,7 +38,7 @@ import com.almarsoft.GroundhogReader.lib.FSUtils;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 
-public class GroupListActivity extends ListActivity {
+public class GroupListActivity extends Activity {
     /** Activity showing the list of subscribed groups. */
 	
 	//private final String MAGIC_GROUP_ADD_STRING = "Subscribe to group...";
@@ -60,17 +62,20 @@ public class GroupListActivity extends ListActivity {
 	private GroupMessagesDownloadDialog mDownloader = null;
 	private ServerManager mServerManager;
 	
-	private Button addButton;
-	private Button settingsButton;
-
+	private ListView mGroupsList;
+	
 	private boolean mOfflineMode;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+
+    	setContentView(R.layout.grouplist);
     	
-    	ListView thisListView = this.getListView();
-		registerForContextMenu(thisListView);
+    	mGroupsList = (ListView) this.findViewById(R.id.list_groups);
+    	mGroupsList.setOnItemClickListener(mListItemClickListener);
+		registerForContextMenu(mGroupsList);
+		
 		mServerManager = new ServerManager(getApplicationContext());
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -92,7 +97,7 @@ public class GroupListActivity extends ListActivity {
 			setTitle(getString(R.string.group_online_mode));
 		
 		// Add the buttons
-		addButton        = new Button(this);
+		Button addButton        = (Button) this.findViewById(R.id.btn_add);
 		addButton.setText(getString(R.string.grouplist_add_groups));
 		addButton.setOnClickListener(	
 					new Button.OnClickListener() {
@@ -101,9 +106,8 @@ public class GroupListActivity extends ListActivity {
 						}
 					}
 		);
-		thisListView.addHeaderView(addButton);
 		
-		settingsButton = new Button(this);
+		Button settingsButton = (Button) this.findViewById(R.id.btn_settings);
 		settingsButton.setText(getString(R.string.global_settings));
 		settingsButton.setOnClickListener(
 					new Button.OnClickListener() {
@@ -112,7 +116,6 @@ public class GroupListActivity extends ListActivity {
 						}
 					}
 		);
-		thisListView.addFooterView(settingsButton);
     }
 
     
@@ -255,8 +258,8 @@ public class GroupListActivity extends ListActivity {
 		mGroupsArray = proxyGroupsArray;
 		
 		// Finally fill the list
-        setListAdapter(new ArrayAdapter<String>(this, R.layout.grouplist_item, mGroupsWithUnreadCountArray));
-        getListView().invalidateViews();
+        mGroupsList.setAdapter(new ArrayAdapter<String>(this, R.layout.grouplist_item, mGroupsWithUnreadCountArray));
+        mGroupsList.invalidateViews();
     }
     
 	// ================================================
@@ -385,7 +388,6 @@ public class GroupListActivity extends ListActivity {
 		
 		for (int i=0; i < groupslen; i++) {
 			groupVector.add(mGroupsArray[i]);
-			Log.d("XXX", "Aniadiendo " + mGroupsArray[i]);
 		}
 		
 		Class[] noargs = new Class[0];
@@ -421,7 +423,7 @@ public class GroupListActivity extends ListActivity {
     	
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         //HeaderItemClass header = mHeaderItemsList.get(info.position);
-        final String groupname = mGroupsArray[info.position-1];
+        final String groupname = mGroupsArray[info.position];
         int order = item.getOrder();
         
     	// "Mark all as read" => Show confirm dialog and call markAllRead
@@ -515,145 +517,147 @@ public class GroupListActivity extends ListActivity {
 
     
     // Dialog code in swing/android is soooooooooooooooooo ugly :(
-    @Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
+    
+	OnItemClickListener mListItemClickListener = new OnItemClickListener() {
 
-		final String groupName = mGroupsArray[position-1];
-		
-		mTmpSelectedGroup = groupName;
-		
-		// If in offlinemode, offer to synchronize uncatched messages first, if there is any
-		Context context = getApplicationContext();
-		
-		if (mOfflineMode) {
-			// -------------------------------------------------------------------------------------------------
-			// If we've headers downloaded in online mode offer to download the bodies before entering the group
-			// -------------------------------------------------------------------------------------------------
-			if (DBUtils.groupHasUncatchedMessages(mTmpSelectedGroup, context)) {
-				new AlertDialog.Builder(GroupListActivity.this)
-				.setTitle(getString(R.string.get_new))
-				.setMessage(getString(R.string.warning_online_to_offline_sync))
-				
-			    .setPositiveButton(getString(R.string.yes_sync), 
-			    	new DialogInterface.OnClickListener() {
-			    	
-			    		@SuppressWarnings("unchecked")
-						public void onClick(DialogInterface dlg, int sumthin) {
-			    			Vector<String> groupVector = new Vector<String>(1);
-			    			groupVector.add(mTmpSelectedGroup);
-			    			
-							try {
-								Class[] noargs = new Class[0];
-								// This will be called after the synchronize from mDownloader:
-								Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
-								mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
-								mDownloader.synchronize(true, groupVector, callback, GroupListActivity.this);
-							} catch (SecurityException e) {
-								e.printStackTrace();
-							} catch (NoSuchMethodException e) {
-								e.printStackTrace();
-							}
-			    			
-			    		} 
-			        } 
-			     )		     
-			     .setNegativeButton(getString(R.string.no_enter_anyway),
-			        new DialogInterface.OnClickListener() {
-			    	 	public void onClick(DialogInterface dlg, int sumthin) {
-			    	 		fetchFinishedStartMessageList();
-			    	 	}
-			     	}
-			     )		     		    		 
-			     .show();
-			}
-			// -----------------------------------------------------------------------------
-			// If there are 0 unread messages on offline mode offer to synchronice the group
-			// -----------------------------------------------------------------------------
-			else if (DBUtils.getGroupUnreadCount(mTmpSelectedGroup, context) == 0) {
-				new AlertDialog.Builder(GroupListActivity.this)
-				.setTitle(getString(R.string.get_new))
-				.setMessage(getString(R.string.offline_group_has_no_messages_sync))
-				
-			    .setPositiveButton(getString(R.string.yes_sync), 
-			    	new DialogInterface.OnClickListener() {
-			    	
-			    		@SuppressWarnings("unchecked")
-						public void onClick(DialogInterface dlg, int sumthin) {
-			    			Vector<String> groupVector = new Vector<String>(1);
-			    			groupVector.add(mTmpSelectedGroup);
-			    			
-							try {
-								Class[] noargs = new Class[0];
-								// This will be called after the synchronize from mDownloader:
-								Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
-								mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
-								mDownloader.synchronize(true, groupVector, callback, GroupListActivity.this);
-							} catch (SecurityException e) {
-								e.printStackTrace();
-							} catch (NoSuchMethodException e) {
-								e.printStackTrace();
-							}
-			    			
-			    		} 
-			        } 
-			     )		     
-			     .setNegativeButton(getString(R.string.no_enter_anyway),
-			        new DialogInterface.OnClickListener() {
-			    	 	public void onClick(DialogInterface dlg, int sumthin) {
-			    	 		fetchFinishedStartMessageList();
-			    	 	}
-			     	}
-			     )		     		    		 
-			     .show();
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	
+			final String groupName = mGroupsArray[position];
+			
+			mTmpSelectedGroup = groupName;
+			
+			// If in offlinemode, offer to synchronize uncatched messages first, if there is any
+			Context context = getApplicationContext();
+			
+			if (mOfflineMode) {
+				// -------------------------------------------------------------------------------------------------
+				// If we've headers downloaded in online mode offer to download the bodies before entering the group
+				// -------------------------------------------------------------------------------------------------
+				if (DBUtils.groupHasUncatchedMessages(mTmpSelectedGroup, context)) {
+					new AlertDialog.Builder(GroupListActivity.this)
+					.setTitle(getString(R.string.get_new))
+					.setMessage(getString(R.string.warning_online_to_offline_sync))
+					
+				    .setPositiveButton(getString(R.string.yes_sync), 
+				    	new DialogInterface.OnClickListener() {
+				    	
+				    		@SuppressWarnings("unchecked")
+							public void onClick(DialogInterface dlg, int sumthin) {
+				    			Vector<String> groupVector = new Vector<String>(1);
+				    			groupVector.add(mTmpSelectedGroup);
+				    			
+								try {
+									Class[] noargs = new Class[0];
+									// This will be called after the synchronize from mDownloader:
+									Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
+									mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
+									mDownloader.synchronize(true, groupVector, callback, GroupListActivity.this);
+								} catch (SecurityException e) {
+									e.printStackTrace();
+								} catch (NoSuchMethodException e) {
+									e.printStackTrace();
+								}
+				    			
+				    		} 
+				        } 
+				     )		     
+				     .setNegativeButton(getString(R.string.no_enter_anyway),
+				        new DialogInterface.OnClickListener() {
+				    	 	public void onClick(DialogInterface dlg, int sumthin) {
+				    	 		fetchFinishedStartMessageList();
+				    	 	}
+				     	}
+				     )		     		    		 
+				     .show();
+				}
+				// -----------------------------------------------------------------------------
+				// If there are 0 unread messages on offline mode offer to synchronice the group
+				// -----------------------------------------------------------------------------
+				else if (DBUtils.getGroupUnreadCount(mTmpSelectedGroup, context) == 0) {
+					new AlertDialog.Builder(GroupListActivity.this)
+					.setTitle(getString(R.string.get_new))
+					.setMessage(getString(R.string.offline_group_has_no_messages_sync))
+					
+				    .setPositiveButton(getString(R.string.yes_sync), 
+				    	new DialogInterface.OnClickListener() {
+				    	
+				    		@SuppressWarnings("unchecked")
+							public void onClick(DialogInterface dlg, int sumthin) {
+				    			Vector<String> groupVector = new Vector<String>(1);
+				    			groupVector.add(mTmpSelectedGroup);
+				    			
+								try {
+									Class[] noargs = new Class[0];
+									// This will be called after the synchronize from mDownloader:
+									Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
+									mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
+									mDownloader.synchronize(true, groupVector, callback, GroupListActivity.this);
+								} catch (SecurityException e) {
+									e.printStackTrace();
+								} catch (NoSuchMethodException e) {
+									e.printStackTrace();
+								}
+				    			
+				    		} 
+				        } 
+				     )		     
+				     .setNegativeButton(getString(R.string.no_enter_anyway),
+				        new DialogInterface.OnClickListener() {
+				    	 	public void onClick(DialogInterface dlg, int sumthin) {
+				    	 		fetchFinishedStartMessageList();
+				    	 	}
+				     	}
+				     )		     		    		 
+				     .show();
+					
+				} else {
+					fetchFinishedStartMessageList();
+				}
 				
 			} else {
-				fetchFinishedStartMessageList();
+				// ==========================================
+				// Online mode, ask about getting new headers
+				// ==========================================
+	    		String msg = getString(R.string.fetch_headers_question);
+	    		msg = java.text.MessageFormat.format(msg, mTmpSelectedGroup);
+	    		
+				new AlertDialog.Builder(GroupListActivity.this)
+				.setTitle(getString(R.string.get_new))
+				.setMessage(msg)
+				
+			    .setPositiveButton(getString(R.string.yes), 
+			    	new DialogInterface.OnClickListener() {
+			    		@SuppressWarnings("unchecked")
+						public void onClick(DialogInterface dlg, int sumthin) {
+			    			Vector<String> groupVector = new Vector<String>(1);
+			    			groupVector.add(mTmpSelectedGroup);
+			    			
+							try {
+								Class[] noargs = new Class[0];
+								Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
+								mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
+								mDownloader.synchronize(false, groupVector, callback, GroupListActivity.this);
+							} catch (SecurityException e) {
+								e.printStackTrace();
+							} catch (NoSuchMethodException e) {
+								e.printStackTrace();
+							}
+			    			
+			    		} 
+			        } 
+			     )		     
+			     .setNegativeButton("No",
+			        new DialogInterface.OnClickListener() {
+			    	 	public void onClick(DialogInterface dlg, int sumthin) {
+			    	 		fetchFinishedStartMessageList();
+			    	 	}
+			     	}
+			     )		     		    		 
+			     .show();	
 			}
-			
-		} else {
-			// ==========================================
-			// Online mode, ask about getting new headers
-			// ==========================================
-    		String msg = getString(R.string.fetch_headers_question);
-    		msg = java.text.MessageFormat.format(msg, mTmpSelectedGroup);
-    		
-			new AlertDialog.Builder(GroupListActivity.this)
-			.setTitle(getString(R.string.get_new))
-			.setMessage(msg)
-			
-		    .setPositiveButton(getString(R.string.yes), 
-		    	new DialogInterface.OnClickListener() {
-		    		@SuppressWarnings("unchecked")
-					public void onClick(DialogInterface dlg, int sumthin) {
-		    			Vector<String> groupVector = new Vector<String>(1);
-		    			groupVector.add(mTmpSelectedGroup);
-		    			
-						try {
-							Class[] noargs = new Class[0];
-							Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
-							mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
-							mDownloader.synchronize(false, groupVector, callback, GroupListActivity.this);
-						} catch (SecurityException e) {
-							e.printStackTrace();
-						} catch (NoSuchMethodException e) {
-							e.printStackTrace();
-						}
-		    			
-		    		} 
-		        } 
-		     )		     
-		     .setNegativeButton("No",
-		        new DialogInterface.OnClickListener() {
-		    	 	public void onClick(DialogInterface dlg, int sumthin) {
-		    	 		fetchFinishedStartMessageList();
-		    	 	}
-		     	}
-		     )		     		    		 
-		     .show();	
-		}
-    }
-    
-    
+	    }
+	};
+	
     public void fetchFinishedStartMessageList() {
     	if (mDownloader != null)
     		mDownloader = null;

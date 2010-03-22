@@ -9,8 +9,8 @@ import java.util.Vector;
 import org.apache.commons.net.nntp.Article;
 import org.apache.commons.net.nntp.Threader;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,13 +36,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.almarsoft.GroundhogReader.lib.DBHelper;
 import com.almarsoft.GroundhogReader.lib.DBUtils;
@@ -53,7 +56,7 @@ import com.almarsoft.GroundhogReader.lib.MiniHeader;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 
-public class MessageListActivity extends ListActivity {
+public class MessageListActivity extends Activity {
 
 	//private static final int NOT_FINISHED = 0;
 	private static final int DBGETTER_FINISHED_OK = 1;
@@ -87,34 +90,47 @@ public class MessageListActivity extends ListActivity {
 	private boolean mOfflineMode;
 	private LoadFromDBAndThreadTask mLoadDBTask = null;
 	
+	private ListView mMsgList;
+	private TextView mTitleBar;
+	private ImageButton mGoGroups;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		
+		setContentView(R.layout.messagelist);
 		Context context = getApplicationContext();
 
 		mNumUnread = 0; // Loaded in OnResume || threadMessagesFromDB()
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		mOfflineMode = mPrefs.getBoolean("offlineMode", true);
 
-		registerForContextMenu(getListView());
 
 		// Get the selected group from the GroupListActivity-passed bundle
+		mTitleBar = (TextView) this.findViewById(R.id.topbar_text);
 		mGroup = getIntent().getExtras().getString("selectedGroup");
 		mGroupID = DBUtils.getGroupIdFromName(mGroup, context);
+		
+		mGoGroups = (ImageButton) this.findViewById(R.id.btn_gogroups);
+    	mGoGroups.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+    			MessageListActivity.this.startActivity(new Intent(MessageListActivity.this, GroupListActivity.class));
+    		}
+    	}
+    	);
+
 		
 		mServerManager = new ServerManager(context);
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE, "GroundhogThreading");		
 		
-		ListView lv = getListView();
-		lv.setCacheColorHint(0);
-		lv.setBackgroundColor(Color.WHITE);
-		
+		mMsgList = (ListView) this.findViewById(R.id.list_msgs);
+		mMsgList.setOnItemClickListener(mListItemClickListener);
+		registerForContextMenu(mMsgList);
 		Drawable dw = getResources().getDrawable(R.drawable.greyline2);
-		lv.setDivider(dw);
+		mMsgList.setDivider(dw);
 		
 		// Show the progress dialog, get messages from server, write to DB
 		// and call the loading of message from DB and threading when it ends
@@ -191,10 +207,10 @@ public class MessageListActivity extends ListActivity {
 		
 		if (mHeaderItemsList != null) {
 			mNumUnread = mHeaderItemsList.size() - mReadSet.size();
-			setGroupTitle();
+			mTitleBar.setText(mGroup + ":" + mNumUnread);
 		}
 		
-		getListView().invalidateViews();
+		mMsgList.invalidateViews();
 		
 		if (mServerManager == null)
 			mServerManager = new ServerManager(getApplicationContext());
@@ -217,15 +233,17 @@ public class MessageListActivity extends ListActivity {
 	// number)
 	// ==================================================================================================
 
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-
-		Intent intent_MsgDetail = new Intent(MessageListActivity.this, MessageActivity.class);
-		intent_MsgDetail.putExtra("articleNumbers", mNumbersArray);
-		intent_MsgDetail.putExtra("msgIndexInArray", position);
-		intent_MsgDetail.putExtra("group", mGroup);
-		startActivity(intent_MsgDetail);
-	}
+	OnItemClickListener mListItemClickListener = new OnItemClickListener() {
+		
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	
+			Intent intent_MsgDetail = new Intent(MessageListActivity.this, MessageActivity.class);
+			intent_MsgDetail.putExtra("articleNumbers", mNumbersArray);
+			intent_MsgDetail.putExtra("msgIndexInArray", position);
+			intent_MsgDetail.putExtra("group", mGroup);
+			startActivity(intent_MsgDetail);
+		}
+	};
 
 	
 	// =======================================
@@ -366,25 +384,16 @@ public class MessageListActivity extends ListActivity {
 		String from = header.getArticle().getFrom();
 		markUserMessagesAsRead(from);
 		DBUtils.banUser(from, getApplicationContext());
-		setGroupTitle();
+		mTitleBar.setText(mGroup + ":" + mNumUnread);
 	}
 
 	
 	private void banThread(HeaderItemClass header) {
 		markThreadAsReadOrUnread(header, true);
 		DBUtils.banThread(mGroup, header.getArticle().simplifiedSubject(), getApplicationContext());
-		setGroupTitle();
+		mTitleBar.setText(mGroup + ":" + mNumUnread);
 	}
 
-	
-	private void setGroupTitle() {
-		if (mOfflineMode)
-			setTitle(mGroup + ":" + mNumUnread + " (OFFLINE MODE)");
-		else
-			setTitle(mGroup + ":" + mNumUnread + " (ONLINE MODE)");
-	}
-
-	
 	// setread == true: marks as read, else: marks as unread
 	private void markThreadAsReadOrUnread(HeaderItemClass header, boolean setread) {
 
@@ -416,11 +425,11 @@ public class MessageListActivity extends ListActivity {
 		}
 		mNumUnread = proxyNumUnread;
 		
-		setGroupTitle();
+		mTitleBar.setText(mGroup + ":" + mNumUnread);
 		
 		mReadSet = DBUtils.getUnreadMessagesSet(mGroup, getApplicationContext());
 		DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
-		getListView().invalidateViews();
+		mMsgList.invalidateViews();
 	}
 	
 
@@ -448,11 +457,11 @@ public class MessageListActivity extends ListActivity {
 		}
 		mNumUnread = proxyNumUnread;
 		
-		setGroupTitle();
+		mTitleBar.setText(mGroup + ":" + mNumUnread);
 		
 		mReadSet = DBUtils.getUnreadMessagesSet(mGroup, getApplicationContext());
 		DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
-		getListView().invalidateViews();
+		mMsgList.invalidateViews();
 	}
 	
 	
@@ -535,7 +544,7 @@ public class MessageListActivity extends ListActivity {
 									// Delete all items from the list and
 									// refresh
 									mHeaderItemsList = new ArrayList<HeaderItemClass>();
-									getListView().invalidateViews();
+									mMsgList.invalidateViews();
 									threadMessagesFromDB();
 								}
 							}
@@ -653,8 +662,8 @@ public class MessageListActivity extends ListActivity {
 
 			case DBGETTER_FINISHED_OK:
 				if (mHeaderItemsList != null) {
-					setListAdapter(new ArticleAdapter(MessageListActivity.this, R.layout.messagelist_item, mHeaderItemsList));
-					setGroupTitle();
+					mMsgList.setAdapter(new ArticleAdapter(MessageListActivity.this, R.layout.messagelist_item, mHeaderItemsList));
+					mTitleBar.setText(mGroup + ":" + mNumUnread);
 				}
 				checkNoUnread();
 				break;
@@ -838,6 +847,7 @@ public class MessageListActivity extends ListActivity {
 				level.setText(it.getLevelStr(), TextView.BufferType.SPANNABLE);
 				
 				View subjectChangeLine = (View) v.findViewById(R.id.msglist_line);
+				subjectChangeLine.setPadding(0, 2, 0, 2);
 				
 				/*
 				 * Check the references of the article. If the first reference of the article it's equal than the last article
@@ -936,7 +946,7 @@ public class MessageListActivity extends ListActivity {
 		}
 
 		DBUtils.updateStarredThread(newValue, starred_thread_subject, mGroupID, getApplicationContext());
-		getListView().invalidateViews();
+		mMsgList.invalidateViews();
 	}
 
 
