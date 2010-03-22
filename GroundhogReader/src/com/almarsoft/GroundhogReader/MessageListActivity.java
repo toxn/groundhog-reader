@@ -97,7 +97,7 @@ public class MessageListActivity extends ListActivity {
 
 		mNumUnread = 0; // Loaded in OnResume || threadMessagesFromDB()
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		mOfflineMode = mPrefs.getBoolean("offlineMode", false);
+		mOfflineMode = mPrefs.getBoolean("offlineMode", true);
 
 		registerForContextMenu(getListView());
 
@@ -638,7 +638,6 @@ public class MessageListActivity extends ListActivity {
 			articles = null;
 			mNumUnread = numArticles;
 			DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
-			
 			return DBGETTER_FINISHED_OK;
 		}
 		

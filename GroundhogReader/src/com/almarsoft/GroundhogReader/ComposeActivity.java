@@ -18,6 +18,9 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -52,7 +55,24 @@ public class ComposeActivity extends Activity {
 		mEdit_Groups  = (EditText) this.findViewById(R.id.edit_groups);
 		mEdit_Subject = (EditText) this.findViewById(R.id.edit_subject);
 		mEdit_Body    = (EditText) this.findViewById(R.id.edit_body);
+		Button sendButton   = (Button)   this.findViewById(R.id.btn_send);
+		Button discardButton= (Button)   this.findViewById(R.id.btn_discard);
 		
+    	sendButton.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+    			ComposeActivity.this.postMessage();
+    		}
+    	}
+    	);
+		
+    	discardButton.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+    			ComposeActivity.this.finish();
+    		}
+    	}
+    	);
+
+    	
         this.setComposeSizeFromPrefs(0);
 
 		// Get the header passed from the ; for the moment we only need the newsgroups and subject,

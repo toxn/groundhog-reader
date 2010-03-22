@@ -40,7 +40,6 @@
 		android:layout_height="wrap_content"
 		android:textSize="15sp"
 		android:textStyle="bold"
-		android:textColor="#ff000000"
 	/>
 
 	<TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -49,7 +48,6 @@
 		android:layout_height="wrap_content"
 		android:textSize="18sp"
 		android:textStyle="bold"
-		android:textColor="#ff000000"
 	/>		
 
 		<!-- Layout de autor + corazon (opcional el corazon) -->
@@ -67,7 +65,6 @@
 		android:textSize="14sp"
 		android:textStyle="italic"
 		android:gravity="left"
-		android:textColor="#ff000000"
 		android:layout_weight="1"
 		android:paddingTop="3px"
 		android:paddingBottom="3px"

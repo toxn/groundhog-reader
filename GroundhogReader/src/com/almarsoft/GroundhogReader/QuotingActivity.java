@@ -38,6 +38,22 @@ public class QuotingActivity extends Activity {
         mLinesListView = (ListView) findViewById(R.id.list_quotelines);
         mDoneButton    = (Button)   findViewById(R.id.btn_quoting_done);
         
+        Button allButton = (Button) findViewById(R.id.btn_all);
+        Button noneButton = (Button) findViewById(R.id.btn_none);
+        
+    	allButton.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+    			QuotingActivity.this.touchAll(true);
+    		}
+    	});
+
+    	noneButton.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+    			QuotingActivity.this.touchAll(false);
+    		}
+    	});
+
+        
         String origText = getIntent().getExtras().getString("origText");
         mMultipleFollowup = getIntent().getExtras().getString("multipleFollowup");
         

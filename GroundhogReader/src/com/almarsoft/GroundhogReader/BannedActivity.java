@@ -45,18 +45,22 @@ public class BannedActivity extends Activity {
         setContentView(R.layout.banneds);
         mBannedListView = (ListView) findViewById(R.id.list_banned);
         mDoneButton     = (Button)   findViewById(R.id.btn_banned_done);
+        TextView topBar = (TextView) findViewById(R.id.topbar);
         
         mBanType = getIntent().getExtras().getInt("typeban");
         
         HashSet<String> bannedStringsSet = null;
         
         if (mBanType == UsenetConstants.BANNEDTHREADS) {
+        	topBar.setText(getString(R.string.banned_threads));
         	mGroup   = getIntent().getExtras().getString("group");
         	bannedStringsSet = DBUtils.getBannedThreads(mGroup, getApplicationContext());
         }
         
-        else if (mBanType == UsenetConstants.BANNEDTROLLS)
+        else if (mBanType == UsenetConstants.BANNEDTROLLS) {
+        	topBar.setText(getString(R.string.banned_users));
         	bannedStringsSet = DBUtils.getBannedTrolls(getApplicationContext());
+        }
         
         	
         if (bannedStringsSet == null || bannedStringsSet.size() == 0) {

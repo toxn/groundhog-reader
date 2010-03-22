@@ -88,6 +88,7 @@ public class MessageTextProcessor {
 		}
 	}
 	
+	
 	public static String decodeHeaderInArticleInfo(String originalHeader, String charset) {
 		
 		if (originalHeader.indexOf("=?") != -1) {

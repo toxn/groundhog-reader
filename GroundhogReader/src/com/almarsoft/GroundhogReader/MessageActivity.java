@@ -37,6 +37,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -78,7 +79,7 @@ public class MessageActivity extends Activity {
 	private boolean mShowFullHeaders = false;
 	
 	private LinearLayout mMainLayout;
-	private LinearLayout mLayoutAuthor;
+	//private LinearLayout mLayoutAuthor;
 	private LinearLayout mLayoutSubject;
 	private LinearLayout mLayoutDate;
 	private TextView mAuthor;
@@ -87,8 +88,9 @@ public class MessageActivity extends Activity {
 	private TextView mDate;
 	private WebView mContent;
 	private WebSettings mWebSettings;
-	private Button mButton_Prev;
-	private Button mButton_Next;
+	private ImageButton mButton_Prev;
+	private ImageButton mButton_Next;
+	private ImageButton mButton_GoGroup;
 	private ScrollView mScroll;
 	
 	private SharedPreferences mPrefs;
@@ -104,7 +106,7 @@ public class MessageActivity extends Activity {
     	
     	mPrefs   = PreferenceManager.getDefaultSharedPreferences(this);
     	
-    	mOfflineMode = mPrefs.getBoolean("offlineMode", false);
+    	mOfflineMode = mPrefs.getBoolean("offlineMode", true);
     
     	Bundle extras = getIntent().getExtras();
     	mMsgIndexInArray     = extras.getInt("msgIndexInArray");
@@ -112,7 +114,7 @@ public class MessageActivity extends Activity {
     	mGroup               = extras.getString("group");
 
     	mMainLayout    = (LinearLayout) this.findViewById(R.id.main_message_layout);
-    	mLayoutAuthor  = (LinearLayout) this.findViewById(R.id.layout_author);
+    	//mLayoutAuthor  = (LinearLayout) this.findViewById(R.id.layout_author);
     	mLayoutSubject = (LinearLayout) this.findViewById(R.id.layout_subject);
     	mLayoutDate    = (LinearLayout) this.findViewById(R.id.layout_date);
     	
@@ -138,7 +140,7 @@ public class MessageActivity extends Activity {
         
         // Conectar los botones next y prev (sumar/restar 1 a mMsgIndexInArray y
         // llamar a loadMessage();
-        mButton_Prev = (Button) this.findViewById(R.id.btn_prev);        
+        mButton_Prev = (ImageButton) this.findViewById(R.id.btn_prev);        
 		    mButton_Prev.setOnClickListener(new OnClickListener() {
 		    	
 				public void onClick(View arg0) {
@@ -152,9 +154,8 @@ public class MessageActivity extends Activity {
 				}
 	        });
 		    
-        mButton_Next = (Button) this.findViewById(R.id.btn_next);        
+        mButton_Next = (ImageButton) this.findViewById(R.id.btn_next);        
 	    mButton_Next.setOnClickListener(new OnClickListener() {
-	    	
 			public void onClick(View arg0) {
 				if (mMsgIndexInArray+1 < mArticleNumbersArray.length) {
 					mMsgIndexInArray++;
@@ -165,6 +166,20 @@ public class MessageActivity extends Activity {
 
 			}
         });
+	    
+	    mButton_GoGroup = (ImageButton) this.findViewById(R.id.btn_gogroup);
+	    	mButton_GoGroup.setOnClickListener(new OnClickListener() {
+	    		public void onClick(View v) {
+	    			/*
+	        		Intent intent_MsgList = new Intent(MessageActivity.this, MessageListActivity.class);
+	    			intent_MsgList.putExtra("selectedGroup", mGroup);
+	    			MessageActivity.this.startActivity(intent_MsgList);
+	    			*/
+	    			MessageActivity.this.finish();
+	    		}
+	    	}
+	    	);
+	    	
 	    
     	mServerManager = new ServerManager(getApplicationContext());
 		    
@@ -342,8 +357,10 @@ public class MessageActivity extends Activity {
     		
     	} else if (intentCode == UsenetConstants.BANNEDACTIVITYINTENT) {
     		
-    		if (resultCode == RESULT_OK) Toast.makeText(getApplicationContext(), getString(R.string.reload_tosee_unbanned_authors), Toast.LENGTH_LONG).show();
-    		else if (resultCode == RESULT_CANCELED) Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_unban), Toast.LENGTH_SHORT).show();
+    		if (resultCode == RESULT_OK) 
+    			Toast.makeText(getApplicationContext(), getString(R.string.reload_tosee_unbanned_authors), Toast.LENGTH_LONG).show();
+    		else if (resultCode == RESULT_CANCELED) 
+    			Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_unban), Toast.LENGTH_SHORT).show();
     		
     	} else if (intentCode == UsenetConstants.QUOTINGINTENT) {
     		
@@ -772,7 +789,7 @@ public class MessageActivity extends Activity {
 	            
 	            
 	            mHeart.invalidate();
-	            mLayoutAuthor.invalidate();
+	            //mLayoutAuthor.invalidate();
 	            mMainLayout.invalidate();
 	
 	    		// Save a copy of the body for the reply so we don't break netiquette rules with
@@ -790,19 +807,17 @@ public class MessageActivity extends Activity {
 	    		
 	    		// Show the nice, short, headers or the ugly full headers if the user selected that
 	    		if (!mShowFullHeaders) {
-	    			mLayoutAuthor.setVisibility(View.VISIBLE);
+	    			//mLayoutAuthor.setVisibility(View.VISIBLE);
 	    			mLayoutDate.setVisibility(View.VISIBLE);
 	    			mLayoutSubject.setVisibility(View.VISIBLE);
 	    			
-	    			Log.d("XXX", "mHeader.getFieldFrom: |" + mHeader.getField("From").getBody() + "|");
 	    			mAuthorText = MessageTextProcessor.decodeFrom(mHeader.getField("From"), mCharset, mMessage);
-	    			Log.d("XXX", "Despues de decodeFrom: |" + mAuthorText + "|");
 	    			mAuthor.setText(mAuthorText);
 	    			mDate.setText(mHeader.getField("Date").getBody().trim());
 	    			mSubject.setText(mSubjectText);
 	    			
 	    		} else {
-	    			mLayoutAuthor.setVisibility(View.INVISIBLE);
+	    			//mLayoutAuthor.setVisibility(View.INVISIBLE);
 	    			mLayoutDate.setVisibility(View.INVISIBLE);
 	    			mLayoutSubject.setVisibility(View.INVISIBLE);
 	    			mBodyText = MessageTextProcessor.htmlizeFullHeaders(mMessage) + mBodyText;

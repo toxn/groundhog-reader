@@ -539,7 +539,7 @@ final public class ServerManager {
 		if (forceOnline)
 			offlineMode = false;
 		else
-			offlineMode = prefs.getBoolean("offlineMode", false);
+			offlineMode = prefs.getBoolean("offlineMode", true);
 		
 		boolean postInOffline = prefs.getBoolean("postDirectlyInOfflineMode", true);
 		boolean saveToOutbox = offlineMode && !postInOffline;

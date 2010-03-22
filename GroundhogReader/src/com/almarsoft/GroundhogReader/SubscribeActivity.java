@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -49,6 +50,7 @@ public class SubscribeActivity extends Activity {
 	private ListView mView_Results;
 	private EditText mSearchText;		
 	private Button mButton_Search;
+	private ImageButton mButton_GoGroups;
 	private String[] mSearchResultsStr;
 	private ServerManager mServerManager;
 	
@@ -65,6 +67,14 @@ public class SubscribeActivity extends Activity {
         mButton_Search = (Button) this.findViewById(R.id.btn_search);
         mSearchText = (EditText) this.findViewById(R.id.searchGroups);
         mButton_Search.setOnClickListener(mSearchListener);
+        mButton_GoGroups = (ImageButton) this.findViewById(R.id.btn_gogroups);
+    	mButton_GoGroups.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+    			SubscribeActivity.this.startActivity(new Intent(SubscribeActivity.this, GroupListActivity.class));
+    		}
+    	}
+    	);
+        
         
         //mView_Results.setOnItemSelectedListener(mItemSelectedListener);
         mView_Results.setOnItemClickListener(mItemClickListener);
@@ -174,6 +184,7 @@ public class SubscribeActivity extends Activity {
 		}
     	
     };
+ 
     
     // ==================================================================================================
     // Search Listener ==================================================================================

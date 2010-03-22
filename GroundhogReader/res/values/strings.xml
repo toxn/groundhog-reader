@@ -68,6 +68,7 @@
 <string name="cancel">Cancel</string>
 <string name="banned_menu_select">Select all</string>
 <string name="banned_menu_deselect">Deselect all</string>
+<string name="send">Send</string>
 <string name="discard">Discard</string>
 <string name="compose_deletetext">Delete all text</string>
 <string name="compose_increasesize">Increase text size</string>
@@ -202,4 +203,11 @@
 <string name="go_to_settings">Go to settings</string>
 <string name="hostname_not_configured_goto_settings">Your usenet server hostname is not configured. Do you want to configure the program now?</string>
 <string name="group">Group</string>
+<string name="offline_group_has_no_messages_sync">The group has 0 unread messages, synchronize group to get more now?</string>
+<string name="subscribe_to_groups">Subscribe to Groups</string>
+<string name="banned_threads">Banned Threads</string>
+<string name="banned_users">Banned Users</string>
+<string name="select_quote">Select Text to Quote</string>
+<string name="all">All</string>
+<string name="none">None</string>
 </resources>
