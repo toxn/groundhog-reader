@@ -200,4 +200,11 @@
 <string name="error_auth_check_pass_go_settings">При авторизации произошла ошибка; пожалуйста, проверьте свои логин и пароль. Перейти в настройки?</string>
 <string name="go_to_settings">Перейти в настройки</string>
 <string name="hostname_not_configured_goto_settings">Адрес сервера новостей не указан. Хотите настроить программу сейчас?</string>
+<string name="offline_group_has_no_messages_sync">Нет непрочитанных сообщений в группе, запустить синхронизацию для получения новых?</string>
+<string name="subscribe_to_groups">Подписаться на группы</string>
+<string name="banned_threads">Забаненные треды</string>
+<string name="banned_users">Забаненные авторы</string>
+<string name="select_quote">Отметте текст для цитирования</string>
+<string name="all">Все</string>
+<string name="none">Ничего</string>
 </resources>

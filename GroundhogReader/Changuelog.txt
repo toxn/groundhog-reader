@@ -1,3 +1,6 @@
+1.10.1
+- Turkish translation added thanks to Mustafa Ogun
+
 1.10.0
 - Offline mode is now default so some clueless people doesnt say the program is
   "slow" because of the network time to get the messages in online mode.
