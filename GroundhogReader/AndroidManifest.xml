@@ -38,7 +38,9 @@
         </activity>
         
      
-        <activity android:name=".OptionsActivity" android:label="Settings">
+        <activity android:name=".OptionsActivity" 
+                  android:label="Settings"
+                  android:theme="@android:style/Theme.Black">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />                
                 <category android:name="android.intent.category.DEFAULT" />                

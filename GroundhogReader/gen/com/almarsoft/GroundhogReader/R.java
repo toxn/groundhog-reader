@@ -200,6 +200,7 @@ public final class R {
         public static final int category_connection=0x7f050029;
         public static final int category_grouplist=0x7f05002b;
         public static final int category_posting=0x7f05002e;
+        public static final int category_reading=0x7f0500d1;
         public static final int category_userinfo=0x7f05002a;
         public static final int change_encoding_tip=0x7f05006b;
         public static final int clear_cache=0x7f050051;
