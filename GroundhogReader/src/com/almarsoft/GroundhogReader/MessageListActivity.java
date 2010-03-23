@@ -253,10 +253,27 @@ public class MessageListActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.messagelist_menu_newpost:
-				Intent intent_Compose = new Intent(MessageListActivity.this, ComposeActivity.class);
-				intent_Compose.putExtra("isNew", true);
-				intent_Compose.putExtra("group", mGroup);
-				startActivityForResult(intent_Compose, UsenetConstants.COMPOSEMESSAGEINTENT);
+				String name  = mPrefs.getString("name", null);
+				String email = mPrefs.getString("email", null);
+				
+				if (name == null || name.trim().length() == 0 || email == null || email.trim().length() == 0) {
+					new AlertDialog.Builder(this).setTitle(getString(R.string.user_info_unset)).setMessage(
+							getString(R.string.must_fill_name_email_goto_settings))
+							.setPositiveButton(getString(R.string.yes),
+									new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dlg, int sumthin) {
+											startActivity(new Intent(MessageListActivity.this, OptionsActivity.class));
+											}
+										}
+									).setNegativeButton(getString(R.string.no), null)
+									.show();
+				}
+				else {
+					Intent intent_Compose = new Intent(MessageListActivity.this, ComposeActivity.class);
+					intent_Compose.putExtra("isNew", true);
+					intent_Compose.putExtra("group", mGroup);
+					startActivityForResult(intent_Compose, UsenetConstants.COMPOSEMESSAGEINTENT);
+				}
 				return true;
 	
 			case R.id.messagelist_menu_getnew:
@@ -508,21 +525,6 @@ public class MessageListActivity extends Activity {
 	}
 
 	
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		
-		MenuItem getnew = menu.findItem(R.id.messagelist_menu_getnew); 
-		if (mOfflineMode) {
-			getnew.setTitle("Sync group Messages");
-			getnew.setIcon(android.R.drawable.ic_menu_upload);
-		} else {
-			getnew.setTitle("Get new messages");
-			getnew.setIcon(android.R.drawable.ic_menu_set_as);
-		}
-		return (super.onPrepareOptionsMenu(menu));
-	}
-	
-	
 	// ==========================================================================
 	// Mark all the messages from the group as read (called from the menu
 	// option)
@@ -683,8 +685,7 @@ public class MessageListActivity extends Activity {
 	// ========================================================
 	public void threadMessagesFromDB() {
 		
-		if (mDownloader != null) 
-			mDownloader = null;
+		mDownloader = null;
 
 		mLoadDBTask = new LoadFromDBAndThreadTask();
 		mLoadDBTask.execute();

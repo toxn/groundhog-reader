@@ -1,79 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Cadena guardada del holamundo</string>
+    <!--  Not to change -->
     <string name="app_name">Groundhog</string>
+    
 <string name="done">Done</string>
-<string name="groupscolon">Groups: </string>
-<string name="subjectcolon">Subject: </string>
-<string name="authorcolon">Author: </string>
-<string name="datecolon">Date: </string>
-<string name="prev">Prev</string>
-<string name="next">Next</string>
-<string name="server_address_title">Server Address</string>
-<string name="server_address_summary">Click to enter server address</string>
-<string name="server_address_dialog_title">Server host address:</string>
-<string name="server_address_dialog_message">Enter your usenet server address, (WITHOUT the nntp://). If you don't have an account, you can register one on a free server like Motzarella (go to http://news.motzarella.org with the browser) or others</string>
-<string name="server_port_title">Server Port</string>
-<string name="server_port_summary">Click to enter server port number</string>
-<string name="server_port_dialog_title">Server port number:</string>
-<string name="server_need_login_title">Server needs login</string>
-<string name="login_name_title">Login name</string>
-<string name="login_name_summary">Click to enter the login name in the server</string>
-<string name="login_name_dialog_title">Enter login name</string>
-<string name="pass_title">Password</string>
-<string name="pass_summary">Click to enter the password in the server</string>
-<string name="pass_dialog_title">Enter password</string>
-<string name="maxfetch_title">Max message fetch</string>
-<string name="maxfetch_summary">Max number of messages to fetch when you open a group</string>
-<string name="maxfetch_dialog_title">Max fetch</string>
-<string name="name_title">Name</string>
-<string name="name_summary">Name to use on posts</string>
-<string name="name_dialog_title">Enter name</string>
-<string name="email_title">Email</string>
-<string name="email_summary">Email to use on posts (mandatory but can be fake)</string>
-<string name="email_dialog_title">Enter email</string>
-<string name="post_charset_title">Posting Charset</string>
-<string name="post_charset_summary">Charset to use on the messages you post</string>
-<string name="post_charset_dialog_title">Pick your charset</string>
-<string name="read_charset_title">Read Default Charset</string>
-<string name="read_charset_summary">Default charset for reading</string>
-<string name="read_charset_dialog_title">Pick your charset</string>
-<string name="signature_title">Signature</string>
-<string name="signature_summary">Optionally put your customized signature</string>
-<string name="signature_dialog_title">Write signature</string>
-<string name="category_connection">Connection</string>
-<string name="category_userinfo">User info</string>
-<string name="category_grouplist">Groups list</string>
-<string name="replies_title">Highlight my replies</string>
-<string name="replies_summary">Highlight direct replies to my messages</string>
-<string name="category_posting">Posting</string>
-<string name="posting">Posting</string>
-<string name="quote_title">Use quote selector</string>
-<string name="quote_summary">Enable the screen for easy quoting before posting</string>
-<string name="replycursor_title">Reply cursor at start</string>
-<string name="replycursor_summary">If enabled, put the cursor at the start of the message when replying</string>
-<string name="followup_title">Multiple followups</string>
-<string name="followup_summary">When replying a message posted to several groups followup to...</string>
-<string name="followup_dialog_title">Followup to...</string>
-<string name="quotestring_title">Message quoting header</string>
-<string name="quotestring_summary">Click to configure the initial line of the quoted text when replying</string>
-<string name="quotestring_dialog_title">Configure line</string>
-<string name="quotestring_dialog_message">Write the text to show as the first line of the original message before the quoted part. You can use the tokens [date] and [user] that will be replaced on the line with the appropiate values. For example the default value is: On [date], [user] wrote:</string>
-<string name="offlinemode_title">Offline mode posting</string>
-<string name="offlinemode_summary">If enabled, messages posted in offline mode will tried to be sent online first</string>
-<string name="close">Close</string>
-<string name="btn_search_groups">Search Groups</string>
-<string name="statuscolon">Status:</string>
-<string name="starting_d">Starting...</string>
-<string name="cancel">Cancel</string>
-<string name="banned_menu_select">Select all</string>
-<string name="banned_menu_deselect">Deselect all</string>
-<string name="send">Send</string>
-<string name="discard">Discard</string>
-<string name="compose_deletetext">Delete all text</string>
-<string name="compose_increasesize">Increase text size</string>
-<string name="compose_decreasesize">Decrease text size</string>
-<string name="compose_changue_post_charset">Change post charset</string>
+
+<!--  These 4 are used when displaying a message, on the header -->
+	<string name="groupscolon">Groups: </string>
+	<string name="subjectcolon">Subject: </string>
+	<string name="authorcolon">Author: </string>
+	<string name="datecolon">Date: </string>
+
+<!--Start of settings strings -->	
+	<!-- Connection settings -->	
+		<string name="category_connection">Connection</string> <!-- Category title -->
+		<string name="section_mandatory">This section is mandatory</string> 
+		<string name="server_address_title">Server Address</string>
+		<string name="server_address_summary">News server Address</string>
+		<string name="server_address_dialog_title">Server host address:</string>
+		<string name="server_address_dialog_message">Enter your usenet server address (without the nntp://)</string>
+		
+		<string name="server_port_title">Server Port</string>
+		<string name="server_port_summary">Port the server uses (usually 119)</string>
+		<string name="server_port_dialog_title">Server port number:</string>
+		
+		<string name="server_need_login_title">Server needs login</string>
+		<string name="server_need_login_summary">Enable it if the server need user and pass</string>
+		<string name="login_name_title">Login name</string>
+		<string name="login_name_summary">Connection login name (this is NOT the user shown in posts!)</string>
+		<string name="login_name_dialog_title">Enter login name</string>
+		<string name="pass_title">Password</string>
+		<string name="pass_summary">Connection login password</string>
+		<string name="pass_dialog_title">Enter password</string>
+		
+		<string name="maxfetch_title">Max message fetch</string>
+		<string name="maxfetch_summary">Max messages to fetch when getting new ones</string>
+		<string name="maxfetch_dialog_title">Max fetch</string>
+		
+	<!-- User Info settings -->	
+		<string name="category_userinfo">User info</string>
+		<string name="summary_userinfo">User information (name, email, etc.)</string>
+		<string name="name_title">Name</string>
+		<string name="name_summary">Name to use on posts</string>
+		<string name="name_dialog_title">Enter name</string>
+		<string name="email_title">Email</string>
+		<string name="email_summary">Email to use on posts (mandatory but can be fake)</string>
+		<string name="email_dialog_title">Enter email</string>
+		<string name="signature_title">Signature</string>
+		<string name="signature_summary">Optionally put your customized signature</string>
+		<string name="signature_dialog_title">Write signature</string>
+			
+	<!-- Writing settings -->	
+		<string name="category_posting">Posting</string>
+		<string name="posting">Posting</string>
+		<string name="post_charset_title">Posting Charset</string>
+		<string name="post_charset_summary">Charset to use on the messages you post</string>
+			<string name="quote_title">Use quote selector</string>
+		<string name="quote_summary">Enable the screen for easy quoting before posting</string>
+		<string name="replycursor_title">Reply cursor at start</string>
+		<string name="replycursor_summary">If enabled, put the cursor at the start of the message when replying</string>
+		
+		<string name="followup_title">Multiple followups</string>
+		<string name="followup_summary">When replying a message posted to several groups followup to...</string>
+		<string name="followup_dialog_title">Followup to...</string>
+		
+		<string name="quotestring_title">Message quoting header</string>
+		<string name="quotestring_summary">Click to configure the initial line of the quoted text when replying</string>
+		<string name="quotestring_dialog_title">Configure line</string>
+		<string name="quotestring_dialog_message">Write the text to show as the first line of the original message before the quoted part. You can use the tokens [date] and [user] that will be replaced on the line with the appropiate values. For example the default value is: On [date], [user] wrote:</string>
+		<!-- Translate the sentence but NOT the words inside brackets like [date] or [quote] -->
+		<string name="default_quote_header">On [date], [user] wrote:</string>
+		
+		<string name="offlinemode_title">Offline mode posting</string>
+		<string name="offlinemode_summary">If enabled, messages posted in offline mode will tried to be sent online first</string>
+		
+	<!-- Reading settings -->
+		<string name="post_charset_dialog_title">Pick your charset</string>
+		<string name="options_reading">Options related to reading</string>
+		<string name="read_charset_title">Read Default Charset</string>
+		<string name="read_charset_summary">Default charset for reading</string>
+		<string name="read_charset_dialog_title">Pick your charset</string>
+		<string name="replies_title">Highlight my replies</string>
+		<string name="replies_summary">Highlight direct replies to my messages</string>
+
+<!-- End of settings strings -->
+
+
+<!--  Generic stuff -->
+	<string name="close">Close</string>
+	<string name="cancel">Cancel</string>
+
+<!-- These are used on the screen where the user can subscribe new groups -->
+	<string name="btn_search_groups">Search Groups</string>
+	<string name="statuscolon">Status:</string>
+	<string name="starting_d">Starting...</string>
+
+<!-- This is used on the quotes selector to select all text lines or select none of it -->
+	<string name="banned_menu_select">Select all</string>
+	<string name="banned_menu_deselect">Deselect all</string>
+	
+<!-- These strings are used on the compose message screen where the user can compose new messages -->	
+	<string name="send">Send</string>
+	<string name="discard">Discard</string>
+	<string name="compose_deletetext">Delete all text</string>
+	<string name="compose_increasesize">Increase text size</string>
+	<string name="compose_decreasesize">Decrease text size</string>
+	<string name="compose_changue_post_charset">Change post charset</string>
+
+	
 <string name="mark_all_read">Mark all as read</string>
 <string name="unsubscribe_group">Unsubscribe group</string>
 <string name="grouplist_getall">Get All Messages</string>
@@ -211,4 +245,6 @@
 <string name="all">All</string>
 <string name="none">None</string>
 <string name="category_reading">Reading</string>
+
+
 </resources>
