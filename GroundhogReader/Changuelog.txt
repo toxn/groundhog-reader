@@ -1,3 +1,16 @@
+1.10.1
+- Turkish translation added thanks to Mustafa Ogun
+
+1.10.0
+- Offline mode is now default so some clueless people doesnt say the program is
+  "slow" because of the network time to get the messages in online mode.
+- Offer to download messages when entering a group in offline mode if
+  there are no messages.
+- Lots of GUI and usability improvements
+
+1.9.1
+- Bugfix for the "next" & "prev" buttons inversion on the messageview.
+
 1.9.0
 
 Features:

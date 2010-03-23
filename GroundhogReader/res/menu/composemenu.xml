@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item android:id="@+id/compose_menu_send"
-  android:title="Send"
+  android:title="@string/send"
   android:orderInCategory="1"
   android:icon="@android:drawable/ic_menu_send"
   />

@@ -24,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
 				"                                   unread_count INTEGER);");
 		
 		// Downloaded message headers
+		// XXX ZZZ Hay que añadir una columna INTEGER para guardar la fecha y poder hacer comparaciones rápidas
 		db.execSQL("CREATE TABLE headers (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 											 "subscribed_group_id INTEGER, " +
 				                             "reference_list TEXT, " +
@@ -79,6 +80,9 @@ public class DBHelper extends SQLiteOpenHelper {
 	}
 	
 	
+	// XXX ZZZ: Aqui hay que añadir un "if oldVersion <= 4": ADD COLUMN (la fecha como INTEGER en headers)
+	// Además, habrá que hacer un proceso en ese caso para actualizar la BBDD metiendo al fecha a los mensajes
+	// existentes. HAY QUE PROBAR MUY BIEN MANTENIENDO LA VERSION VIEJA!
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int currentVersion) {
 		

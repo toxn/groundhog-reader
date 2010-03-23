@@ -6,8 +6,8 @@
 <string name="subjectcolon">Asunto: </string>
 <string name="authorcolon">Autor: </string>
 <string name="datecolon">Fecha: </string>
-<string name="prev">Siguiente</string>
-<string name="next">Anterior</string>
+<string name="prev">Anterior</string>
+<string name="next">Siguiente</string>
 <string name="server_address_title">Dirección Servidor</string>
 <string name="server_address_summary">Pincha para meter la dirección del servidor</string>
 <string name="server_address_dialog_title">Dirección servidor:</string>
@@ -199,4 +199,14 @@
 <string name="error_auth_check_pass_go_settings">Error autenticando con el servidor; Comprueba los datos de acceso. ¿Desea ir a las opciones ahora?</string>
 <string name="go_to_settings">Ir a opciones</string>
 <string name="hostname_not_configured_goto_settings">No has configurado la dirección del servidor. ¿Deseas ir a las opciones ahora?</string>
+
+<string name="offline_group_has_no_messages_sync">El grupo tiene 0 mensajes sin leer, ¿obtener más?</string>
+<string name="subscribe_to_groups">Subscribir Grupos</string>
+<string name="banned_threads">Hilos Baneados</string>
+<string name="banned_users">Usuarios Baneados</string>
+<string name="select_quote">Seleccione Texto cCtado</string>
+<string name="all">Todo</string>
+<string name="none">Nada</string>
+<string name="send">Envíar</string>
+
 </resources>

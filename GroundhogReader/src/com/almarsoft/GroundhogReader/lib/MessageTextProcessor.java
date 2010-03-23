@@ -70,18 +70,24 @@ public class MessageTextProcessor {
 		if (rawStr.indexOf("=?") != -1) {
 			MailboxList authorList = message.getFrom();
 			Mailbox author;
+			
 			if ((authorList != null) && (author = authorList.get(0)) != null) 
 				return author.getName() + "<" + author.getAddress() + ">";
-			else 
-				return "Unknown";
+			else {
+				// Parse error on mime4j; some people use emails like "bla@@@bla.com", some stuuuuuupid servers accept them, and mime4j
+				// gives (rightly) a parse error
+				return DecoderUtil.decodeEncodedWords(fromField.getBody().trim());
+			}
 		}
 
 		try {
 			return new String(fromField.getRaw().toByteArray(), charset).replaceFirst("From: ", "");
 		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 			return "Unknown";
 		}
 	}
+	
 	
 	public static String decodeHeaderInArticleInfo(String originalHeader, String charset) {
 		
@@ -141,6 +147,7 @@ public class MessageTextProcessor {
 					    && (charprev != ':')
 						&& (charprev != '?')
 						&& (!inputText.substring(i-2, i).equals("> "))
+						&& (charprev != '>')
 						&& (charprev != '\n') // Don't remove newlines when there are more than one together (formatting newlines)
 						&& (hasNext && charnext != '\n')) {
 						
@@ -174,6 +181,7 @@ public class MessageTextProcessor {
     	return res.toString();
     }
     
+    
     public static String prepareHTML(String inputText) {
     	
     	StringBuilder html = new StringBuilder(inputText.length());
@@ -184,15 +192,12 @@ public class MessageTextProcessor {
     	int linesLen = lines.length;
     	int quoteLevel = 0;
     	int lastQuoteLevel;
-    	//StringWriter ws = new StringWriter();
     	
     	for (int i=0; i < linesLen; i++) {
     		
     		line = lines[i];
     		
-    		
     		// Remove empty quoting lines like ">\n" and ">> \n"
-    		
     		if (isEmptyQuoting(line)) {
     			html.append("<BR/>");
     			continue;

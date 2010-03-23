@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -22,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -30,6 +32,7 @@ import com.almarsoft.GroundhogReader.lib.DBUtils;
 import com.almarsoft.GroundhogReader.lib.ServerAuthException;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
+
 
 public class SubscribeActivity extends Activity {
 	
@@ -47,6 +50,7 @@ public class SubscribeActivity extends Activity {
 	private ListView mView_Results;
 	private EditText mSearchText;		
 	private Button mButton_Search;
+	private ImageButton mButton_GoGroups;
 	private String[] mSearchResultsStr;
 	private ServerManager mServerManager;
 	
@@ -63,6 +67,14 @@ public class SubscribeActivity extends Activity {
         mButton_Search = (Button) this.findViewById(R.id.btn_search);
         mSearchText = (EditText) this.findViewById(R.id.searchGroups);
         mButton_Search.setOnClickListener(mSearchListener);
+        mButton_GoGroups = (ImageButton) this.findViewById(R.id.btn_gogroups);
+    	mButton_GoGroups.setOnClickListener(new OnClickListener() {
+    		public void onClick(View v) {
+    			SubscribeActivity.this.startActivity(new Intent(SubscribeActivity.this, GroupListActivity.class));
+    		}
+    	}
+    	);
+        
         
         //mView_Results.setOnItemSelectedListener(mItemSelectedListener);
         mView_Results.setOnItemClickListener(mItemClickListener);
@@ -172,6 +184,7 @@ public class SubscribeActivity extends Activity {
 		}
     	
     };
+ 
     
     // ==================================================================================================
     // Search Listener ==================================================================================
@@ -181,11 +194,6 @@ public class SubscribeActivity extends Activity {
     	
     	private NewsgroupInfo[] mSearchResults;
     	
-    	String mTmpSearchText;
-    	
-    	//private ProgressDialog mSearchProgress;
-    	private Thread mConnectionThread;
-
 		public void onClick(View v) {
 			String searchText = mSearchText.getText().toString();
 			
@@ -205,140 +213,122 @@ public class SubscribeActivity extends Activity {
 			}
 		}
 		
-		// Shortcut to log and update the UI
-	    private void updateStatus(final String textStatus, final int threadStatus) {
-	    	mHandler.post(new Runnable() {
-		        public void run() {
-		            updateResultsInUi(textStatus, threadStatus);
-		        }
-		    });
-	    }
-			
-		// Creates the "Please wait" dialog, create the thread, closes dialog
-	    // all while updating the UI ussing a Runnable
+		// Creates the "Please wait" dialog, create the background task, run it and close the dialog
 		private void searchGroups(String searchText) {
-			
-			// This is because I'm lazy and I don't want to subclass the thread just to pass
-			// arguments :)
-			mTmpSearchText = searchText;
-			
-			// This thread is where the connection to the se
-			mConnectionThread = new Thread() {
-				
-			    // Main thread code --------------------
-			    public void run() {			    	
-			    				    	
-			    	try {
 
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			AsyncTask<String, Void, Integer> connectToSearchTask = new AsyncTask<String, Void, Integer>() {
+				
+				@Override
+				protected Integer doInBackground(String... searchTextArr) {
+					
+			    	try {
 			    		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubscribeActivity.this);
 			    		
 		        		String host = prefs.getString("host", null);
-		        		if (host == null) {
-		        			updateStatus(getString(R.string.not_configured), NOT_CONFIGURED);
-		        			return;
-		        		} 
+		        		if (host == null) 
+		        			return NOT_CONFIGURED;
 		        			
-		        		mSearchResults = mServerManager.listNewsgroups("*" + mTmpSearchText + "*");
+		        		mSearchResults = mServerManager.listNewsgroups("*" + searchTextArr[0] + "*");
 		        		
-		        		if (mSearchResults == null) {
+		        		if (mSearchResults == null) 
 		        			throw new IOException();
-		        		}
 		        		
-		        		mTmpSearchText = null;		        		
-		        		updateStatus(getString(R.string.finished), FINISHED_OK);		        			
+		        		return FINISHED_OK;
 		        		
 			    	} catch (IOException e) {
-		        		updateStatus(getString(R.string.error), FINISHED_ERROR);
 		        		e.printStackTrace();
+		        		return FINISHED_ERROR;
 		        	} catch (ServerAuthException e) {
-		        		updateStatus(getString(R.string.auth_error), FINISHED_AUTH_ERROR);
+		        		return FINISHED_AUTH_ERROR;
 		        	}
-			    	
-			    }
+				}
+
 				
+				protected void onPostExecute(Integer resultobj) {
+					
+					dismissDialog(ID_DIALOG_SEARCHING);
+					
+					switch(resultobj.intValue()) {
+
+						case FINISHED_OK:
+	
+			                if (mSearchResults != null && mSearchResults.length > 0) {
+	
+			                    String[] searchResultsStrProxy = new String[mSearchResults.length];
+			                    NewsgroupInfo[] searchResultsProxy = mSearchResults;
+			                    int searchLen = searchResultsProxy.length;
+	
+			                    for (int i = 0; i < searchLen; i++) {
+			                        searchResultsStrProxy[i] = searchResultsProxy[i].getNewsgroup();
+			                    }
+	
+			                    mSearchResultsStr = searchResultsStrProxy;
+	
+			                    mView_Results.setAdapter(new ArrayAdapter<String>(SubscribeActivity.this,
+			                            android.R.layout.simple_list_item_1, mSearchResultsStr));
+			                }
+			                break;					
+						
+						
+						case FINISHED_ERROR:
+	
+			                new AlertDialog.Builder(SubscribeActivity.this)
+			                .setTitle(getString(R.string.error))
+			                .setMessage(getString(R.string.error_retrieving_check_connection))
+			                .setPositiveButton(getString(R.string.yes),
+			                        new DialogInterface.OnClickListener(){
+			                            public void onClick(DialogInterface dlg, int sumthin){
+			                                startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class));
+			                            }
+			                        }
+			                     )
+			                .setNegativeButton(getString(R.string.no), null)
+			                .show();
+			                break;
+			            
+			            
+						case FINISHED_AUTH_ERROR:
+	
+			                new AlertDialog.Builder(SubscribeActivity.this)
+			                .setTitle(getString(R.string.auth_error))
+			                .setMessage(getString(R.string.error_auth_check_pass_go_settings))
+			                .setPositiveButton(getString(R.string.yes),
+			                        new DialogInterface.OnClickListener(){
+			                            public void onClick(DialogInterface dlg, int sumthin){ 
+			                                startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class));
+			                            } 
+			                        }
+			                     )
+			                .setNegativeButton(getString(R.string.no), null)
+			                .show();
+			                break;
+	
+			                
+						case NOT_CONFIGURED:
+	
+			                // The host is not configured
+			                new AlertDialog.Builder(SubscribeActivity.this)
+			                .setTitle(getString(R.string.go_to_settings))
+			                .setMessage(getString(R.string.hostname_not_configured_goto_settings))
+			                .setPositiveButton(getString(R.string.yes),
+			                    new DialogInterface.OnClickListener(){
+			                        public void onClick(DialogInterface dlg, int sumthin){
+			                            startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class));
+			                        }
+			                    }
+			                 )
+			                 .setNegativeButton(getString(R.string.no), null)
+			                 .show();
+			                break;
+		            }      
+				}
 			};
 			
-			mConnectionThread.start();
 			showDialog(ID_DIALOG_SEARCHING);
-			
-		}
-		
-		
-	    // Check if the thread has finished and then close the dialog and
-	    // update the search results ListView
-	    private void updateResultsInUi(String status, int threadStatus) {
-	    	
-	    	dismissDialog(ID_DIALOG_SEARCHING);
-	    	
-	    	if (threadStatus == FINISHED_ERROR) {
-	    		
-				new AlertDialog.Builder(SubscribeActivity.this)
-				.setTitle(getString(R.string.error))
-				.setMessage(getString(R.string.error_retrieving_check_connection))    							    		 
-			    .setPositiveButton(getString(R.string.yes), 
-				    	new DialogInterface.OnClickListener(){
-				    		public void onClick(DialogInterface dlg, int sumthin){ 
-								startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class)); 
-				    		} 
-				        } 
-				     )		     
-			    .setNegativeButton(getString(R.string.no), null)		     		    		 
-			    .show();			
-				
-	    	}
-	    	if (threadStatus == FINISHED_AUTH_ERROR) {
-	    		
-				new AlertDialog.Builder(SubscribeActivity.this)
-				.setTitle(getString(R.string.auth_error))
-				.setMessage(getString(R.string.error_auth_check_pass_go_settings))    							    		 
-			    .setPositiveButton(getString(R.string.yes), 
-				    	new DialogInterface.OnClickListener(){
-				    		public void onClick(DialogInterface dlg, int sumthin){ 
-								startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class)); 
-				    		} 
-				        } 
-				     )		     
-			    .setNegativeButton(getString(R.string.no), null)		     		    		 
-			    .show();		
-				
-	    	}
-	    		    	
-	    	else if (threadStatus == FINISHED_OK) {
-	    		
-	    		if (mSearchResults != null && mSearchResults.length > 0) {	    			
-		    		
-		    		String[] searchResultsStrProxy = new String[mSearchResults.length];
-		    		NewsgroupInfo[] searchResultsProxy = mSearchResults;
-		    		int searchLen = searchResultsProxy.length;
-		    		
-		    		for (int i = 0; i < searchLen; i++) {
-		    			searchResultsStrProxy[i] = searchResultsProxy[i].getNewsgroup();		    			
-		    		}
-		    		
-		    		mSearchResultsStr = searchResultsStrProxy;
-		    		
-		            mView_Results.setAdapter(new ArrayAdapter<String>(SubscribeActivity.this, 
-		            		android.R.layout.simple_list_item_1, mSearchResultsStr));	            
-	    		}	    		
-	    		
-	    	} else if (threadStatus == NOT_CONFIGURED) {
-	    		
-	    		// The host is not configured
-				new AlertDialog.Builder(SubscribeActivity.this)
-				.setTitle(getString(R.string.go_to_settings))
-				.setMessage(getString(R.string.hostname_not_configured_goto_settings))    							    		 
-			    .setPositiveButton(getString(R.string.yes), 
-			    	new DialogInterface.OnClickListener(){
-			    		public void onClick(DialogInterface dlg, int sumthin){ 
-							startActivity(new Intent(SubscribeActivity.this, OptionsActivity.class)); 
-			    		} 
-			        } 
-			     )		     
-			     .setNegativeButton(getString(R.string.no), null)		     		    		 
-			     .show();			    		
-	    	}
-	    }
-	    
-    };
+			connectToSearchTask.execute(searchText);
+			}
+		};
 }
 

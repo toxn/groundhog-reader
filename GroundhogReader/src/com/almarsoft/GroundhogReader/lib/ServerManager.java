@@ -539,7 +539,7 @@ final public class ServerManager {
 		if (forceOnline)
 			offlineMode = false;
 		else
-			offlineMode = prefs.getBoolean("offlineMode", false);
+			offlineMode = prefs.getBoolean("offlineMode", true);
 		
 		boolean postInOffline = prefs.getBoolean("postDirectlyInOfflineMode", true);
 		boolean saveToOutbox = offlineMode && !postInOffline;
@@ -584,9 +584,6 @@ final public class ServerManager {
 		fullMessage.append("\r\n\r\n");
 		fullMessage.append(body.trim());
 		fullMessage.append(signature);
-		
-		Log.d("XXX", "FullMessage");
-		Log.d("XXX", "|" + fullMessage.toString() + "|");
 		postArticle(fullMessage.toString(), false);
 	}
 

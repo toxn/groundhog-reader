@@ -6,6 +6,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/commons-lang-2.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/misc.jar"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="libs/apache-mime4j-0.6.jar"/>
+	<classpathentry kind="lib" path="libs/apache-mime4j-0.6.jar" sourcepath="/home/juanjux/reader/GroundhogReader/apache-mime4j-0.6"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -2,8 +2,15 @@
 
 <!--  Layout principal, contiene las opciones (con su layout y scroll) y el layout de los botones -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/category_connection">   
+<PreferenceScreen 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+>
+
+	
+	<PreferenceScreen 
+	android:title="@string/category_connection"
+	
+	>   
 	    
 		<EditTextPreference
 		android:key="host"
@@ -12,7 +19,7 @@
 		android:summary="@string/server_address_summary"
 		android:dialogTitle="@string/server_address_dialog_title"
 		android:dialogMessage="@string/server_address_dialog_message"
-		android:singleLine="true"			
+		android:singleLine="true"
 		/>
 
 		<EditTextPreference
@@ -37,7 +44,7 @@
 		android:title="@string/login_name_title"
 		android:summary="@string/login_name_summary"
 		android:dialogTitle="@string/login_name_dialog_title"
-		android:singleLine="true"			
+		android:singleLine="true"
 		/>
 		
 		<EditTextPreference		
@@ -46,7 +53,7 @@
 		android:summary="@string/pass_summary"
 		android:dialogTitle="@string/pass_dialog_title"
 		android:password="true"	
-		android:singleLine="true"		
+		android:singleLine="true"
 		/>
 		
 		<EditTextPreference
@@ -59,9 +66,9 @@
 		android:numeric="integer"
 		/>
 		
-	</PreferenceCategory>
+	</PreferenceScreen>
 				
-	<PreferenceCategory android:title="@string/category_userinfo"> 
+	<PreferenceScreen android:title="@string/category_userinfo"> 
 		<EditTextPreference
 		android:key="name"			
 		android:title="@string/name_title"
@@ -77,25 +84,6 @@
 		android:dialogTitle="@string/email_dialog_title"
 		android:singleLine="true"						
 		/>
-		
-		<ListPreference
-		android:key="postCharset"
-		android:title="@string/post_charset_title"
-		android:summary="@string/post_charset_summary"  
-		android:entries="@array/postCharsetKeys" 
-		android:entryValues="@array/postCharsetValues" 
-		android:dialogTitle="@string/post_charset_dialog_title" 
-		/>
-		
-		<ListPreference
-		android:key="readDefaultCharset"
-		android:title="@string/read_charset_title"
-		android:summary="@string/read_charset_summary"  
-		android:entries="@array/postCharsetKeys" 
-		android:entryValues="@array/postCharsetValues" 
-		android:dialogTitle="@string/read_charset_dialog_title" 
-		/>
-		
 		 				
 		<EditTextPreference
 		android:key="signature"
@@ -104,9 +92,19 @@
 		android:dialogTitle="@string/signature_dialog_title"
 		android:singleLine="false"
 		/>
-	</PreferenceCategory>
+	</PreferenceScreen>
 	
-	<PreferenceCategory android:title="@string/category_grouplist">
+	<PreferenceScreen android:title="@string/category_reading">
+	
+		<ListPreference
+		android:key="readDefaultCharset"
+		android:title="@string/read_charset_title"
+		android:summary="@string/read_charset_summary"  
+		android:entries="@array/postCharsetKeys" 
+		android:entryValues="@array/postCharsetValues" 
+		android:dialogTitle="@string/read_charset_dialog_title" 
+		/>	
+	
 		<CheckBoxPreference
 		android:key="markReplies"
 		android:id="@+id/preference_markReplies"
@@ -114,9 +112,19 @@
 		android:summary="@string/replies_summary"			
 		android:checked="true"
 		/>	
-	</PreferenceCategory>
+	</PreferenceScreen>
 	
-	<PreferenceCategory android:title="@string/category_posting">
+	<PreferenceScreen android:title="@string/category_posting">
+		<ListPreference
+		android:key="postCharset"
+		android:title="@string/post_charset_title"
+		android:summary="@string/post_charset_summary"  
+		android:entries="@array/postCharsetKeys" 
+		android:entryValues="@array/postCharsetValues" 
+		android:dialogTitle="@string/post_charset_dialog_title" 
+		/>
+	
+	
 		<CheckBoxPreference
 		android:key="useQuotingView"
 		android:id="@+id/preference_usequoter"
@@ -158,7 +166,7 @@
 		android:summary="@string/offlinemode_summary"			
 		android:checked="true"
 		/>	
-	</PreferenceCategory>
+	</PreferenceScreen>
 
 	
 </PreferenceScreen>
