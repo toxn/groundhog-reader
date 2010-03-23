@@ -1,3 +1,10 @@
+1.11.0
+- Reorganization of the settings
+- First-time users are sent directly to the settings
+- HTC Tattoo support
+- Decoupling of network code on the download dialog (preparing for the
+  notifier.)
+
 1.10.1
 - Turkish translation added thanks to Mustafa Ogun
 

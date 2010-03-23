@@ -21,7 +21,7 @@ import android.content.SharedPreferences;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 
-public class MessagePoster {
+public class MessagePosterLib {
 
 	private String mCurrentGroup;
 	private String mGroups;
@@ -37,7 +37,7 @@ public class MessagePoster {
 	Context mContext;
 	
 	
-	public MessagePoster(String currentGroup, String groups, String body, String subject, 
+	public MessagePosterLib(String currentGroup, String groups, String body, String subject, 
 			                String references, String prevMsgId, Context context){
 	
 		mCurrentGroup = currentGroup;

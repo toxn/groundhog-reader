@@ -79,14 +79,14 @@ public class GroupListActivity extends Activity {
 		mServerManager = new ServerManager(getApplicationContext());
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		// Detect first-time usage and show help
+		// Detect first-time usage and send to settings
 		boolean firstTime = prefs.getBoolean("firstTime", true);
 		
 		if (firstTime) {
 			Editor ed = prefs.edit();
 			ed.putBoolean("firstTime", false);
 			ed.commit();
-			startActivity(new Intent(GroupListActivity.this, HelpActivity.class));
+			startActivity(new Intent(GroupListActivity.this, OptionsActivity.class));
 		}
 		
 		mOfflineMode = prefs.getBoolean("offlineMode", true);
@@ -659,8 +659,7 @@ public class GroupListActivity extends Activity {
 	};
 	
     public void fetchFinishedStartMessageList() {
-    	if (mDownloader != null)
-    		mDownloader = null;
+  		mDownloader = null;
     	Intent msgList = new Intent(GroupListActivity.this, MessageListActivity.class);
     	msgList.putExtra("selectedGroup", mTmpSelectedGroup);
     	startActivity(msgList);

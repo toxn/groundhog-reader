@@ -4,14 +4,14 @@
 
 <PreferenceScreen 
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	
 >
-
 	
 	<PreferenceScreen 
 	android:title="@string/category_connection"
-	
+	android:summary="@string/section_mandatory"
+	android:icon="@drawable/love"
 	>   
-	    
 		<EditTextPreference
 		android:key="host"
 		android:id="@+id/preference_host"
@@ -35,12 +35,14 @@
 		<CheckBoxPreference
 		android:key="needsAuth"
 		android:id="@+id/preference_needsAuth"
-		android:title="@string/server_need_login_title"			
+		android:title="@string/server_need_login_title"
+		android:summary="@string/server_need_login_summary"			
 		android:checked="true"
 		/>
 
-		<EditTextPreference		
-		android:key="login"	
+		<EditTextPreference	
+		android:key="login"
+		android:dependency="needsAuth"	
 		android:title="@string/login_name_title"
 		android:summary="@string/login_name_summary"
 		android:dialogTitle="@string/login_name_dialog_title"
@@ -48,7 +50,8 @@
 		/>
 		
 		<EditTextPreference		
-		android:key="pass"	
+		android:key="pass"
+		android:dependency="needsAuth"	
 		android:title="@string/pass_title"
 		android:summary="@string/pass_summary"
 		android:dialogTitle="@string/pass_dialog_title"
@@ -68,13 +71,16 @@
 		
 	</PreferenceScreen>
 				
-	<PreferenceScreen android:title="@string/category_userinfo"> 
+	<PreferenceScreen 
+		android:title="@string/category_userinfo"
+		android:summary="@string/summary_userinfo"
+	> 
 		<EditTextPreference
 		android:key="name"			
 		android:title="@string/name_title"
 		android:summary="@string/name_summary"
 		android:dialogTitle="@string/name_dialog_title"
-		android:singleLine="true"						
+		android:singleLine="true"
 		/>
 
 		<EditTextPreference
@@ -82,7 +88,8 @@
 		android:title="@string/email_title"
 		android:summary="@string/email_summary"
 		android:dialogTitle="@string/email_dialog_title"
-		android:singleLine="true"						
+		android:singleLine="true"
+		android:defaultValue="fake@fakeemail.com"						
 		/>
 		 				
 		<EditTextPreference
@@ -94,7 +101,10 @@
 		/>
 	</PreferenceScreen>
 	
-	<PreferenceScreen android:title="@string/category_reading">
+	<PreferenceScreen 
+		android:title="@string/category_reading"
+		android:summary="@string/options_reading"
+	>
 	
 		<ListPreference
 		android:key="readDefaultCharset"
@@ -114,7 +124,11 @@
 		/>	
 	</PreferenceScreen>
 	
-	<PreferenceScreen android:title="@string/category_posting">
+	<PreferenceScreen 
+		android:title="@string/category_posting"
+		android:summary="Options related to posting messages"
+	>
+	
 		<ListPreference
 		android:key="postCharset"
 		android:title="@string/post_charset_title"
@@ -156,7 +170,8 @@
 		android:summary="@string/quotestring_summary"
 		android:dialogTitle="@string/quotestring_dialog_title"
 		android:dialogMessage="@string/quotestring_dialog_message"
-		android:singleLine="false"			
+		android:singleLine="false"	
+		android:defaultValue="@string/default_quote_header"		
 		/>		  		
 
 		<CheckBoxPreference

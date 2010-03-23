@@ -24,7 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.almarsoft.GroundhogReader.lib.MessagePoster;
+import com.almarsoft.GroundhogReader.lib.MessagePosterLib;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
 import com.almarsoft.GroundhogReader.lib.ServerAuthException;
 import com.almarsoft.GroundhogReader.lib.UsenetReaderException;
@@ -204,7 +204,7 @@ public class ComposeActivity extends Activity {
 	// - Get the reference list of the original message and add its msgid at the end
 	// - Add the "From" with reference to ourselves
 	// - Generate our own msgid
-	// - Add the signatura (if any)
+	// - Add the signature (if any)
 	// - Create the dialog
 	// - Create the thread that do the real posting
 	// - Make the thread update the dialog using an UIupdater like the other views
@@ -221,7 +221,7 @@ public class ComposeActivity extends Activity {
 			
 			@Override
 			protected Void doInBackground(Void... arg0) {
-				MessagePoster poster = new MessagePoster(mCurrentGroup, 
+				MessagePosterLib poster = new MessagePosterLib(mCurrentGroup, 
 								                        mEdit_Groups.getText().toString(), 
 								                 		 mEdit_Body.getText().toString(), 
 								                        mEdit_Subject.getText().toString(), 

@@ -36,7 +36,6 @@ import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -542,7 +541,16 @@ public class MessageActivity extends Activity {
 		String email = mPrefs.getString("email", null);
 		
 		if (name == null || name.trim().length() == 0 || email == null || email.trim().length() == 0) {
-			userInfoNotSet();
+			new AlertDialog.Builder(this).setTitle(getString(R.string.user_info_unset)).setMessage(
+					getString(R.string.must_fill_name_email_goto_settings))
+					.setPositiveButton(getString(R.string.yes),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dlg, int sumthin) {
+									startActivity(new Intent(MessageActivity.this, OptionsActivity.class));
+									}
+								}
+							).setNegativeButton(getString(R.string.no), null)
+							.show();
 			return;
 		}
 		
@@ -562,21 +570,6 @@ public class MessageActivity extends Activity {
 			intent_Post.putExtra("group", mGroup);
 			startActivityForResult(intent_Post, UsenetConstants.COMPOSEMESSAGEINTENT);
 		}    	
-    }
-    
-    
-    private void userInfoNotSet() {
-    	
-		new AlertDialog.Builder(this).setTitle(getString(R.string.user_info_unset)).setMessage(
-				getString(R.string.must_fill_name_email_goto_settings))
-				.setPositiveButton(getString(R.string.yes),
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dlg, int sumthin) {
-								startActivity(new Intent(MessageActivity.this, OptionsActivity.class));
-								}
-							}
-						).setNegativeButton(getString(R.string.no), null)
-						.show();
     }
     
     

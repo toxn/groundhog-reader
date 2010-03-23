@@ -1,31 +1,64 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<item android:orderInCategory="1" android:title="New post"
-		android:id="@+id/messagelist_menu_newpost" android:icon="@android:drawable/ic_menu_edit"></item>
+	<item android:orderInCategory="1" 
+		android:title="New post"
+		android:id="@+id/messagelist_menu_newpost" 
+		android:icon="@android:drawable/ic_menu_edit" 
+	/>
+	
 
-	<item android:id="@+id/messagelist_menu_groupslist"
-	android:orderInCategory="2" android:icon="@android:drawable/ic_media_rew" android:title="@string/msglist_group_list"></item>
+	<item 
+		android:id="@+id/messagelist_menu_groupslist"
+		android:orderInCategory="2" 
+		android:icon="@android:drawable/ic_media_rew" 
+		android:title="@string/msglist_group_list"
+	/>
 
-	<item android:id="@+id/messagelist_menu_refresh"
-	android:orderInCategory="3" android:icon="@android:drawable/ic_menu_rotate" android:title="@string/msglist_refresh"></item>
+	<item 
+		android:id="@+id/messagelist_menu_refresh"
+		android:orderInCategory="3" 
+		android:icon="@android:drawable/ic_menu_rotate" 
+		android:title="@string/msglist_refresh"
+	/>
 	
-	<item android:id="@+id/messagelist_menu_getnew"
-	android:orderInCategory="4" android:icon="@android:drawable/ic_menu_set_as" android:title="@string/msglist_getnew"></item>
+	<item 
+		android:id="@+id/messagelist_menu_getnew"
+		android:orderInCategory="4" 
+		android:icon="@android:drawable/ic_menu_set_as" 
+		android:title="@string/msglist_getnew"
+	/>
 	
-	<item android:id="@+id/messagelist_menu_markread"
-	android:orderInCategory="5" android:icon="@android:drawable/ic_menu_close_clear_cancel" android:title="@string/msglist_markread"></item>
+	<item 
+		android:id="@+id/messagelist_menu_markread"
+		android:orderInCategory="5" 
+		android:icon="@android:drawable/ic_menu_close_clear_cancel" 
+		android:title="@string/msglist_markread"
+	/>
 	
-	<item android:id="@+id/messagelist_menu_managebanneds"
-	android:orderInCategory="6" android:title="@string/msglist_manage_banned"/>
+	<item 
+		android:id="@+id/messagelist_menu_managebanneds"
+		android:orderInCategory="6" 
+		android:title="@string/msglist_manage_banned"
+	/>
 	
-	<item android:id="@+id/messagelist_menu_managebannedusers"
-	android:orderInCategory="7" android:title="@string/msglist_manage_banned_users"/>
+	<item 
+		android:id="@+id/messagelist_menu_managebannedusers"
+		android:orderInCategory="7" 
+		android:title="@string/msglist_manage_banned_users"
+	/>
 	
-	<item android:id="@+id/messagelist_menu_charset"
-	android:orderInCategory="8" android:title="@string/msglist_change_read_charset"/>    
+	<item 
+		android:id="@+id/messagelist_menu_charset"
+		android:orderInCategory="8" 
+		android:title="@string/msglist_change_read_charset"
+	/>    
 		
-	<item android:id="@+id/messagelist_menu_settings"
-	android:orderInCategory="9" android:icon="@android:drawable/ic_menu_preferences" android:title="@string/global_settings"></item>
+	<item 
+		android:id="@+id/messagelist_menu_settings"
+		android:orderInCategory="9" 
+		android:icon="@android:drawable/ic_menu_preferences" 
+		android:title="@string/global_settings"
+	/>
 </menu>
 
 
