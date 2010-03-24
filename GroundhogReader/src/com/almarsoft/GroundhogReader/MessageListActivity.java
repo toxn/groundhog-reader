@@ -203,7 +203,7 @@ public class MessageListActivity extends Activity {
 		// Now get the unread items. Yes, the select to load mHeaderItemsList is done with
 		// "WHERE read=0" but the MessageActivity can also set some messages as read using the
 		// Next and Prev buttons
-		mReadSet = DBUtils.getUnreadMessagesSet(mGroup, getApplicationContext());
+		mReadSet = DBUtils.getReadMessagesSet(mGroup, getApplicationContext());
 		
 		if (mHeaderItemsList != null) {
 			mNumUnread = mHeaderItemsList.size() - mReadSet.size();
@@ -444,7 +444,7 @@ public class MessageListActivity extends Activity {
 		
 		mTitleBar.setText(mGroup + ":" + mNumUnread);
 		
-		mReadSet = DBUtils.getUnreadMessagesSet(mGroup, getApplicationContext());
+		mReadSet = DBUtils.getReadMessagesSet(mGroup, getApplicationContext());
 		DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
 		mMsgList.invalidateViews();
 	}
@@ -476,7 +476,7 @@ public class MessageListActivity extends Activity {
 		
 		mTitleBar.setText(mGroup + ":" + mNumUnread);
 		
-		mReadSet = DBUtils.getUnreadMessagesSet(mGroup, getApplicationContext());
+		mReadSet = DBUtils.getReadMessagesSet(mGroup, getApplicationContext());
 		DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
 		mMsgList.invalidateViews();
 	}
@@ -576,13 +576,6 @@ public class MessageListActivity extends Activity {
 			String charset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
 			DBHelper dbhelper = new DBHelper(getApplicationContext());
 			SQLiteDatabase db = dbhelper.getReadableDatabase();
-			
-			// Space cleanup: delete all read messages from the DB and catched files
-			// XXX ZZZ: Aqui hay que expirar por fecha, no borrar, puede que sea mas lento y convenga hacerlo solo cuando
-			// se carga un grupo, siempre y cuando no hagan más de 3600 segundos desde la última expiración
-			// (hay que guardar también la fecha de la última expiración.)
-			DBUtils.deleteReadMessages(getApplicationContext());
-			FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments");
 			
 			// Get the msgIds of all my posts to check for replies on fillListNonRecursive; load them on a set
 			

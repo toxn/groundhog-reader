@@ -75,8 +75,6 @@ public class SubscribeActivity extends Activity {
     	}
     	);
         
-        
-        //mView_Results.setOnItemSelectedListener(mItemSelectedListener);
         mView_Results.setOnItemClickListener(mItemClickListener);
     }
     

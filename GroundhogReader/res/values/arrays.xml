@@ -70,4 +70,19 @@
         <item>ASCII</item>       
 </string-array>
 
+<string-array name="expireModeKeys">
+	<item>1 day</item>
+	<item>1 week</item>
+	<item>1 month</item>
+	<item>Never(manually)</item>
+</string-array>
+
+<!--  Times in miliseconds -->
+<integer-array name="expireModeValues">
+	<item>86400000</item>
+	<item>604800000</item>
+	<item>2592000000</item>
+	<item>0</item>
+</integer-array>
+
 </resources>

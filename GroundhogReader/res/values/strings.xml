@@ -82,6 +82,10 @@
 		<string name="read_charset_dialog_title">Pick your charset</string>
 		<string name="replies_title">Highlight my replies</string>
 		<string name="replies_summary">Highlight direct replies to my messages</string>
+		<string name="expire_mode">Read messages expiration</string>
+		<string name="expire_mode_summary">When to delete read messages</string>
+		<string name="expire_modes_dialog_title">Expiration mode</string>
+		
 
 <!-- End of settings strings -->
 
@@ -157,7 +161,7 @@
 <string name="set_online_mode">Set Online Mode</string>
 <string name="get_all_headers">Get All Headers</string>
 <string name="set_offline_mode">Set Offline Mode</string>
-<string name="confirm_delete_cache">Do you want to delete the program cache? All unread messages will be deleted!</string>
+<string name="confirm_expire_messages">Do you want to delete all read messages?</string>
 <string name="group_menu">Group menu</string>
 <string name="error">Error</string>
 <string name="mark_read_question">Do you want to mark all messages in {0} as read?</string>
@@ -245,6 +249,6 @@
 <string name="all">All</string>
 <string name="none">None</string>
 <string name="category_reading">Reading</string>
-
+<string name="expire_messages">Expire read messages</string>
 
 </resources>

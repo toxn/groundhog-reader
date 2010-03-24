@@ -63,8 +63,8 @@ public class GroupListActivity extends Activity {
 	private ServerManager mServerManager;
 	
 	private ListView mGroupsList;
-	
 	private boolean mOfflineMode;
+	private SharedPreferences mPrefs;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,19 +77,19 @@ public class GroupListActivity extends Activity {
 		registerForContextMenu(mGroupsList);
 		
 		mServerManager = new ServerManager(getApplicationContext());
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		// Detect first-time usage and send to settings
-		boolean firstTime = prefs.getBoolean("firstTime", true);
+		boolean firstTime = mPrefs.getBoolean("firstTime", true);
 		
 		if (firstTime) {
-			Editor ed = prefs.edit();
+			Editor ed = mPrefs.edit();
 			ed.putBoolean("firstTime", false);
 			ed.commit();
 			startActivity(new Intent(GroupListActivity.this, OptionsActivity.class));
 		}
 		
-		mOfflineMode = prefs.getBoolean("offlineMode", true);
+		mOfflineMode = mPrefs.getBoolean("offlineMode", true);
 		
 		if (mOfflineMode) 
 			setTitle(getString(R.string.group_offline_mode));
@@ -128,9 +128,7 @@ public class GroupListActivity extends Activity {
 		// =====================================================
         // Try to detect server hostname changes in the settings
     	// =====================================================
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		if (prefs.getBoolean("hostChanged", false)) {
+		if (mPrefs.getBoolean("hostChanged", false)) {
 			// The host  has changed in the prefs, show the dialog and clean the group headers
 			new AlertDialog.Builder(GroupListActivity.this)
 			.setTitle(getString(R.string.group_headers))
@@ -141,7 +139,7 @@ public class GroupListActivity extends Activity {
 			DBUtils.restartAllGroupsMessages(getApplicationContext());
 			
 			// Finally remote the "dirty" mark and repaint the screen
-			Editor editor = prefs.edit();
+			Editor editor = mPrefs.edit();
 			editor.putBoolean("hostChanged", false);
 			editor.commit();
 			
@@ -314,8 +312,7 @@ public class GroupListActivity extends Activity {
 				
 			case R.id.grouplist_menu_offline:
 				mOfflineMode = !mOfflineMode;
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-				Editor editor = prefs.edit();
+				Editor editor = mPrefs.edit();
 				editor.putBoolean("offlineMode", mOfflineMode);
 				editor.commit();
 				
@@ -325,8 +322,8 @@ public class GroupListActivity extends Activity {
 					setTitle(getString(R.string.group_online_mode));
 				return true;
 				
-			case R.id.grouplist_menu_clearcache:
-				showClearCacheDialog();
+			case R.id.grouplist_menu_expire_messages:
+				showExpireMessagesDialog();
 				return true;
 				
 			case R.id.grouplist_menu_quickhelp:
@@ -337,30 +334,29 @@ public class GroupListActivity extends Activity {
 	}
 	
 	
-	private void showClearCacheDialog() {
+	private void showExpireMessagesDialog() {
 		new AlertDialog.Builder(GroupListActivity.this)
 		.setTitle(getString(R.string.clear_cache))
-		.setMessage(getString(R.string.confirm_delete_cache))
-	    .setPositiveButton("Yes", 
+		.setMessage(getString(R.string.confirm_expire_messages))
+	    .setPositiveButton(getString(R.string.yes), 
 	    	new DialogInterface.OnClickListener() {
 	    		public void onClick(DialogInterface dlg, int sumthin) { 
-	    			clearCache();
+	    			expireReadMessages();
 	    		} 
 	        } 
 	     )		     
-	     .setNegativeButton("No", null)		     		    		 
+	     .setNegativeButton(getString(R.string.no), null)		     		    		 
 	     .show();		
 	}
 	
 	
-	private void clearCache() {
+	private void expireReadMessages() {
 		
 		AsyncTask<Void, Void, Void> cacheDeleterTask = new AsyncTask<Void, Void, Void>() {
 			@Override
 			protected Void doInBackground(Void... arg0) {
-				DBUtils.deleteAllMessages(GroupListActivity.this.getApplicationContext());
-				FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups");
-				FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments");
+				long expireTime = mPrefs.getLong("expireMode", 86400);
+				DBUtils.expireReadMessages(GroupListActivity.this.getApplicationContext(), expireTime);
 				return null;
 			}
 			
@@ -475,7 +471,6 @@ public class GroupListActivity extends Activity {
 			@Override
 			protected Void doInBackground(Void... arg0) {
 	    		DBUtils.groupMarkAllRead(group, GroupListActivity.this.getApplicationContext());
-	    		DBUtils.deleteReadMessages(GroupListActivity.this.getApplicationContext());
 				return null;
 			}
 			

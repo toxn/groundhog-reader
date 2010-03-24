@@ -33,10 +33,10 @@ public class DBUtils {
     public static void markAsRead(long server_article_number, Context context) {
     	DBHelper dbhelper = new DBHelper(context);
     	SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
-    	dbwriter.execSQL("UPDATE headers SET read=1 WHERE server_article_number="+server_article_number);
+    	dbwriter.execSQL("UPDATE headers SET read=1, read_unixdate=" + System.currentTimeMillis() + 
+    			        " WHERE server_article_number="+server_article_number);
     	dbwriter.close(); dbhelper.close();
     }
-    
     
     public static void markAsRead(String msgId, Context context) {
     	
@@ -44,13 +44,13 @@ public class DBUtils {
     		
 	    	DBHelper dbhelper = new DBHelper(context);
 	    	SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
-	    	dbwriter.execSQL("UPDATE headers SET read=1 WHERE server_article_id="+ esc(msgId));
+	    	dbwriter.execSQL("UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+	    			        " WHERE server_article_id="+ esc(msgId));
 	    	dbwriter.close(); dbhelper.close();
     	}
     	
     }
 
-    
     public static void markAsUnread(String msgId, Context context) {
     	
     	if (msgId != null) {
@@ -58,17 +58,16 @@ public class DBUtils {
     		DBHelper dbhelper = new DBHelper(context);
     		SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
     		
-    		dbwriter.execSQL("UPDATE headers SET read=0 WHERE server_article_id="+ esc(msgId));
+    		dbwriter.execSQL("UPDATE headers SET read=0, read_unixtime=0 WHERE server_article_id="+ esc(msgId));
     		dbwriter.close(); dbhelper.close();
     	}
     }  
 
-    
     public static void markAsUnRead(long server_article_number, Context context) {
     	
     	DBHelper dbhelper = new DBHelper(context);
     	SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
-    	dbwriter.execSQL("UPDATE headers SET read=0 WHERE server_article_number="+server_article_number);
+    	dbwriter.execSQL("UPDATE headers SET read=0, read_unixtime=0 WHERE server_article_number="+server_article_number);
     	dbwriter.close(); dbhelper.close();
     }
     
@@ -127,7 +126,8 @@ public class DBUtils {
 		DBHelper db = new DBHelper(context);
 		SQLiteDatabase dbWrite = db.getWritableDatabase();
     	
-		String query = "UPDATE headers SET read=1 WHERE subscribed_group_id=" + groupid;
+		String query = "UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+		              " WHERE subscribed_group_id=" + groupid;
 		dbWrite.execSQL(query);
 		
 		query = "UPDATE subscribed_groups SET unread_count=0 WHERE _ID=" + groupid;
@@ -268,7 +268,7 @@ public class DBUtils {
 	}
 
 	
-	public static HashSet<String> getUnreadMessagesSet(String group, Context context) {
+	public static HashSet<String> getReadMessagesSet(String group, Context context) {
 		int groupid = getGroupIdFromName(group, context);
 		
 		HashSet<String> readSet = null;
@@ -366,7 +366,8 @@ public class DBUtils {
 		}
 		
 		// Mark all the messages from the thread as read so they get cleaned later
-		dbwrite.execSQL("UPDATE headers SET read=1 WHERE subscribed_group_id=" + groupid +
+		dbwrite.execSQL("UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+				       " WHERE subscribed_group_id=" + groupid +
 				        " AND clean_subject=" + esc(clean_subject)); 
 		
 		c.close(); dbwrite.close(); db.close();
@@ -392,7 +393,8 @@ public class DBUtils {
 		}
 		
 		// Mark all the user posts as read, so they get deleted later
-		dbwrite.execSQL("UPDATE headers SET read=1 WHERE from_header=" + esc(decodedfrom));
+		dbwrite.execSQL("UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+				       " WHERE from_header=" + esc(decodedfrom));
 		
 		c.close(); dbwrite.close(); db.close();
 	}	
@@ -439,7 +441,6 @@ public class DBUtils {
 	
 	// XXX YYY ZZZ: Esto podria ser lento al construir todo el rato db y dbwrite, hay que verlo y ver 
 	// si se puede cachear aunque sea como miembro static
-	// XXX ZZZ: aqui hay que convertir articleInfo.getDate() en fecha unix y meterla en el campo "unixdate" (o como la llame)
 	public static long insertArticleToGroupID(int groupID, Article articleInfo, String finalRefs, 
 			                                  String finalFrom, String finalSubject, Context context) {
 		
@@ -479,14 +480,14 @@ public class DBUtils {
 	}
 
 
-
 	public static void setGroupAllRead(String group, Context context) {
 		int groupid = getGroupIdFromName(group, context);
 		
 		DBHelper dbhelper = new DBHelper(context);
 		SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
 		
-		dbwriter.execSQL("UPDATE headers SET read=1 WHERE subscribed_group_id=" + groupid);
+		dbwriter.execSQL("UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+				        " WHERE subscribed_group_id=" + groupid);
 		dbwriter.close();dbhelper.close();
 	}
 	
@@ -644,34 +645,37 @@ public class DBUtils {
 
 
 	// Delete all the read messages from the cache and from the DB
-	// XXX ZZZ: Cambiar por "expireReadMessages" que toma como argumento adicional el diferencial de fecha en segundos. 
-	// Hay que guardar el campo date como una fecha real...
-	public static void deleteReadMessages(Context context) {
+	public static void expireReadMessages(Context context, long expireTime) {
 		
 		DBHelper db = new DBHelper(context);
 		SQLiteDatabase dbwrite = db.getWritableDatabase();
 		
-		Cursor c = dbwrite.rawQuery("SELECT _id, subscribed_group_id FROM headers WHERE read=1 AND catched=1", null);
+		// Get all the expired messages so we can delete bodies and attachments
+		long currentTime = System.currentTimeMillis();
+		Cursor c = dbwrite.rawQuery("SELECT _id, subscribed_group_id, has_attachments, attachments_fnames " + "" +
+				                    "FROM headers " + 
+				                    "WHERE read=1 AND catched=1 AND read_unixtime < " + currentTime + " - " + expireTime, null);
 		
 		int count = c.getCount();
 		c.moveToFirst();
-		long id;
-		int groupid;
 		String groupname;
 		
 		for (int i=0; i<count; i++) {
-			id = c.getInt(0);
-			groupid = c.getInt(1);
-			groupname = getGroupNameFromId(groupid, context);
-			FSUtils.deleteCacheMessage(id, groupname);
+			
+			groupname = getGroupNameFromId(c.getInt(1) /*subscribed_group_id*/, context);
+			FSUtils.deleteCacheMessage(c.getInt(0)/* _id */, groupname);
+			
+			if (c.getInt(2)/*has_attach*/ == 1) {
+				FSUtils.deleteAttachments(c.getString(3) /*attachments_fnames*/);
+			}
+			
 			c.moveToNext();
 		}
 		
-		dbwrite.execSQL("DELETE FROM headers WHERE read=1");
+		dbwrite.execSQL("DELETE FROM headers WHERE read=1 AND read_unixtime < " + currentTime + " - " + expireTime);
 		
 		c.close(); dbwrite.close(); db.close();
 	}
-	
 
 	
 
@@ -695,6 +699,7 @@ public class DBUtils {
 	// the ServerManager can download the full messages when the user selects "sync" in
 	// offline mode
 	// ================================================================================
+	
 	public static Vector<Long> getUnreadNoncatchedArticleList(String group, Context context) {
 		int groupid = getGroupIdFromName(group, context);
 

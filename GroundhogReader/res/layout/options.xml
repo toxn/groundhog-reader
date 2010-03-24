@@ -122,6 +122,15 @@
 		android:summary="@string/replies_summary"			
 		android:checked="true"
 		/>	
+		
+		<CheckBoxPreference
+		android:key="expireMode"
+		android:title="@string/expire_mode"
+		android:summary="@string/expire_mode_summary"
+		android:entries="@array/expireModeKeys"
+		android:entryValues="@array/expireModeValues"
+		android:dialogTitle="@string/expire_modes_dialog_title"
+		/>
 	</PreferenceScreen>
 	
 	<PreferenceScreen 
