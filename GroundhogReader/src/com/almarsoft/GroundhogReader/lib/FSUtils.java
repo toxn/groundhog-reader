@@ -288,4 +288,14 @@ public class FSUtils {
 		else
 			return "application/*";
 	}
+
+
+	public static void deleteAttachments(String attachments) {
+		String basePath    = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments/";
+		String[] fNames = attachments.split(";");
+		int fNamesLen = fNames.length;
+		
+		for (int i=0; i<fNamesLen; i++) 
+			new File(basePath + fNames[i]).delete();
+	}
 }

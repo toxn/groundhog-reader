@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 	// XXX YYY ZZZ: Cambiar nombre BBDD
 	private static final String DATABASE_NAME = "com.juanjux.usenetreader";
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 5;
 	
 	public DBHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,7 +38,12 @@ public class DBHelper extends SQLiteOpenHelper {
 				                             "is_dummy INTEGER, " +
 				                             "full_header TEXT, " +
 				                             "starred INTEGER, " +
-				                             "catched INTEGER, " + 
+				                             "catched INTEGER, " +
+				                             "has_attachments INTEGER, " + // XXX ZZZ Aniadir
+				                             "attachments_fnames TEXT, " + // XXX ZZZ Aniadir
+		                                     "read_unixdate INTEGER, " +   // If 0, unread, else it has the unixdate when it was read (used for expiration)
+		                                     // Not needed now that I've read_unixdate, but conserved and used for backward compatibility
+		                                     // XXX FIXME: Write an upgrade script sometimes...
 				                             "read INTEGER);");
 		
 		// Downloaded message bodies
@@ -86,20 +91,28 @@ public class DBHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int currentVersion) {
 		
-		db.execSQL("DROP TABLE IF EXISTS subscribed_groups");
-		db.execSQL("DROP TABLE IF EXISTS headers");
-		db.execSQL("DROP TABLE IF EXISTS bodies");
-		db.execSQL("DROP TABLE IF EXISTS profiles");
-		db.execSQL("DROP TABLE IF EXISTS starred_threads");
-		db.execSQL("DROP TABLE IF EXISTS banned_threads");
-		db.execSQL("DROP TABLE IF EXISTS banned_users");
-		db.execSQL("DROP TABLE IF EXISTS sent_posts");
-		db.execSQL("DROP TABLE IF EXISTS favorite_users");
-		db.execSQL("DROP TABLE IF EXISTS tmp_read_unread");
-		db.execSQL("DROP TABLE IF EXISTS offline_sent_posts");
-		db.execSQL("DROP TABLE IF EXISTS sent_posts_log");
+		if (oldVersion == 4 && currentVersion == 5) {
+			db.execSQL("ALTER TABLE headers ADD COLUMN has_attachments INTEGER");
+			db.execSQL("ALTER TABLE headers ADD COLUMN attachments_fnames TEXT");
+			db.execSQL("ALTER TABLE headers ADD COLUMN read_unixdate INTEGER");
+		}
+		else {
+			db.execSQL("DROP TABLE IF EXISTS subscribed_groups");
+			db.execSQL("DROP TABLE IF EXISTS headers");
+			db.execSQL("DROP TABLE IF EXISTS bodies");
+			db.execSQL("DROP TABLE IF EXISTS profiles");
+			db.execSQL("DROP TABLE IF EXISTS starred_threads");
+			db.execSQL("DROP TABLE IF EXISTS banned_threads");
+			db.execSQL("DROP TABLE IF EXISTS banned_users");
+			db.execSQL("DROP TABLE IF EXISTS sent_posts");
+			db.execSQL("DROP TABLE IF EXISTS favorite_users");
+			db.execSQL("DROP TABLE IF EXISTS tmp_read_unread");
+			db.execSQL("DROP TABLE IF EXISTS offline_sent_posts");
+			db.execSQL("DROP TABLE IF EXISTS sent_posts_log");
+			onCreate(db);
+		}
 		
-		onCreate(db);
+		
 	}
 
 
