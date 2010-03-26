@@ -37,14 +37,14 @@ public class DBHelper extends SQLiteOpenHelper {
 				                             "thread_id TEXT, " +
 				                             "is_dummy INTEGER, " +
 				                             "full_header TEXT, " +
-				                             "starred INTEGER, " +
-				                             "catched INTEGER, " +
-				                             "has_attachments INTEGER, " + // XXX ZZZ Aniadir
+				                             "starred INTEGER DEFAULT 0, " +
+				                             "catched INTEGER DEFAULT 0, " +
+				                             "has_attachments INTEGER DEFAULT 0, " + // XXX ZZZ Aniadir
 				                             "attachments_fnames TEXT, " + // XXX ZZZ Aniadir
-		                                     "read_unixdate INTEGER, " +   // If 0, unread, else it has the unixdate when it was read (used for expiration)
+		                                     "read_unixdate INTEGER DEFAULT 0, " +   // If 0, unread, else it has the unixdate when it was read (used for expiration)
 		                                     // Not needed now that I've read_unixdate, but conserved and used for backward compatibility
 		                                     // XXX FIXME: Write an upgrade script...
-				                             "read INTEGER);");
+				                             "read INTEGER DEFAULT 0);");
 		
 		// Downloaded message bodies
 		db.execSQL("CREATE TABLE bodies (_id INTEGER PRIMARY KEY AUTOINCREMENT," +

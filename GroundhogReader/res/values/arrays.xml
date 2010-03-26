@@ -77,12 +77,13 @@
 	<item>Never(manually)</item>
 </string-array>
 
-<!--  Times in miliseconds -->
-<integer-array name="expireModeValues">
+<!--  Times in miliseconds that a read messages takes to be considered expirable -->
+<!--  0 = only manually -->
+<string-array name="expireModeValues">
 	<item>86400000</item>
 	<item>604800000</item>
 	<item>2592000000</item>
 	<item>0</item>
-</integer-array>
+</string-array>
 
 </resources>

@@ -65,6 +65,7 @@ public class GroupListActivity extends Activity {
 	private ListView mGroupsList;
 	private boolean mOfflineMode;
 	private SharedPreferences mPrefs;
+	private Context mContext;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,8 @@ public class GroupListActivity extends Activity {
     	mGroupsList.setOnItemClickListener(mListItemClickListener);
 		registerForContextMenu(mGroupsList);
 		
-		mServerManager = new ServerManager(getApplicationContext());
+		mContext = getApplicationContext();
+		mServerManager = new ServerManager(mContext);
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		// Detect first-time usage and send to settings
@@ -91,10 +93,16 @@ public class GroupListActivity extends Activity {
 		
 		mOfflineMode = mPrefs.getBoolean("offlineMode", true);
 		
-		if (mOfflineMode) 
-			setTitle(getString(R.string.group_offline_mode));
-		else 
-			setTitle(getString(R.string.group_online_mode));
+		long expireTime = new Long(mPrefs.getString("expireMode",  "86400000")).longValue(); // 1 day default
+		Log.d("XXX", "expireTime: " + expireTime);
+		long lastExpiration = mPrefs.getLong("lastExpiration", 0);
+		Log.d("XXX", "lastExpiration: " + lastExpiration);
+		Log.d("XXX", "Desde la ultima (segundos): " + (System.currentTimeMillis() - lastExpiration));
+		
+		 // 0 = manual expiration only. And we check so we don't do more than one expiration a day
+		if (expireTime != 0 && ((System.currentTimeMillis() - lastExpiration) > 86400000)) {
+			expireReadMessages(false);
+		}
 		
 		// Add the buttons
 		Button addButton        = (Button) this.findViewById(R.id.btn_add);
@@ -136,7 +144,7 @@ public class GroupListActivity extends Activity {
 		    .setNeutralButton("Close", null)
 		    .show();	
 			
-			DBUtils.restartAllGroupsMessages(getApplicationContext());
+			DBUtils.restartAllGroupsMessages(mContext);
 			
 			// Finally remote the "dirty" mark and repaint the screen
 			Editor editor = mPrefs.edit();
@@ -147,7 +155,7 @@ public class GroupListActivity extends Activity {
 			
 		Log.d(UsenetConstants.APPNAME, "onResume, recreating ServerManager");
 		if (mServerManager == null)
-			mServerManager = new ServerManager(getApplicationContext());
+			mServerManager = new ServerManager(mContext);
 		
         //=======================================================================
         // Load the group names and unreadcount from the subscribed_groups table
@@ -176,7 +184,7 @@ public class GroupListActivity extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		if(id == ID_DIALOG_DELETING){
 			ProgressDialog loadingDialog = new ProgressDialog(this);
-			loadingDialog.setMessage(getString(R.string.deleting_d));
+			loadingDialog.setMessage(getString(R.string.expiring_d));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;
@@ -214,7 +222,7 @@ public class GroupListActivity extends Activity {
     	if (mDownloader != null) 
     		mDownloader = null;
     	
-		DBHelper db = new DBHelper(getApplicationContext());
+		DBHelper db = new DBHelper(mContext);
 		SQLiteDatabase dbWrite = db.getWritableDatabase();
 		
 		Cursor cur = dbWrite.rawQuery("SELECT name FROM subscribed_groups", null);
@@ -234,7 +242,7 @@ public class GroupListActivity extends Activity {
 			curGroupName = cur.getString(0);
 			proxyGroupsArray[i] = curGroupName;
 			//unread = cur.getInt(1);
-			unread = DBUtils.getGroupUnreadCount(curGroupName, getApplicationContext());
+			unread = DBUtils.getGroupUnreadCount(curGroupName, mContext);
 			
 			if (unread == -1) 
 				proxyGroupsUnreadCount[i] = proxyGroupsArray[i];
@@ -341,7 +349,7 @@ public class GroupListActivity extends Activity {
 	    .setPositiveButton(getString(R.string.yes), 
 	    	new DialogInterface.OnClickListener() {
 	    		public void onClick(DialogInterface dlg, int sumthin) { 
-	    			expireReadMessages();
+	    			expireReadMessages(true);
 	    		} 
 	        } 
 	     )		     
@@ -350,25 +358,30 @@ public class GroupListActivity extends Activity {
 	}
 	
 	
-	private void expireReadMessages() {
+	private void expireReadMessages(boolean expireAll) {
 		
-		AsyncTask<Void, Void, Void> cacheDeleterTask = new AsyncTask<Void, Void, Void>() {
+		AsyncTask<Boolean, Void, Void> readExpirerTask = new AsyncTask<Boolean, Void, Void>() {
 			@Override
-			protected Void doInBackground(Void... arg0) {
-				long expireTime = mPrefs.getLong("expireMode", 86400);
-				DBUtils.expireReadMessages(GroupListActivity.this.getApplicationContext(), expireTime);
+			protected Void doInBackground(Boolean... args) {
+				boolean expireAll = args[0];
+
+				long expireTime = new Long(mPrefs.getString("expireMode", "86400000")).longValue();
+				DBUtils.expireReadMessages(mContext, expireAll, expireTime);
 				return null;
 			}
 			
 			protected void onPostExecute(Void arg0) {
+				// Store the expiration date so we don't do more than once a day
+				Editor ed = mPrefs.edit();
+				ed.putLong("lastExpiration", System.currentTimeMillis());
+				ed.commit();
 				updateGroupList();
 				dismissDialog(ID_DIALOG_DELETING);
 			}
-
 		};
 		
 		showDialog(ID_DIALOG_DELETING);
-		cacheDeleterTask.execute();
+		readExpirerTask.execute(expireAll);
 	}
 
 	

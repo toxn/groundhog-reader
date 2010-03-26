@@ -123,7 +123,7 @@
 		android:checked="true"
 		/>	
 		
-		<CheckBoxPreference
+		<ListPreference
 		android:key="expireMode"
 		android:title="@string/expire_mode"
 		android:summary="@string/expire_mode_summary"

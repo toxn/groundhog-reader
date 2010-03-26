@@ -11,7 +11,7 @@
 <string name="server_address_title">Адрес Сервера</string>
 <string name="server_address_summary">Нажмите для ввода адреса сервера</string>
 <string name="server_address_dialog_title">Адрес сервера:</string>
-<string name="server_address_dialog_message">Введите адрес сервера новостей (без the nntp://). Если Вы никогда не использовали nntp, попробуйте бесплатный сервер ddt.demos.su (информация по адресу http://ddt.demos.su) или любой другой</string>
+<string name="server_address_dialog_message">Введите адрес сервера новостей (без nntp://)</string>
 <string name="server_port_title">Порт Сервера</string>
 <string name="server_port_summary">Нажмите для ввода порта сервера</string>
 <string name="server_port_dialog_title">Порт сервера:</string>
@@ -207,4 +207,18 @@
 <string name="select_quote">Отметте текст для цитирования</string>
 <string name="all">Все</string>
 <string name="none">Ничего</string>
+<!-- Category header on the settings of the options related to reading -->
+<string name="category_reading">Чтение</string>
+
+<!-- On the summary of a settings section which is mandatory -->
+<string name="section_mandatory">Этот раздел обязательный</string>
+
+<!-- On the summary of the reading options in the settings -->
+<string name="options_reading">Настройки чтения</string>
+
+<!-- On the settings "server needs login" checkbox -->
+<string name="server_need_login_summary">Включите, если серверу необходимы логин и пароль</string>
+
+<!-- On the settings, summary for the User Info section -->
+<string name="summary_userinfo">Пользовательская информация (имя, email и т.д.)</string>
 </resources>

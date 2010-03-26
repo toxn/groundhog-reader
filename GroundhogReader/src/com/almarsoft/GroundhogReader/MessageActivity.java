@@ -17,6 +17,7 @@ import org.apache.james.mime4j.parser.Field;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -91,6 +92,7 @@ public class MessageActivity extends Activity {
 	private ImageButton mButton_Next;
 	private ImageButton mButton_GoGroup;
 	private ScrollView mScroll;
+	private Context mContext;
 	
 	private SharedPreferences mPrefs;
 	final Handler mHandler = new Handler();
@@ -101,6 +103,7 @@ public class MessageActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     
+    	mContext = getApplicationContext();
     	setContentView(R.layout.message);
     	
     	mPrefs   = PreferenceManager.getDefaultSharedPreferences(this);
@@ -180,7 +183,7 @@ public class MessageActivity extends Activity {
 	    	);
 	    	
 	    
-    	mServerManager = new ServerManager(getApplicationContext());
+    	mServerManager = new ServerManager(mContext);
 		    
         loadMessage();
         
@@ -270,9 +273,9 @@ public class MessageActivity extends Activity {
     			textSize++;
     		}
     	} else if (increase < 0) {
-    		if (textSize > UsenetConstants.TEXTSIZE_SMALLEST) {
+    		if (textSize > UsenetConstants.TEXTSIZE_SMALLEST) 
     			textSize--;
-    		}
+    		
     	}
     	
 		Editor editor = mPrefs.edit();
@@ -334,7 +337,7 @@ public class MessageActivity extends Activity {
 		}
 		
 		if (mServerManager == null)
-			mServerManager = new ServerManager(getApplicationContext());
+			mServerManager = new ServerManager(mContext);
 	}
     
     
@@ -347,19 +350,19 @@ public class MessageActivity extends Activity {
     		if (resultCode == RESULT_OK) { 
     			
     			if (mOfflineMode && !mPrefs.getBoolean("postDirectlyInOfflineMode", false))
-    				Toast.makeText(getApplicationContext(), getString(R.string.stored_outbox_send_next_sync), Toast.LENGTH_SHORT).show();
+    				Toast.makeText(mContext, getString(R.string.stored_outbox_send_next_sync), Toast.LENGTH_SHORT).show();
     			else
-    				Toast.makeText(getApplicationContext(), getString(R.string.message_sent), Toast.LENGTH_SHORT).show();
+    				Toast.makeText(mContext, getString(R.string.message_sent), Toast.LENGTH_SHORT).show();
     		}
     		else if (resultCode == RESULT_CANCELED) 
-    			Toast.makeText(getApplicationContext(), getString(R.string.message_discarded), Toast.LENGTH_SHORT).show();
+    			Toast.makeText(mContext, getString(R.string.message_discarded), Toast.LENGTH_SHORT).show();
     		
     	} else if (intentCode == UsenetConstants.BANNEDACTIVITYINTENT) {
     		
     		if (resultCode == RESULT_OK) 
-    			Toast.makeText(getApplicationContext(), getString(R.string.reload_tosee_unbanned_authors), Toast.LENGTH_LONG).show();
+    			Toast.makeText(mContext, getString(R.string.reload_tosee_unbanned_authors), Toast.LENGTH_LONG).show();
     		else if (resultCode == RESULT_CANCELED) 
-    			Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_unban), Toast.LENGTH_SHORT).show();
+    			Toast.makeText(mContext, getString(R.string.nothing_to_unban), Toast.LENGTH_SHORT).show();
     		
     	} else if (intentCode == UsenetConstants.QUOTINGINTENT) {
     		
@@ -394,7 +397,7 @@ public class MessageActivity extends Activity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		new MenuInflater(getApplication()).inflate(R.menu.messagemenu, menu);
+		new MenuInflater(mContext).inflate(R.menu.messagemenu, menu);
 		
 		return(super.onCreateOptionsMenu(menu));
 
@@ -454,7 +457,7 @@ public class MessageActivity extends Activity {
 				return true;
 				
 			case R.id.message_menu_markunread:
-				DBUtils.markAsUnRead(mArticleNumbersArray[mMsgIndexInArray], getApplicationContext());
+				DBUtils.markAsUnRead(mArticleNumbersArray[mMsgIndexInArray], mContext);
 				Toast.makeText(this, getString(R.string.message_marked_unread), Toast.LENGTH_SHORT).show();
 				return true;
 				
@@ -468,7 +471,7 @@ public class MessageActivity extends Activity {
 				
 			case R.id.message_menu_ban:
 				if (mHeader != null) {
-					DBUtils.banUser(mHeader.getField("From").getBody().trim(), getApplicationContext());
+					DBUtils.banUser(mHeader.getField("From").getBody().trim(), mContext);
 					Toast.makeText(this, getString(R.string.author_banned_reload_tohide), Toast.LENGTH_LONG).show();
 				} else 
 					Toast.makeText(this, getString(R.string.cant_ban_no_header_data), Toast.LENGTH_SHORT).show();
@@ -580,7 +583,7 @@ public class MessageActivity extends Activity {
     		return;
     	}
     	
-    	DBUtils.setAuthorFavorite(mIsFavorite, !mIsFavorite, mHeader.getField("From").getBody().trim(), getApplicationContext());
+    	DBUtils.setAuthorFavorite(mIsFavorite, !mIsFavorite, mHeader.getField("From").getBody().trim(), mContext);
     	mIsFavorite = !mIsFavorite; 
     	
         if (mIsFavorite) {
@@ -726,13 +729,14 @@ public class MessageActivity extends Activity {
 	    					mMimePartsVector = uuattachData;
 	    				else {
 	    					// Join the two vectors
-	    					for (HashMap<String, String> attach : uuattachData) {
+	    					for (HashMap<String, String> attach : uuattachData) 
 	    						mMimePartsVector.add(attach);
-	    					}
 	    				}
-	    				
 	    			}
 	    		}
+	    		
+	    		if (mMimePartsVector != null && mMimePartsVector.size() > 0)
+	    			DBUtils.updateHeaderRecordAttachments( (Integer)articleData.get("id"), mMimePartsVector, mContext);
 	    		
 	    		return FINISHED_GET_OK;
     	
@@ -773,7 +777,7 @@ public class MessageActivity extends Activity {
 	    	
 	    	case FINISHED_GET_OK:
 	    		// Show or hide the heart marking favorite authors
-	            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody().trim(), getApplicationContext());
+	            mIsFavorite = DBUtils.isAuthorFavorite(mHeader.getField("From").getBody().trim(), mContext);
 	            
 	            if (mIsFavorite) 
 	            	mHeart.setImageDrawable(getResources().getDrawable(R.drawable.love));
@@ -820,7 +824,7 @@ public class MessageActivity extends Activity {
 	    		mBodyText = null;
 	    		mContent.requestFocus();
 	    		
-	    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody().trim(), getApplicationContext());
+	    		DBUtils.markAsRead(mHeader.getField("Message-ID").getBody().trim(), mContext);
 	    		
 	    		// Go to the start of the message
 	    		mScroll.scrollTo(0, 0);
@@ -828,7 +832,7 @@ public class MessageActivity extends Activity {
 	    		String simplifiedSubject = Article.simplifySubject(mSubjectText);
 	
 	    		if (mLastSubject != null && (!mLastSubject.equalsIgnoreCase(simplifiedSubject))) {
-	    			Toast.makeText(getApplicationContext(), getString(R.string.new_subject) + simplifiedSubject, Toast.LENGTH_SHORT).show();
+	    			Toast.makeText(mContext, getString(R.string.new_subject) + simplifiedSubject, Toast.LENGTH_SHORT).show();
 	    		}
 	    		
 	            // Intercept "attachment://" url clicks
@@ -866,7 +870,7 @@ public class MessageActivity extends Activity {
 				    .setNeutralButton(getString(R.string.close), null)
 				    .show();
 					
-					DBUtils.markAsRead(mArticleNumbersArray[mMsgIndexInArray], getApplicationContext());
+					DBUtils.markAsRead(mArticleNumbersArray[mMsgIndexInArray], mContext);
 					break;
 	    	}
 	    }
