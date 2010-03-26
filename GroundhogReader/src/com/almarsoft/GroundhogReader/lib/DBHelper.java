@@ -43,7 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
 				                             "attachments_fnames TEXT, " + // XXX ZZZ Aniadir
 		                                     "read_unixdate INTEGER, " +   // If 0, unread, else it has the unixdate when it was read (used for expiration)
 		                                     // Not needed now that I've read_unixdate, but conserved and used for backward compatibility
-		                                     // XXX FIXME: Write an upgrade script sometimes...
+		                                     // XXX FIXME: Write an upgrade script...
 				                             "read INTEGER);");
 		
 		// Downloaded message bodies

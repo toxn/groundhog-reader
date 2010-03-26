@@ -44,7 +44,7 @@ public class DBUtils {
     		
 	    	DBHelper dbhelper = new DBHelper(context);
 	    	SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
-	    	dbwriter.execSQL("UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+	    	dbwriter.execSQL("UPDATE headers SET read=1, read_unixdate=" + System.currentTimeMillis() + 
 	    			        " WHERE server_article_id="+ esc(msgId));
 	    	dbwriter.close(); dbhelper.close();
     	}
@@ -58,7 +58,7 @@ public class DBUtils {
     		DBHelper dbhelper = new DBHelper(context);
     		SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
     		
-    		dbwriter.execSQL("UPDATE headers SET read=0, read_unixtime=0 WHERE server_article_id="+ esc(msgId));
+    		dbwriter.execSQL("UPDATE headers SET read=0, read_unixdate=0 WHERE server_article_id="+ esc(msgId));
     		dbwriter.close(); dbhelper.close();
     	}
     }  
@@ -67,7 +67,7 @@ public class DBUtils {
     	
     	DBHelper dbhelper = new DBHelper(context);
     	SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
-    	dbwriter.execSQL("UPDATE headers SET read=0, read_unixtime=0 WHERE server_article_number="+server_article_number);
+    	dbwriter.execSQL("UPDATE headers SET read=0, read_unixdate=0 WHERE server_article_number="+server_article_number);
     	dbwriter.close(); dbhelper.close();
     }
     
@@ -126,7 +126,7 @@ public class DBUtils {
 		DBHelper db = new DBHelper(context);
 		SQLiteDatabase dbWrite = db.getWritableDatabase();
     	
-		String query = "UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+		String query = "UPDATE headers SET read=1, read_unixdate=" + System.currentTimeMillis() + 
 		              " WHERE subscribed_group_id=" + groupid;
 		dbWrite.execSQL(query);
 		
@@ -366,7 +366,7 @@ public class DBUtils {
 		}
 		
 		// Mark all the messages from the thread as read so they get cleaned later
-		dbwrite.execSQL("UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+		dbwrite.execSQL("UPDATE headers SET read=1, read_unixdate=" + System.currentTimeMillis() + 
 				       " WHERE subscribed_group_id=" + groupid +
 				        " AND clean_subject=" + esc(clean_subject)); 
 		
@@ -393,7 +393,7 @@ public class DBUtils {
 		}
 		
 		// Mark all the user posts as read, so they get deleted later
-		dbwrite.execSQL("UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+		dbwrite.execSQL("UPDATE headers SET read=1, read_unixdate=" + System.currentTimeMillis() + 
 				       " WHERE from_header=" + esc(decodedfrom));
 		
 		c.close(); dbwrite.close(); db.close();
@@ -486,7 +486,7 @@ public class DBUtils {
 		DBHelper dbhelper = new DBHelper(context);
 		SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
 		
-		dbwriter.execSQL("UPDATE headers SET read=1, read_unixtime=" + System.currentTimeMillis() + 
+		dbwriter.execSQL("UPDATE headers SET read=1, read_unixdate=" + System.currentTimeMillis() + 
 				        " WHERE subscribed_group_id=" + groupid);
 		dbwriter.close();dbhelper.close();
 	}
@@ -654,7 +654,7 @@ public class DBUtils {
 		long currentTime = System.currentTimeMillis();
 		Cursor c = dbwrite.rawQuery("SELECT _id, subscribed_group_id, has_attachments, attachments_fnames " + "" +
 				                    "FROM headers " + 
-				                    "WHERE read=1 AND catched=1 AND read_unixtime < " + currentTime + " - " + expireTime, null);
+				                    "WHERE read=1 AND catched=1 AND read_unixdate < " + currentTime + " - " + expireTime, null);
 		
 		int count = c.getCount();
 		c.moveToFirst();
@@ -672,7 +672,7 @@ public class DBUtils {
 			c.moveToNext();
 		}
 		
-		dbwrite.execSQL("DELETE FROM headers WHERE read=1 AND read_unixtime < " + currentTime + " - " + expireTime);
+		dbwrite.execSQL("DELETE FROM headers WHERE read=1 AND read_unixdate < " + currentTime + " - " + expireTime);
 		
 		c.close(); dbwrite.close(); db.close();
 	}
