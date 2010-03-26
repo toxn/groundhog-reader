@@ -67,8 +67,7 @@
             </intent-filter>
         </activity>        
         
-        <activity android:name=".SubscribeActivity" android:configChanges="keyboardHidden|orientation"
-                  >
+        <activity android:name=".SubscribeActivity" android:configChanges="keyboardHidden|orientation">
                   
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />                

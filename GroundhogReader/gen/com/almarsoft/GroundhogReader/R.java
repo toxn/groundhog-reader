@@ -10,7 +10,8 @@ package com.almarsoft.GroundhogReader;
 public final class R {
     public static final class array {
         public static final int expireModeKeys=0x7f040004;
-        /**   Times in miliseconds 
+        /**   Times in miliseconds that a read messages takes to be considered expirable 
+  0 = only manually 
          */
         public static final int expireModeValues=0x7f040005;
         public static final int followupOptionKeys=0x7f040000;
@@ -113,13 +114,13 @@ public final class R {
         public static final int message_menu_smalltext=0x7f080060;
         public static final int messagelist_menu_charset=0x7f080058;
         public static final int messagelist_menu_getnew=0x7f080054;
-        public static final int messagelist_menu_groupslist=0x7f080052;
         public static final int messagelist_menu_managebanneds=0x7f080056;
         public static final int messagelist_menu_managebannedusers=0x7f080057;
         public static final int messagelist_menu_markread=0x7f080055;
         public static final int messagelist_menu_newpost=0x7f080051;
         public static final int messagelist_menu_refresh=0x7f080053;
         public static final int messagelist_menu_settings=0x7f080059;
+        public static final int messagelist_menu_showread=0x7f080052;
         public static final int messagelistitem_img_love=0x7f080022;
         public static final int msglist_item_menu_banuser=0x7f080050;
         public static final int msglist_item_menu_ignorethread=0x7f08004f;
@@ -211,7 +212,7 @@ public final class R {
  Connection settings 
          */
         public static final int category_connection=0x7f050006;
-        public static final int category_grouplist=0x7f0500d9;
+        public static final int category_grouplist=0x7f0500dc;
         /**  Writing settings 
          */
         public static final int category_posting=0x7f050025;
@@ -231,7 +232,7 @@ public final class R {
         public static final int compose_decreasesize=0x7f05004c;
         public static final int compose_deletetext=0x7f05004a;
         public static final int compose_increasesize=0x7f05004b;
-        public static final int confirm_delete_cache=0x7f0500da;
+        public static final int confirm_delete_cache=0x7f0500dd;
         public static final int confirm_expire_messages=0x7f05007f;
         public static final int could_not_fetch_header=0x7f0500b0;
         public static final int could_not_save_colon=0x7f05009f;
@@ -260,10 +261,13 @@ public final class R {
         public static final int error_retrieving_check_connection=0x7f0500c9;
         public static final int error_saving_kept_unread=0x7f0500b5;
         public static final int error_saving_kept_unread_long=0x7f0500b6;
+        /**   New on 1.12.0 
+         */
         public static final int expire_messages=0x7f0500d6;
         public static final int expire_mode=0x7f05003e;
         public static final int expire_mode_summary=0x7f05003f;
         public static final int expire_modes_dialog_title=0x7f050040;
+        public static final int expiring_d=0x7f0500d9;
         public static final int fetch_headers_question=0x7f05008b;
         public static final int fetching_body=0x7f0500af;
         public static final int finished=0x7f050093;
@@ -293,7 +297,7 @@ public final class R {
          */
         public static final int groupscolon=0x7f050002;
         public static final int headers=0x7f05008e;
-        public static final int hello=0x7f0500db;
+        public static final int hello=0x7f0500de;
         public static final int hostname_not_configured_goto_settings=0x7f0500cc;
         public static final int increase_text_size=0x7f050068;
         public static final int interrupted=0x7f050090;
@@ -317,7 +321,9 @@ public final class R {
         public static final int msglist_ban_thread=0x7f050059;
         public static final int msglist_change_read_charset=0x7f050062;
         public static final int msglist_getnew=0x7f05005e;
+        public static final int msglist_group_hideread=0x7f0500d8;
         public static final int msglist_group_list=0x7f05005c;
+        public static final int msglist_group_showread=0x7f0500d7;
         public static final int msglist_manage_banned=0x7f050060;
         public static final int msglist_manage_banned_users=0x7f050061;
         public static final int msglist_mark_thread_read=0x7f050056;
@@ -332,7 +338,7 @@ public final class R {
         public static final int name_summary=0x7f05001d;
         public static final int name_title=0x7f05001c;
         public static final int new_subject=0x7f0500b9;
-        public static final int next=0x7f0500d8;
+        public static final int next=0x7f0500db;
         public static final int no=0x7f050084;
         public static final int no_enter_anyway=0x7f05008a;
         public static final int no_more_messages=0x7f050099;
@@ -360,7 +366,7 @@ public final class R {
         public static final int posting=0x7f050026;
         public static final int posting_message=0x7f050070;
         public static final int posting_pending_messages=0x7f050092;
-        public static final int prev=0x7f0500d7;
+        public static final int prev=0x7f0500da;
         public static final int quote_summary=0x7f05002a;
         public static final int quote_title=0x7f050029;
         public static final int quotestring_dialog_message=0x7f050033;

@@ -8,10 +8,10 @@
 	
 
 	<item 
-		android:id="@+id/messagelist_menu_groupslist"
+		android:id="@+id/messagelist_menu_showread"
 		android:orderInCategory="2" 
-		android:icon="@android:drawable/ic_media_rew" 
-		android:title="@string/msglist_group_list"
+		android:icon="@android:drawable/ic_menu_view" 
+		android:checkable="true"
 	/>
 
 	<item 

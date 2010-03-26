@@ -296,8 +296,12 @@ public class MessageListActivity extends Activity {
 				startActivity(new Intent(MessageListActivity.this, OptionsActivity.class));
 				return true;
 	
-			case R.id.messagelist_menu_groupslist:
-				startActivity(new Intent(MessageListActivity.this, GroupListActivity.class));
+			case R.id.messagelist_menu_showread:
+				Editor editor = mPrefs.edit();
+				item.setChecked(!item.isChecked());
+				editor.putBoolean("showRead", item.isChecked());
+				editor.commit();
+				threadMessagesFromDB();
 				return true;
 	
 			case R.id.messagelist_menu_managebanneds:
@@ -523,6 +527,20 @@ public class MessageListActivity extends Activity {
 		
 		return (super.onCreateOptionsMenu(menu));
 	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem showRead = menu.findItem(R.id.messagelist_menu_showread);
+		boolean showReadValue = mPrefs.getBoolean("showRead", false);
+		showRead.setChecked(showReadValue);
+		
+		if (showReadValue) 
+			showRead.setTitle(R.string.msglist_group_hideread);
+		else
+			showRead.setTitle(R.string.msglist_group_showread);
+		
+		return (super.onPrepareOptionsMenu(menu));
+	}
 
 	
 	// ==========================================================================
@@ -583,16 +601,25 @@ public class MessageListActivity extends Activity {
 				act.mMyPostsSet = DBUtils.getGroupSentMessagesSet(act.mGroup, getApplicationContext());
 			}
 			
-			// Now get all the headers with read=0
-			// XXX ZZZ: Cuando la opción "showReadMessages" esté activada, no poner lo de read=0
 			// This is not moved to a single function in DBUtils because this way we can update realistically the 
 			// progressDialog
-			Cursor cur = db .rawQuery(
-							"SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
-									+ " FROM headers "
-									+ " WHERE subscribed_group_id="
-									+ mGroupID
-									+ " AND read=0", null);
+			
+			String query = null;
+			if(mPrefs.getBoolean("showRead", false)) {
+				query = "SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
+					         + " FROM headers "
+					         + " WHERE subscribed_group_id="
+					         + mGroupID;
+			} 
+			else {
+				query = "SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
+							+ " FROM headers "
+							+ " WHERE subscribed_group_id="
+							+ mGroupID
+							+ " AND read=0";
+			}
+			
+			Cursor cur = db .rawQuery(query, null);
 
 			int numArticles = cur.getCount();
 			Article[] articles = new Article[numArticles];

@@ -1,5 +1,6 @@
 package com.almarsoft.GroundhogReader.lib;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -137,6 +138,8 @@ public class DBUtils {
     }
 
     
+    // XXX YYY ZZZ: Aqui hay que seleccionar mensajes del grupo con has_attachment = 1 y borrar todos los adjuntos de esos mensajes!!!
+    //FSUtils.deleteAttachments(fileNames)
 	public static void unsubscribeGroup(String group, Context context) {
 		
 		int groupid = getGroupIdFromName(group, context);
@@ -297,6 +300,8 @@ public class DBUtils {
 	}
 
 	
+	// XXX YYY ZZZ: Borrar el directorio de attachments
+	// COÑO HAY QUE BORRAR TAMBIEN LOS DIRECTORIOS DE CACHE!!! (IGUAL SE HACE EN OTRO LADO)
 	public static void deleteAllMessages(Context context) {
 		
 		DBHelper db = new DBHelper(context);
@@ -468,6 +473,8 @@ public class DBUtils {
 	// Delete all messages and restart all counters from subscribed groups. This is used when 
 	// the user changes the server in the preferences, since every server has differente message
 	// numbers and messagecounts
+	
+	// XXX YYY ZZZ: Hay que borrar el directorio de attachments
 	public static void restartAllGroupsMessages(Context context) {
 		
 		DBHelper db = new DBHelper(context);
@@ -645,16 +652,29 @@ public class DBUtils {
 
 
 	// Delete all the read messages from the cache and from the DB
-	public static void expireReadMessages(Context context, long expireTime) {
+	// XXX YYY ZZZ: Cuando se le da a borrar todos no lo hace realmente
+	public static void expireReadMessages(Context context, boolean expireAll, long expireTime) {
 		
 		DBHelper db = new DBHelper(context);
 		SQLiteDatabase dbwrite = db.getWritableDatabase();
 		
 		// Get all the expired messages so we can delete bodies and attachments
 		long currentTime = System.currentTimeMillis();
-		Cursor c = dbwrite.rawQuery("SELECT _id, subscribed_group_id, has_attachments, attachments_fnames " + "" +
-				                    "FROM headers " + 
-				                    "WHERE read=1 AND catched=1 AND read_unixdate < " + currentTime + " - " + expireTime, null);
+		String q = null;
+		
+		if (expireAll) {
+			q = "SELECT _id, subscribed_group_id, has_attachments, attachments_fnames " + 
+         			"FROM headers " + 
+         			"WHERE read=1 AND catched=1";
+		} 
+		else {
+			q = "SELECT _id, subscribed_group_id, has_attachments, attachments_fnames " + 
+		                 	"FROM headers " + 
+		                 	"WHERE read=1 AND catched=1 AND read_unixdate < " + currentTime + " - " + expireTime;
+		}
+		
+		Log.d("XXX", "Query: " + q);
+		Cursor c = dbwrite.rawQuery(q, null);
 		
 		int count = c.getCount();
 		c.moveToFirst();
@@ -860,5 +880,29 @@ public class DBUtils {
 		c.close(); dbread.close(); db.close();
 		
 		return (count > 0);
+	}
+
+
+	public static void updateHeaderRecordAttachments(int headerId, Vector<HashMap<String, String>> attachsVector, Context context) {
+
+			if (attachsVector == null || attachsVector.size() == 0)
+				return;
+			
+			StringBuffer strbu = new StringBuffer();
+			HashMap<String, String> attachData = null;
+			int len = attachsVector.size();
+			
+			for (int i=0; i<len; i++) {
+				attachData = attachsVector.get(i);
+				strbu.append(attachData.get("md5"));
+				if (i != len-1)
+					strbu.append(";");
+			}
+			
+			DBHelper db = new DBHelper(context);
+	    	SQLiteDatabase dbwriter = db.getWritableDatabase();
+	    	String q = "UPDATE headers SET has_attachments=1, attachments_fnames=" + esc(strbu.toString()) +  " WHERE _id="+ headerId;
+	    	dbwriter.execSQL(q);
+	    	dbwriter.close(); db.close();
 	}
 }
