@@ -509,7 +509,7 @@ public class MessageTextProcessor {
 	}
 
 
-	public static Vector<HashMap<String, String>> getUUEncodedAttachments(String bodyText) {
+	public static Vector<HashMap<String, String>> saveUUEncodedAttachments(String bodyText, String group) { 
 		
 		Vector<HashMap<String, String>> bodyAttachments = new Vector<HashMap<String, String>>(1);
 		String newBody = null;
@@ -555,7 +555,7 @@ public class MessageTextProcessor {
 						attachDatas = new Vector<HashMap<String, String>>();
 					
 					try {
-						attachData = FSUtils.saveUUencodedAttachment(attachment.toString(), filename);
+						attachData = FSUtils.saveUUencodedAttachment(attachment.toString(), filename, group);
 						attachDatas.add(attachData);
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -697,8 +697,7 @@ public class MessageTextProcessor {
 	// Split the message into its body and attachments. The attachments are saved to disk/sdcard
 	// and only a reference to the filepath (as an md5) is passed.
 	// =============================================================================================
-	
-	public static Vector<Object> getBodyAndAttachments(Message message) {
+	public static Vector<Object> extractBodySaveAttachments(String group, Message message) {
 		
 		Vector<Object> body_attachs = new Vector<Object>(2);
 		TextBody realBody = null;
@@ -718,7 +717,7 @@ public class MessageTextProcessor {
 					realBody = (TextBody) partbody;
 				}
 				else if (partbody instanceof BinaryBody) {
-					attachsVector.add(saveBinaryBody((BinaryBody) partbody));
+					attachsVector.add(saveBinaryBody((BinaryBody) partbody, group));
 					partbody.dispose();
 				}				
 			}
@@ -729,7 +728,7 @@ public class MessageTextProcessor {
 		else if (body instanceof Message) {
 		}
 		else if (body instanceof BinaryBody) {
-			attachsVector.add(saveBinaryBody((BinaryBody) body));
+			attachsVector.add(saveBinaryBody((BinaryBody) body, group));
 			body.dispose();
 		}
 		
@@ -743,15 +742,15 @@ public class MessageTextProcessor {
 	// Save an attachment to disk/sdcard and return a data hashmap with its information
 	// ========================================================
 	
-	private static HashMap<String, String> saveBinaryBody(BinaryBody body) {
+	private static HashMap<String, String> saveBinaryBody(BinaryBody body, String group) {
 		
 		HashMap<String, String> partData = new HashMap<String, String>();
 		Entity parent = body.getParent();
 		long size = 0;
 		
-		// I prefer to name the file as an md5 for privacy reasons (not much privacy because it can be opened from the SDCARD, but protects from potential onlookers)
-		
-		String path    = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments/";
+		// I prefer to name the file as an md5 for privacy reasons (not much privacy because it can be 
+		// opened from the SDCARD, but protects from potential onlookers on a directory listing)
+		String path    = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + UsenetConstants.ATTACHMENTSDIR + "/" + group + "/";
 		String fname = parent.getFilename();
 		String ext      = fname.substring(fname.lastIndexOf('.')+1, fname.length());
 		partData.put("md5", DigestUtils.md5Hex(parent.getFilename()) + "." + ext);

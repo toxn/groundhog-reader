@@ -262,6 +262,7 @@ public final class R {
         public static final int error_saving_kept_unread=0x7f0500b5;
         public static final int error_saving_kept_unread_long=0x7f0500b6;
         /**   New on 1.12.0 
+  New on 1.12.0 
          */
         public static final int expire_messages=0x7f0500d6;
         public static final int expire_mode=0x7f05003e;

@@ -251,7 +251,7 @@
 <string name="category_reading">Reading</string>
 
 <!--  New on 1.12.0 -->
-<string name="expire_messages">Expire read messages</string>
+<string name="expire_messages">Delete read messages</string>
 <string name="msglist_group_showread">Show Read</string>
 <string name="msglist_group_hideread">Hide Read</string>
 <string name="expiring_d">Expiring read messages...</string>

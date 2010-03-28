@@ -1,6 +1,7 @@
 package com.almarsoft.GroundhogReader;
 
 import java.lang.reflect.Method;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
@@ -20,6 +21,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -415,6 +417,7 @@ public class MessageListActivity extends Activity {
 		mTitleBar.setText(mGroup + ":" + mNumUnread);
 	}
 
+	
 	// setread == true: marks as read, else: marks as unread
 	private void markThreadAsReadOrUnread(HeaderItemClass header, boolean setread) {
 
@@ -492,19 +495,23 @@ public class MessageListActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if (requestCode == UsenetConstants.COMPOSEMESSAGEINTENT) {
+			
 			if (resultCode == RESULT_OK) { // Message Send activity returns here from
 									// "new post" (instead of reply)
     			if (mOfflineMode && !mPrefs.getBoolean("postDirectlyInOfflineMode", false))
     				Toast.makeText(getApplicationContext(), getString(R.string.stored_outbox_send_next_sync), Toast.LENGTH_SHORT).show();
+    			
     			else
     				Toast.makeText(getApplicationContext(), getString(R.string.message_sent), Toast.LENGTH_SHORT).show();
 			}
 			
-		} else if (requestCode == UsenetConstants.BANNEDACTIVITYINTENT) {
+		} 
+		else if (requestCode == UsenetConstants.BANNEDACTIVITYINTENT) {
+			
 			if (resultCode == RESULT_OK) {
 				Toast.makeText(getApplicationContext(), getString(R.string.future_unignored_willbe_fetched), Toast.LENGTH_LONG).show();
 			}
-
+			
 			else if (resultCode == RESULT_CANCELED) {
 				Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_unban), Toast.LENGTH_SHORT).show();
 			}
@@ -581,15 +588,18 @@ public class MessageListActivity extends Activity {
 
 		private ProgressDialog mProgress = null;
 		
+		
 		@Override
 		protected void onPreExecute() {
 			MessageListActivity mi = MessageListActivity.this;
 			mProgress = ProgressDialog.show(mi, mi.getString(R.string.message), mi.getString(R.string.threading_messages));
 		}
 		
+		
 		@Override
 		protected Integer doInBackground(Void... arg0) {
-			
+
+			//Log.d("XXX", "Inicio threadMessages " + System.currentTimeMillis()/1000);
 			MessageListActivity act = MessageListActivity.this;
 			String charset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
 			DBHelper dbhelper = new DBHelper(getApplicationContext());
@@ -605,27 +615,50 @@ public class MessageListActivity extends Activity {
 			// progressDialog
 			
 			String query = null;
+			//SQLiteStatement getGroupMessages = null;
+			
 			if(mPrefs.getBoolean("showRead", false)) {
+				// XXX YYY ZZZ: Probar las consultas preparadas con esto
+				/*
+				getGroupMessages = db.compileStatement("SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
+					         + " FROM headers "
+					         + " WHERE subscribed_group_id=?");
+				getGroupMessages.bindLong(1, mGroupID);
+				*/
+				
 				query = "SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
 					         + " FROM headers "
 					         + " WHERE subscribed_group_id="
 					         + mGroupID;
+				
 			} 
 			else {
+				/*
+				getGroupMessages = db.compileStatement("SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
+						+ " FROM headers "
+						+ " WHERE subscribed_group_id=? AND read=0");
+				getGroupMessages.bindLong(1, mGroupID);
+				*/
+				
 				query = "SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
 							+ " FROM headers "
 							+ " WHERE subscribed_group_id="
 							+ mGroupID
 							+ " AND read=0";
+				
 			}
 			
-			Cursor cur = db .rawQuery(query, null);
+			//ResultSet res = getGroupMessages.executeQuery();
+			Cursor cur = db.rawQuery(query, null);
 
 			int numArticles = cur.getCount();
 			Article[] articles = new Article[numArticles];
 
 			cur.moveToFirst();
-			Article currentArticle;
+			Article currentArticle = null;
+			//Log.d("XXX", "Inicio bucle threadMessages " + System.currentTimeMillis()/1000);
+			String dbrefs = null;
+			String[] artRefs = null;
 			
 			for (int i = 0; i < numArticles; i++) {
 				if (isCancelled()) {
@@ -641,8 +674,8 @@ public class MessageListActivity extends Activity {
 				currentArticle.setSubject(MessageTextProcessor.decodeHeaderInArticleInfo(cur.getString(4), charset));
 				currentArticle.setSimplifiedSubject(cur.getString(5));
 
-				String dbrefs = cur.getString(5);
-				String[] artRefs = dbrefs.split(" ");
+				dbrefs = cur.getString(5);
+				artRefs = dbrefs.split(" ");
 				int artRefsLen = artRefs.length;
 				
 				for (int j = 0; j < artRefsLen; j++) {
@@ -653,7 +686,9 @@ public class MessageListActivity extends Activity {
 				cur.moveToNext();
 			}
 
+			//Log.d("XXX", "Fin bucle thredMessages " + System.currentTimeMillis()/1000);
 			cur.close(); db.close(); dbhelper.close();
+			//Log.d("XXX", "Tras cerrar la BBDD" + System.currentTimeMillis()/1000);
 			
 			mHeaderItemsList = new ArrayList<HeaderItemClass>();
 			
@@ -669,6 +704,7 @@ public class MessageListActivity extends Activity {
 			articles = null;
 			mNumUnread = numArticles;
 			DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
+			//Log.d("XXX", "Fin threadMessages " + System.currentTimeMillis()/1000);
 			return DBGETTER_FINISHED_OK;
 		}
 		

@@ -1,6 +1,6 @@
 1.12.0
 - Option to show unread messages on the group messages list.
-- Options to expire old read messages by date or manually. 
+- Options to expire old read messages by date or manually.
 
 1.11.0
 - Reorganization of the settings

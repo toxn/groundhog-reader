@@ -94,17 +94,14 @@ public class GroupListActivity extends Activity {
 		mOfflineMode = mPrefs.getBoolean("offlineMode", true);
 		
 		long expireTime = new Long(mPrefs.getString("expireMode",  "86400000")).longValue(); // 1 day default
-		Log.d("XXX", "expireTime: " + expireTime);
 		long lastExpiration = mPrefs.getLong("lastExpiration", 0);
-		Log.d("XXX", "lastExpiration: " + lastExpiration);
-		Log.d("XXX", "Desde la ultima (segundos): " + (System.currentTimeMillis() - lastExpiration));
 		
 		 // 0 = manual expiration only. And we check so we don't do more than one expiration a day
 		if (expireTime != 0 && ((System.currentTimeMillis() - lastExpiration) > 86400000)) {
 			expireReadMessages(false);
 		}
 		
-		// Add the buttons
+		// "Add Group" button
 		Button addButton        = (Button) this.findViewById(R.id.btn_add);
 		addButton.setText(getString(R.string.grouplist_add_groups));
 		addButton.setOnClickListener(	
@@ -115,6 +112,7 @@ public class GroupListActivity extends Activity {
 					}
 		);
 		
+		// Settings button
 		Button settingsButton = (Button) this.findViewById(R.id.btn_settings);
 		settingsButton.setText(getString(R.string.global_settings));
 		settingsButton.setOnClickListener(

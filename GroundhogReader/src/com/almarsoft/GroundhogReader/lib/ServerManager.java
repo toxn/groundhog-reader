@@ -24,6 +24,7 @@ import org.apache.james.mime4j.storage.StorageProvider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -43,11 +44,10 @@ final public class ServerManager {
 	public ServerManager(Context callerContext) {
 
 		mContext = callerContext;
-		
 		// XXX YYY ZZZ: Ver si esto se puede hacer fuera de aqui o pasarselo... solo se usa en un sitio
 		mBannedTrollsSet  = DBUtils.getBannedTrolls(mContext);
 	}
-	
+
 	
 	// Destructor
 	protected void finalize() throws Throwable
@@ -133,7 +133,8 @@ final public class ServerManager {
 	
 	// XXX YYY ZZZ: Ver las llamadas que usan selectNewsGroup para ver si comprueban el valor devuelto
 	// XXX YYY ZZZ: mBannedThreadSet, seria conveniente que se leyera externamente y se le pasara como argumento
-	public boolean selectNewsGroup(String group, boolean offlineMode) throws ServerAuthException, IOException {
+	public boolean selectNewsGroup(String group, boolean offlineMode) 
+	throws ServerAuthException, IOException {
 
 		mGroup = group;
 		
@@ -148,7 +149,6 @@ final public class ServerManager {
 		}
 		
 		return selectNewsGroupConnecting(group);
-
 	}
 
 	
@@ -207,10 +207,12 @@ final public class ServerManager {
 
 	// ===============================================================================
 	// Retrieve and article by number from the server and store it into the
-	// database. Return the msgId of the article.
+	// database. Return the msgId of the article. Can accept an already created SQLiteDatabase
+	// object to avoid too many object/database open/database close inside loop (or
+	// can be null to let the DBUtils create it every time.)
 	// ===============================================================================
 
-	public Vector<Object> getAndInsertArticleInfo(long articleNumber, String charset) 
+	public Vector<Object> getAndInsertArticleInfo(long articleNumber, String charset, SQLiteDatabase catchedDB) 
 	throws IOException, UsenetReaderException, ServerAuthException {
 		clientConnectIfNot();
 		
@@ -225,7 +227,7 @@ final public class ServerManager {
 			if (  (!mBannedThreadsSet.contains(articleInfo.simplifiedSubject())) 
 			    &&(!mBannedTrollsSet.contains(from))) {
 				
-				ddbbId = insertArticleInDB(articleInfo, articleNumber, from, charset);
+				ddbbId = insertArticleInDB(articleInfo, articleNumber, from, charset, catchedDB);
 			} 
 		}
 		
@@ -290,7 +292,7 @@ final public class ServerManager {
 	// Decode, process and insert the articleInfo into the DB, return the _id
 	// ======================================================================
 	
-	private long insertArticleInDB(Article articleInfo, long articleNumber, String decodedfrom, String charset) 
+	private long insertArticleInDB(Article articleInfo, long articleNumber, String decodedfrom, String charset, SQLiteDatabase catchedDB) 
 	throws UsenetReaderException {
 
 		// Get the reference list as a string instead of as an array of strings
@@ -315,7 +317,7 @@ final public class ServerManager {
 		subject = subject.replaceAll(" +", " ");
 
 		// Now insert the Article into the DB
-		return DBUtils.insertArticleToGroupID(mGroupID, articleInfo, finalRefs, decodedfrom, subject, mContext);
+		return DBUtils.insertArticleToGroupID(mGroupID, articleInfo, finalRefs, decodedfrom, subject, mContext, catchedDB);
 	}
 
 	// ====================================================================================

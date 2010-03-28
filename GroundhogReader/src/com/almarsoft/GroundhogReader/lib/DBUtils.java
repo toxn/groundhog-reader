@@ -137,9 +137,12 @@ public class DBUtils {
 		dbWrite.close(); db.close();
     }
 
-    
-    // XXX YYY ZZZ: Aqui hay que seleccionar mensajes del grupo con has_attachment = 1 y borrar todos los adjuntos de esos mensajes!!!
-    //FSUtils.deleteAttachments(fileNames)
+
+    /**
+     * Unsubscribe a group, deleting from the DB the headers and from the disk the group's directory storage 
+     * for bodies and attachments.
+     * 
+     */
 	public static void unsubscribeGroup(String group, Context context) {
 		
 		int groupid = getGroupIdFromName(group, context);
@@ -149,15 +152,17 @@ public class DBUtils {
 		
 		DBHelper db = new DBHelper(context);
 		SQLiteDatabase dbWrite = db.getWritableDatabase();
-
+		
 		String query = "DELETE FROM subscribed_groups WHERE _ID=" + groupid;
 		dbWrite.execSQL(query);
 		query = "DELETE FROM headers WHERE subscribed_group_id=" + groupid;
 		dbWrite.execSQL(query);
 		dbWrite.close(); db.close();
 		
-		String pathname = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group;
-		FSUtils.deleteDirectory(pathname);
+		FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group);
+		
+		FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + 
+                                UsenetConstants.ATTACHMENTSDIR  + "/" + group);
 	}
 	
 
@@ -300,24 +305,9 @@ public class DBUtils {
 	}
 
 	
-	// XXX YYY ZZZ: Borrar el directorio de attachments
-	// COÑO HAY QUE BORRAR TAMBIEN LOS DIRECTORIOS DE CACHE!!! (IGUAL SE HACE EN OTRO LADO)
-	public static void deleteAllMessages(Context context) {
-		
-		DBHelper db = new DBHelper(context);
-		SQLiteDatabase dbwrite = db.getWritableDatabase();
-		
-		dbwrite.execSQL("DELETE FROM headers");
-		dbwrite.execSQL("UPDATE subscribed_groups SET unread_count=0");
-		dbwrite.close(); db.close();
-	}
-	
-	
 	public static HashSet<String> getBannedTrolls(Context context) {
 		
-		
 		HashSet<String> bannedTrolls = null;
-
 		
 		DBHelper db = new DBHelper(context);
 		SQLiteDatabase dbwrite = db.getWritableDatabase();
@@ -444,13 +434,22 @@ public class DBUtils {
 	}
 	
 	
-	// XXX YYY ZZZ: Esto podria ser lento al construir todo el rato db y dbwrite, hay que verlo y ver 
-	// si se puede cachear aunque sea como miembro static
 	public static long insertArticleToGroupID(int groupID, Article articleInfo, String finalRefs, 
-			                                  String finalFrom, String finalSubject, Context context) {
+  			                                    String finalFrom, String finalSubject, Context context, 
+  			                                    SQLiteDatabase catchedDB) {
 		
-		DBHelper db = new DBHelper(context);
-		SQLiteDatabase dbwrite = db.getWritableDatabase();
+		// The called can create a single SQLiteDatabase object to avoid too many object
+		// creations if we're inside a loop
+		DBHelper db 		   = null;
+		SQLiteDatabase dbwrite = null;
+		
+		if (catchedDB == null) {
+			db = new DBHelper(context);
+			dbwrite = db.getWritableDatabase();
+		}
+		else {
+			dbwrite = catchedDB;
+		}
 		
 		ContentValues cv = new ContentValues();
 		cv.put("subscribed_group_id", groupID);
@@ -465,7 +464,9 @@ public class DBUtils {
 		
 		long ret = dbwrite.insert("headers", null, cv);
 		
-		dbwrite.close(); db.close();
+		if (catchedDB == null) {
+			dbwrite.close(); db.close();
+		}
 		return ret;
 	}
 
@@ -474,7 +475,6 @@ public class DBUtils {
 	// the user changes the server in the preferences, since every server has differente message
 	// numbers and messagecounts
 	
-	// XXX YYY ZZZ: Hay que borrar el directorio de attachments
 	public static void restartAllGroupsMessages(Context context) {
 		
 		DBHelper db = new DBHelper(context);
@@ -483,6 +483,7 @@ public class DBUtils {
 		dbwrite.execSQL("DELETE FROM headers");
 		dbwrite.execSQL("UPDATE subscribed_groups SET lastFetched=-1, unread_count=0");
 		FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups");
+		FSUtils.deleteDirectory(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + UsenetConstants.ATTACHMENTSDIR);
 		dbwrite.close(); db.close();
 	}
 
@@ -651,8 +652,7 @@ public class DBUtils {
 	}
 
 
-	// Delete all the read messages from the cache and from the DB
-	// XXX YYY ZZZ: Cuando se le da a borrar todos no lo hace realmente
+	// Delete OLD or ALL (expireAll=true) read messages from the cache and from the DB
 	public static void expireReadMessages(Context context, boolean expireAll, long expireTime) {
 		
 		DBHelper db = new DBHelper(context);
@@ -673,7 +673,6 @@ public class DBUtils {
 		                 	"WHERE read=1 AND catched=1 AND read_unixdate < " + currentTime + " - " + expireTime;
 		}
 		
-		Log.d("XXX", "Query: " + q);
 		Cursor c = dbwrite.rawQuery(q, null);
 		
 		int count = c.getCount();
@@ -686,14 +685,17 @@ public class DBUtils {
 			FSUtils.deleteCacheMessage(c.getInt(0)/* _id */, groupname);
 			
 			if (c.getInt(2)/*has_attach*/ == 1) {
-				FSUtils.deleteAttachments(c.getString(3) /*attachments_fnames*/);
+				FSUtils.deleteAttachments(c.getString(3) /*attachments_fnames*/, groupname);
 			}
 			
 			c.moveToNext();
 		}
 		
-		dbwrite.execSQL("DELETE FROM headers WHERE read=1 AND read_unixdate < " + currentTime + " - " + expireTime);
-		
+		if (expireAll)
+			q = "DELETE FROM headers WHERE read=1";
+		else
+			q = "DELETE FROM headers WHERE read=1 AND read_unixdate < " + currentTime + " - " + expireTime;
+		dbwrite.execSQL(q);
 		c.close(); dbwrite.close(); db.close();
 	}
 
