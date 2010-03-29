@@ -101,6 +101,9 @@ final public class ServerManager {
 			
 		// Get the configuration host, port, username and pass
 		mClient.connect(host, port);
+		Log.d("XXX", "clogin: " + clogin);
+		Log.d("XXX", "cpass: " + cpass);
+		
 		if (needsAuth) {
 			if (!mClient.authenticate(clogin, cpass)) {
 				throw new ServerAuthException();
@@ -122,6 +125,18 @@ final public class ServerManager {
 		clientConnectIfNot();
 		
 		mGroupInfo = new NewsgroupInfo();
+		
+		// XXX
+		if (mGroup == null)
+			Log.d("XXX", "mGroup es null");
+		else
+			Log.d("XXX", "mGroup es " + group);
+		
+		if (mGroupInfo == null)
+			Log.d("XXX", "mGroupInfo es null");
+		else
+			Log.d("XXX", "mGroupInfo no es null");
+		
 		try {
 			return mClient.selectNewsgroup(mGroup, mGroupInfo);
 		} catch (IOException e) {
@@ -165,7 +180,7 @@ final public class ServerManager {
 		long[] allNumbers;
 	
 		try {
-			allNumbers = mClient.listGroup(mGroup, firstMsg, limit);
+			allNumbers = mClient.listGroup(mGroup, firstMsg, limit);			
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.d(UsenetConstants.APPNAME, "Connection seems lost, reconnecting");

@@ -177,7 +177,7 @@ public class GroupMessagesDownloadDialog {
 			Method postCallback = this.getClass().getMethod("postGetMessagesCallBack", postPartypes);
 			
 			mServerMessageGetter = new ServerMessageGetter(this, preCallback, progressCallback, postCallback, 
-					                                                                            mContext, mServerManager, mLimit, mTmpOfflineMode);
+					                                                                            mContext, mServerManager, mLimit, mTmpOfflineMode, false);
 			mServerMessageGetter.execute(mTmpGroups);
 		} catch(NoSuchMethodException e) {
 			e.printStackTrace();

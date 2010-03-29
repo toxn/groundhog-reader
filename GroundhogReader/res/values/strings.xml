@@ -255,4 +255,17 @@
 <string name="msglist_group_showread">Show Read</string>
 <string name="msglist_group_hideread">Hide Read</string>
 <string name="expiring_d">Expiring read messages...</string>
+
+
+<!--  New on 1.13.0 -->
+<string name="preference_enable_notif_title">Notifications</string>
+<string name="preference_enable_notif_summary">Check for new messages and notify</string>
+<string name="pref_notif_period">Checking interval</string>
+<string name="preference_useSound_title">Play sound</string>
+<string name="preference_useVibration_title">Vibrate</string>
+<string name="preference_useLight_title">Light</string>
+<string name="summary_posting_screen">Options related to posting messages</string>
+<string name="category_notification">Notifications</string>
+
+
 </resources>
