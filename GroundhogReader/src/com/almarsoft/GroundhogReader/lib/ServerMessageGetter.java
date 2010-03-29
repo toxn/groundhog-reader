@@ -11,6 +11,7 @@ import com.almarsoft.GroundhogReader.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
@@ -24,7 +25,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 	private AsyncTask<Vector<String>, Integer, Integer> mTask  = null;
 	
 	public ServerMessageGetter(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, 
-			                                       Context context, ServerManager serverManager, int limit, boolean offlineMode) {
+			                    Context context, ServerManager serverManager, int limit, boolean offlineMode) {
 		
 		super(callerInstance, preCallback, progressCallback, postCallback, context);
 		
@@ -141,47 +142,55 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					Vector<Object> offlineData;
 					int articleListLen = articleList.size();
 					
-					for (int j=0; j < articleListLen; j++) {
-						
-						number = articleList.get(j);
-						
-						if (isCancelled()) {
-							if (j > 0) 
-								DBUtils.storeGroupLastFetchedMessageNumber(group, lastFetched, mContext);
+					// These are created outside the loop to avoid lots of creation/opening/closing of the DB object inside it
+					DBHelper db = new DBHelper(mContext);
+					SQLiteDatabase dbwrite = db.getWritableDatabase();
+					
+					try {
+						for (int j=0; j < articleListLen; j++) {
 							
-							return FINISHED_INTERRUPTED;
-						}
-						publishProgress(j, len);
-						
-						// Check if the articleInfo is already on the DB (this can happen when the user has 
-						// selected sync after a non-offline "Get New Messages"; in this case we download only
-						// the content but don't do the fetching-and-inserting operation, obviously
-						offlineData = DBUtils.isHeaderInDatabase(number, group, mContext);
-						
-						// Wasn't on the DB, get and insert it
-						if (offlineData == null) { 
+							number = articleList.get(j);
 							
-							offlineData = mServerManager.getAndInsertArticleInfo(number, prefs.getString("readDefaultCharset", "ISO8859-15"));
-						}
-						
-						// Offline mode: save also the article contents to the cache
-						if (mOfflineMode) {
-							msgid = (Long) offlineData.get(0);
-							server_msg_id = (String) offlineData.get(1);
-							
-							try {
-								mServerManager.getHeader(msgid, server_msg_id, false, false);
-								mServerManager.getBody  (msgid, server_msg_id, false, false);
-							} catch (NNTPNoSuchMessageException e) {
-								// Message not in server, mark as read and ignore
-								e.printStackTrace();
-								DBUtils.markAsRead(number, mContext);
-								mServerManager.selectNewsGroupConnecting(group);
-								continue;
+							if (isCancelled()) {
+								if (j > 0) 
+									DBUtils.storeGroupLastFetchedMessageNumber(group, lastFetched, mContext);
+								
+								return FINISHED_INTERRUPTED;
 							}
+							publishProgress(j, len);
+							
+							// Check if the articleInfo is already on the DB (this can happen when the user has 
+							// selected sync after a non-offline "Get New Messages"; in this case we download only
+							// the content but don't do the fetching-and-inserting operation, obviously
+							offlineData = DBUtils.isHeaderInDatabase(number, group, mContext);
+							
+							// Wasn't on the DB, get and insert it
+							if (offlineData == null) { 
+								
+								offlineData = mServerManager.getAndInsertArticleInfo(number, prefs.getString("readDefaultCharset", "ISO8859-15"), dbwrite);
+							}
+							
+							// Offline mode: save also the article contents to the cache
+							if (mOfflineMode) {
+								msgid = (Long) offlineData.get(0);
+								server_msg_id = (String) offlineData.get(1);
+								
+								try {
+									mServerManager.getHeader(msgid, server_msg_id, false, false);
+									mServerManager.getBody  (msgid, server_msg_id, false, false);
+								} catch (NNTPNoSuchMessageException e) {
+									// Message not in server, mark as read and ignore
+									e.printStackTrace();
+									DBUtils.markAsRead(number, mContext);
+									mServerManager.selectNewsGroupConnecting(group);
+									continue;
+								}
+							}
+							
+							lastFetched = number;
 						}
-						
-						lastFetched = number;
+					} finally {
+						dbwrite.close(); db.close();
 					}
 
 					if (articleListLen > 0) 

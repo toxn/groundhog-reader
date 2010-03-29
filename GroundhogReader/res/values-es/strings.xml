@@ -212,7 +212,13 @@
 <string name="category_reading">Leyendo</string>
 <string name="section_mandatory">Esta sección es obligatoria</string>
 <string name="options_reading">Opciones de lectura</string>
-<string name="server_need_login_summary">Actiavar si el servidor pide login y clave</string>
+<string name="server_need_login_summary">Activar si el servidor pide login y clave</string>
 <string name="summary_userinfo">Información de Usuario (nombre, email, etc.)</string>
+
+<!--  New on 1.12.0 -->
+<string name="expire_messages">Borrar mensajes leídos</string>
+<string name="msglist_group_showread">Mostrar Leídos</string>
+<string name="msglist_group_hideread">Ocultar Leídos</string>
+<string name="expiring_d">Expirando mensajes leídos...</string>
 
 </resources>

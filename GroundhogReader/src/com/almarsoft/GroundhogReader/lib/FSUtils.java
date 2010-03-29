@@ -17,6 +17,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class FSUtils {
 	
@@ -122,7 +123,8 @@ public class FSUtils {
 	
 	public static void deleteCacheMessage(long msgid, String groupname) {
 		
-		String basePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + groupname;
+		String basePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + 
+		                  "/offlinecache/groups/" + groupname;
 		
 		new File(basePath + "/header/" + msgid).delete();
 		new File(basePath + "/body/" + msgid).delete();
@@ -132,23 +134,23 @@ public class FSUtils {
 	
 	public static boolean deleteDirectory(String directory) {
 		
+		Process process;
+		try {
+			process = Runtime.getRuntime().exec("rm -r " + directory);
+			process.waitFor();
+			Log.d("XXX", "DeleteDirectory END");
+			if (process.exitValue() == 0)
+				return true;
+		} catch (IOException e) {
+			Log.d("Groundhog", "IOException in rm -r " + directory);
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			Log.d("Groundhog", "InterruptedException in rm -r " + directory);
+			e.printStackTrace();
+		}
 		
-		String pathname = directory;
-		
-		File path = new File(pathname);
-		
-	    if( path.exists() ) {
-	        File[] files = path.listFiles();
-	        for(int i=0; i<files.length; i++) {
-	           if(files[i].isDirectory()) {
-	             deleteDirectory(files[i].getAbsolutePath());
-	           }
-	           else {
-	             files[i].delete();
-	           }
-	        }
-	      }
-	      return( path.delete() );
+		return false;
+	    
 	}
 
 	// SLOW, use only for attachments or filenames we're not controlling
@@ -173,7 +175,8 @@ public class FSUtils {
 	// Save an attachment to the sdcard downloads folder
 	// =================================================
 	
-	public static String saveAttachment(String md5, String name) throws IOException {
+	public static String saveAttachment(String md5, String group, String name) 
+	throws IOException {
 		
 		
 		String outDir = UsenetConstants.EXTERNALSTORAGE + "/downloads";
@@ -183,7 +186,8 @@ public class FSUtils {
 		
 		name = sanitizeFileName(name);
 		
-		String origFilePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + UsenetConstants.ATTACHMENTSDIR + "/" + md5;
+		String origFilePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + 
+		                      UsenetConstants.ATTACHMENTSDIR  + "/" + group + "/" + md5;
 		String destFilePath = outDir + "/" + name;
 		
 		FileInputStream in = new FileInputStream(origFilePath);
@@ -206,11 +210,13 @@ public class FSUtils {
 	// Decode a string un uuencoding and save it to disk, returning an attachData
 	// =====================================================================================
 	
-	public static HashMap<String, String> saveUUencodedAttachment(String uuencodedData, String filename) throws IOException, UsenetReaderException {
+	public static HashMap<String, String> saveUUencodedAttachment(String uuencodedData, String filename, String group) 
+	throws IOException, UsenetReaderException {
 		
 		UUDecoder uudecoder = new UUDecoder();
 		
-		String directory = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + UsenetConstants.ATTACHMENTSDIR + "/";
+		String directory = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + 
+		                   UsenetConstants.ATTACHMENTSDIR  + "/" + group + "/";
 		
 		File dirFile = new File(directory);
 		if (!dirFile.exists())
@@ -290,8 +296,11 @@ public class FSUtils {
 	}
 
 
-	public static void deleteAttachments(String attachments) {
-		String basePath    = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/attachments/";
+	public static void deleteAttachments(String attachments, String group) {
+		
+		String basePath    = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + 
+		                     UsenetConstants.ATTACHMENTSDIR  + "/" + group + "/" ;
+		
 		String[] fNames = attachments.split(";");
 		int fNamesLen = fNames.length;
 		

@@ -241,7 +241,7 @@ public class MessageActivity extends Activity {
 							 Intent intent = new Intent(); 
 							 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
 							 intent.setAction(android.content.Intent.ACTION_VIEW);
-							 File attFile = new File(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + UsenetConstants.ATTACHMENTSDIR, md5);
+							 File attFile = new File(UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + UsenetConstants.ATTACHMENTSDIR + "/" + mGroup, md5);
 							 Uri attachUri = Uri.fromFile(attFile);
 							 intent.setDataAndType(attachUri, attachPart.get("type"));
 							 startActivity(intent); 
@@ -251,7 +251,7 @@ public class MessageActivity extends Activity {
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dlg, int sumthin) {
 							try {
-								String finalPath = FSUtils.saveAttachment(md5, attachPart.get("name"));
+								String finalPath = FSUtils.saveAttachment(md5, mGroup, attachPart.get("name"));
 								Toast.makeText(MessageActivity.this, getString(R.string.saved_to) + finalPath, Toast.LENGTH_LONG).show();
 							} catch(IOException e) { 	
 								e.printStackTrace();
@@ -704,7 +704,7 @@ public class MessageActivity extends Activity {
 	    				                             (String)articleData.get("server_article_id"),
 	    				                             false, isCatched, mCharset);
 	    		
-	    		Vector<Object> body_attachs = MessageTextProcessor.getBodyAndAttachments(mMessage);
+	    		Vector<Object> body_attachs = MessageTextProcessor.extractBodySaveAttachments(mGroup, mMessage);
 	    		TextBody textBody = (TextBody)body_attachs.get(0);
 	    		
 	    		if (mHeader.getField("MIME-Version") != null)
@@ -718,7 +718,7 @@ public class MessageActivity extends Activity {
 	    		mSubjectText = MessageTextProcessor.decodeSubject(mHeader.getField("Subject"), mCharset, mMessage);
 	    		
 	    		// Check for uuencoded attachments
-	    		Vector<HashMap<String, String>> uuattachData = MessageTextProcessor.getUUEncodedAttachments(mBodyText);
+	    		Vector<HashMap<String, String>> uuattachData = MessageTextProcessor.saveUUEncodedAttachments(mBodyText, mGroup);
 	    		
 	    		if (uuattachData != null) {
 	    			mBodyText = uuattachData.get(0).get("body");
