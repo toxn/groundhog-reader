@@ -27,6 +27,7 @@ public class NNTPExtended extends NNTPClient {
 		list = new Vector<Long>(2048);
 		
 		while ((line = reader.readLine()) != null) {
+			Log.d("XXX", "Line: |" + line.trim() + "|");
 			list.add(Long.parseLong(line.trim()));
 		}
 		
@@ -82,30 +83,38 @@ public class NNTPExtended extends NNTPClient {
 		long firstToGet, firstArticle, lastArticle;
 		NewsgroupInfo groupInfo = new NewsgroupInfo();
 		
+		Log.d("XXX getgrouparticles", "1");
 		if (!selectNewsgroup(group, groupInfo))
 			return null;
 	
+		Log.d("XXX getgrouparticles", "2");
 		firstArticle = groupInfo.getFirstArticle();
 		lastArticle  = groupInfo.getLastArticle();
-		
+
+		Log.d("XXX getgrouparticles", "first: " + firstArticle + "; last: " + lastArticle);
 		if (firstArticle == 0 && lastArticle == 0)
 			return new long[0];
 
+		Log.d("XXX getgrouparticles", "3");
 		// First sync with this group; see the comment below 
 		if (fromArticle == -1)
 			firstToGet = firstArticle;
 		
 		else {
+			Log.d("XXX getgrouparticles", "4");
 			if (fromArticle > lastArticle) { // No new articles
+				Log.d("XXX getgrouparticles", "5");
 				return new long[0];
 		   }
 			else {
+				Log.d("XXX getgrouparticles", "6");
 				firstToGet = fromArticle;
 			}
 		}
 		
 		// Now select the first article and start looping until limit or last article reached
 		ArticlePointer art = new ArticlePointer();
+		Log.d("XXX getgrouparticles", "7");
 
 		list = new Vector<Long>(limit);
 		
@@ -114,10 +123,14 @@ public class NNTPExtended extends NNTPClient {
 		// so we ask for the last message and go backwards until we have "limit" articles or 
 		// the first one.
 		if (fromArticle == -1) {
+			Log.d("XXX getgrouparticles", "10");
 			if (!selectArticle(lastArticle, art))
 				return new long[0];
 			
+			Log.d("XXX getgrouparticles", "11");
+			
 			for (int i=0; i<limit; i++) {
+				Log.d("XXX getgrouparticles", "12: " + i);
 				list.insertElementAt((long)art.articleNumber, 0);
 				
 				if (art.articleNumber == firstToGet)
@@ -132,10 +145,12 @@ public class NNTPExtended extends NNTPClient {
 		// For normal non-first connection we start with the last article we got on the previous session and advance from that
 		// until limit or last article reached
 		else {
+			Log.d("XXX getgrouparticles", "13");
 			if (!selectArticle(firstToGet, art))
 				return new long[0];
-			
+			Log.d("XXX getgrouparticles", "14");
 			for (int i=0; i<=limit; i++) {
+				Log.d("XXX getgrouparticles", "15");
 				list.add((long)art.articleNumber);
 				
 				if (art.articleNumber == lastArticle)
@@ -145,11 +160,12 @@ public class NNTPExtended extends NNTPClient {
 					break;
 			}
 		}
-		
+		Log.d("XXX getgrouparticles", "16");
 		int listSize = list.size();
 		long[] articleNumbers = new long[listSize];
 		
 		for (int i=0; i<listSize; i++) {
+			Log.d("XXX getgrouparticles", "17");
 			articleNumbers[i] = list.get(i);
 		}
 		

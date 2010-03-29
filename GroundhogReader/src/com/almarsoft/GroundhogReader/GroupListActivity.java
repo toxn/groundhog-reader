@@ -1,11 +1,15 @@
 package com.almarsoft.GroundhogReader;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Vector;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +19,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,6 +42,7 @@ import com.almarsoft.GroundhogReader.lib.DBHelper;
 import com.almarsoft.GroundhogReader.lib.DBUtils;
 import com.almarsoft.GroundhogReader.lib.FSUtils;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
+import com.almarsoft.GroundhogReader.lib.ServerMessageGetter;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 
 public class GroupListActivity extends Activity {
@@ -49,6 +56,9 @@ public class GroupListActivity extends Activity {
 	private static final int ID_DIALOG_DELETING = 0;
 	private static final int ID_DIALOG_UNSUBSCRIBING = 1;
 	private static final int ID_DIALOG_MARKREAD = 2;
+	
+	// XXX Quitar
+	private boolean XXXcheckllamado = false; 
 
 	// Real name of the groups, used for calling the MessageListActivity with the correct name
 	private String[] mGroupsArray;
@@ -71,6 +81,7 @@ public class GroupListActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
 
+    	Log.d(UsenetConstants.APPNAME, "GroupList onCreate");
     	setContentView(R.layout.grouplist);
     	
     	mGroupsList = (ListView) this.findViewById(R.id.list_groups);
@@ -122,6 +133,14 @@ public class GroupListActivity extends Activity {
 						}
 					}
 		);
+		
+		//XXX
+		/*
+		if (!XXXcheckllamado) {
+				XXXcheckTest();
+				XXXcheckllamado = true;
+		}
+		*/
     }
 
     
@@ -159,6 +178,18 @@ public class GroupListActivity extends Activity {
         // Load the group names and unreadcount from the subscribed_groups table
         //=======================================================================
     	updateGroupList();
+    	
+    	// Check if we came here from a notification, offer to sync messages in that case
+    	Bundle extras = getIntent().getExtras();
+    	if (extras == null) {
+    		Log.d("XXX", "Extras es null");
+    	}
+    	else {
+    		if (extras.containsKey("fromNotify")) {
+    			getIntent().removeExtra("fromNotify");
+    			getAllMessages();
+    		}
+    	}
 		
     }
     
@@ -220,43 +251,30 @@ public class GroupListActivity extends Activity {
     	if (mDownloader != null) 
     		mDownloader = null;
     	
-		DBHelper db = new DBHelper(mContext);
-		SQLiteDatabase dbWrite = db.getWritableDatabase();
-		
-		Cursor cur = dbWrite.rawQuery("SELECT name FROM subscribed_groups", null);
-	
-		cur.moveToFirst();
-		int count = cur.getCount();
-		
-		String[] proxyGroupsArray = new String[count];
-		String[] proxyGroupsUnreadCount = new String[count];
-		
-		String curGroupName;
+    	String[] proxyGroupsArray = DBUtils.getSubscribedGroups(mContext);
+    	int count = proxyGroupsArray.length;
+    	String[] proxyGroupsUnreadCount = new String[count];
+    	
+    	String curGroup = null;
 		int unread;
-		
 		StringBuilder builder = new StringBuilder(80);
 		
 		for (int i = 0; i < count; i++) {
-			curGroupName = cur.getString(0);
-			proxyGroupsArray[i] = curGroupName;
-			//unread = cur.getInt(1);
-			unread = DBUtils.getGroupUnreadCount(curGroupName, mContext);
+			curGroup = proxyGroupsArray[i];
+			unread = DBUtils.getGroupUnreadCount(curGroup, mContext);
 			
 			if (unread == -1) 
-				proxyGroupsUnreadCount[i] = proxyGroupsArray[i];
+				proxyGroupsUnreadCount[i] = curGroup;
 			else {              
 				proxyGroupsUnreadCount[i] = builder
-			                                .append(proxyGroupsArray[i])
+			                                .append(curGroup)
 			                                .append(" (")
 			                                .append(unread)
 			                                .append(')')
 			                                .toString();
 				builder.delete(0, builder.length());
 			}
-			cur.moveToNext();
 		}
-		
-		cur.close(); dbWrite.close(); db.close();
 		
 		mGroupsWithUnreadCountArray = proxyGroupsUnreadCount;
 		mGroupsArray = proxyGroupsArray;
@@ -664,11 +682,74 @@ public class GroupListActivity extends Activity {
 	    }
 	};
 	
+	
+	
     public void fetchFinishedStartMessageList() {
   		mDownloader = null;
     	Intent msgList = new Intent(GroupListActivity.this, MessageListActivity.class);
     	msgList.putExtra("selectedGroup", mTmpSelectedGroup);
     	startActivity(msgList);
     }
+    
+    // XXXXXXXXXXXXXXXX Callbacks only for debugging XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXX
+    /*
+    private ServerMessageGetter mXXXServerMessageGetter = null;
+    
+    @SuppressWarnings("unchecked")
+	public void XXXcheckTest() {
+    	Log.d("XXX", "XXXcheckTest");
+    	try{
+			Class postPartypes[] = new Class[2];
+			postPartypes[0] = String.class;
+			postPartypes[1] = Integer.class;
+			Method postCallback = this.getClass().getMethod("XXXpostCheckMessagesCallBack", postPartypes);
+		
+			Log.d("XXX", "Iniciando ServerMessageGetter");
+			ServerManager myServerManager = new ServerManager(mContext);
+			mXXXServerMessageGetter = new ServerMessageGetter(this, null, null, postCallback, 
+					                                                                            mContext, myServerManager, 100, false, true);
+			Vector<String> groups = new Vector<String>(1);
+			groups.add("es.charla.motor");
+			//groups.add("es.pruebas");
+			mXXXServerMessageGetter.execute(groups);
+    	} catch(NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch(SecurityException e) {
+			e.printStackTrace();
+		}
+    }
+
+    
+	public void XXXpostCheckMessagesCallBack(String status, Integer resultObj) {
+		Log.d("XXX", "En postCheckMessagesCallback");
+		
+		int result = resultObj.intValue();
+
+		if (result == 5) {		
+			if (status != null) {
+				Log.d("XXX", "Status:");
+				Log.d("XXX", status);
+			} else Log.d("XXX", "Status es null!"); 
+		} else{
+			Log.d("XXX", "Otro result: " + result);
+			return;
+		}
+
+		mXXXServerMessageGetter = null;
+		
+        NotificationManager nm = (NotificationManager)  mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notif = new Notification(R.drawable.icon, status, System.currentTimeMillis());
+        //notif.defaults |= Notification.DEFAULT_SOUND;
+        //notif.defaults |= Notification.DEFAULT_VIBRATE;
+        //notif.defaults |= Notification.DEFAULT_LIGHTS;
+        notif.flags      |= Notification.FLAG_AUTO_CANCEL;
+        
+        Intent notifyIntent     = new Intent(mContext, GroupListActivity.class);
+        notifyIntent.putExtra("fromNotify", true);
+        PendingIntent intent = PendingIntent.getActivity(this, 0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+        notif.setLatestEventInfo(mContext, "New Messages", status, intent);
+        nm.notify(12345, notif);
+	}
+	*/
 }
 

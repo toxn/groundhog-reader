@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 
 public class ServerMessageGetter extends AsyncTaskProxy {
@@ -22,16 +23,19 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 	private ServerManager mServerManager = null;
 	private int mLimit;
 	private boolean mOfflineMode;
+	private boolean mIsOnlyCheck;
 	private AsyncTask<Vector<String>, Integer, Integer> mTask  = null;
 	
 	public ServerMessageGetter(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, 
-			                    Context context, ServerManager serverManager, int limit, boolean offlineMode) {
+			                    Context context, ServerManager serverManager, int limit, boolean offlineMode, boolean isOnlyCheck) {
 		
 		super(callerInstance, preCallback, progressCallback, postCallback, context);
 		
 		mServerManager = serverManager;
 		mLimit = limit;
 		mOfflineMode = offlineMode;
+		mIsOnlyCheck = isOnlyCheck;
+		
 	}
 	
 	
@@ -60,10 +64,12 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 		private String mCurrentGroup        = null;
 		private Vector<String> groups      = null;
 		
-		private static final int FINISHED_ERROR = 1;
+		protected static final int FINISHED_ERROR = 1;
 		protected static final int FINISHED_ERROR_AUTH = 2;
 		protected static final int FETCH_FINISHED_OK = 3;
-		private static final int FINISHED_INTERRUPTED = 4;
+		protected static final int FINISHED_INTERRUPTED = 4;
+		protected static final int CHECK_FINISHED_OK = 5;
+		
 		
 		
 		@Override
@@ -85,34 +91,61 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 		
 		@Override
 		protected Integer doInBackground(Vector<String>...groupsmult) {
+			Log.d("XXX", "en doInBackground");
 			groups = groupsmult[0];
 			mCurrentGroup = mContext.getString(R.string.group);
 			String typeFetch;
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 			
 			try {
-				int groupslen = groups.size();
 				
+				int groupslen = groups.size();				
 				String group = null;
+				
+				int currentLimit = mLimit;
+				
+				if (mIsOnlyCheck)
+					mStatusMsg = new String("");
+				
 				for (int i=0; i<groupslen; i++) {
 					mCurrentGroup = groups.get(i);
 					group = mCurrentGroup;
 					
-					mStatusMsg = mContext.getString(R.string.asking_new_articles);
-					publishProgress(0, mLimit);
+					if (!mIsOnlyCheck)
+						mStatusMsg = mContext.getString(R.string.asking_new_articles);
+					
+					publishProgress(0, currentLimit);
+					Log.d("XXX", "Seleccionando grupo " + group);
 					mServerManager.selectNewsGroupConnecting(group);
 
 					long lastFetched, firstToFetch;
 					lastFetched = DBUtils.getGroupLastFetchedNumber(group, mContext);
+					Log.d("XXX", "Lastfetched: " + lastFetched);
 					
 					// First time for this group, keep the -1 so getArticleNumbers knows what to do, but if it's not the 
 					// first time, get the lastFetched + 1 as the firstToFetch
-					if (lastFetched == -1) 
-						firstToFetch = lastFetched;
-					else 
-						firstToFetch = lastFetched + 1; 
+					Log.d("XXX", "currentLimit en doBackground antes: " + currentLimit);
+					if (lastFetched == -1) {
+						Log.d("XXX", "lastFetched == -1");
+						firstToFetch = lastFetched;		
+						currentLimit = mLimit;
+					}
+					else { 
+						firstToFetch = lastFetched + 1;
+						if (mIsOnlyCheck) 
+							currentLimit = 9999; // No limit on new message checking except when the group is new
+					}
+					Log.d("XXX", "currentLimit en doBackground despues: " + currentLimit);
 					
-					Vector<Long> articleList = mServerManager.getArticleNumbers(firstToFetch, mLimit);
+					Log.d("XXX", "Llamando getarticuleNumbers");
+					Vector<Long> articleList = mServerManager.getArticleNumbers(firstToFetch, currentLimit);
+					
+					if (mIsOnlyCheck) {
+						mStatusMsg = mStatusMsg + mCurrentGroup + ":" + articleList.size() + ";";
+						Log.d("XXX", "Actualizando mStatusMsg: " + mStatusMsg);
+						continue;
+					}
+					
 					
 					if (mOfflineMode) {
 						// Get a vector with the server article numbers of articleInfos downloaded (and unread) but
@@ -132,7 +165,8 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 						typeFetch = mContext.getString(R.string.headers);
 						
 		    		String msg = mContext.getString(R.string.getting_something);
-		    		mStatusMsg = java.text.MessageFormat.format(msg, typeFetch);
+		    		if (!mIsOnlyCheck)
+		    			mStatusMsg = java.text.MessageFormat.format(msg, typeFetch);
 		    		
 					int len = articleList.size();
 					publishProgress(0, len);
@@ -152,7 +186,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 							number = articleList.get(j);
 							
 							if (isCancelled()) {
-								if (j > 0) 
+								if (j > 0 && !mIsOnlyCheck) 
 									DBUtils.storeGroupLastFetchedMessageNumber(group, lastFetched, mContext);
 								
 								return FINISHED_INTERRUPTED;
@@ -165,10 +199,8 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 							offlineData = DBUtils.isHeaderInDatabase(number, group, mContext);
 							
 							// Wasn't on the DB, get and insert it
-							if (offlineData == null) { 
-								
+							if (offlineData == null) 								
 								offlineData = mServerManager.getAndInsertArticleInfo(number, prefs.getString("readDefaultCharset", "ISO8859-15"), dbwrite);
-							}
 							
 							// Offline mode: save also the article contents to the cache
 							if (mOfflineMode) {
@@ -189,16 +221,19 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 							
 							lastFetched = number;
 						}
+						
 					} finally {
 						dbwrite.close(); db.close();
 					}
 
-					if (articleListLen > 0) 
-						DBUtils.storeGroupLastFetchedMessageNumber(group, articleList.lastElement(), mContext);
+					if (!mIsOnlyCheck)
+						if (articleListLen > 0) 
+							DBUtils.storeGroupLastFetchedMessageNumber(group, articleList.lastElement(), mContext);
 					
-					if (groups.lastElement().equalsIgnoreCase(group))
-						return FETCH_FINISHED_OK;
-				}
+						if (groups.lastElement().equalsIgnoreCase(group))
+							return FETCH_FINISHED_OK;
+					}
+					
 			} catch (IOException e) {
 				mStatusMsg = mContext.getString(R.string.error_post_check_settings) + ": " + e.toString() + " " + mCurrentGroup;
 				e.printStackTrace();
@@ -215,6 +250,9 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 				return FINISHED_ERROR_AUTH;
 			}
 			
+			if (mIsOnlyCheck)
+				return CHECK_FINISHED_OK;
+				
 			return FETCH_FINISHED_OK;
 		}
 		

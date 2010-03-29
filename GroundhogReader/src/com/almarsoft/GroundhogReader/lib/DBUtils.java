@@ -23,6 +23,28 @@ public class DBUtils {
 	}
 	
 	
+	public static String[] getSubscribedGroups(Context context) {
+		DBHelper db = new DBHelper(context);
+		SQLiteDatabase dbread = db.getReadableDatabase();
+		
+		Cursor cur = dbread.rawQuery("SELECT name FROM subscribed_groups", null);
+		int c = cur.getCount();
+		String[] subscribed = null;
+		if (c > 0) {
+			subscribed = new String[c];
+
+			cur.moveToFirst();
+			for (int i=0; i<c; i++) { 
+				subscribed[i] = cur.getString(0);
+				cur.moveToNext();
+			}
+		}
+		
+		cur.close(); dbread.close(); db.close();		
+		return subscribed;		
+	}
+	
+	
     public static void updateUnreadInGroupsTable(int unreadCount, int groupid, Context context) {
     	DBHelper dbhelper = new DBHelper(context);
     	SQLiteDatabase dbwriter = dbhelper.getWritableDatabase();
