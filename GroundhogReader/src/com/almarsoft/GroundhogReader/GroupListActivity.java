@@ -236,7 +236,11 @@ public class GroupListActivity extends Activity {
     		mDownloader = null;
     	
     	String[] proxyGroupsArray = DBUtils.getSubscribedGroups(mContext);
-    	int count = proxyGroupsArray.length;
+    	int count = 0;
+    	if (proxyGroupsArray != null) 
+    		count = proxyGroupsArray.length;
+    	else
+    		proxyGroupsArray = new String[0];
     	String[] proxyGroupsUnreadCount = new String[count];
     	
     	String curGroup = null;
