@@ -91,7 +91,6 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 		
 		@Override
 		protected Integer doInBackground(Vector<String>...groupsmult) {
-			Log.d("XXX", "en doInBackground");
 			groups = groupsmult[0];
 			mCurrentGroup = mContext.getString(R.string.group);
 			String typeFetch;
@@ -115,18 +114,15 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 						mStatusMsg = mContext.getString(R.string.asking_new_articles);
 					
 					publishProgress(0, currentLimit);
-					Log.d("XXX", "Seleccionando grupo " + group);
+					Log.i(UsenetConstants.APPNAME, "Selecting group " + group);
 					mServerManager.selectNewsGroupConnecting(group);
 
 					long lastFetched, firstToFetch;
 					lastFetched = DBUtils.getGroupLastFetchedNumber(group, mContext);
-					Log.d("XXX", "Lastfetched: " + lastFetched);
 					
 					// First time for this group, keep the -1 so getArticleNumbers knows what to do, but if it's not the 
 					// first time, get the lastFetched + 1 as the firstToFetch
-					Log.d("XXX", "currentLimit en doBackground antes: " + currentLimit);
 					if (lastFetched == -1) {
-						Log.d("XXX", "lastFetched == -1");
 						firstToFetch = lastFetched;		
 						currentLimit = mLimit;
 					}
@@ -135,14 +131,11 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 						if (mIsOnlyCheck) 
 							currentLimit = 9999; // No limit on new message checking except when the group is new
 					}
-					Log.d("XXX", "currentLimit en doBackground despues: " + currentLimit);
 					
-					Log.d("XXX", "Llamando getarticuleNumbers");
 					Vector<Long> articleList = mServerManager.getArticleNumbers(firstToFetch, currentLimit);
 					
 					if (mIsOnlyCheck) {
 						mStatusMsg = mStatusMsg + mCurrentGroup + ":" + articleList.size() + ";";
-						Log.d("XXX", "Actualizando mStatusMsg: " + mStatusMsg);
 						continue;
 					}
 					

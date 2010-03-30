@@ -216,9 +216,23 @@
 <string name="summary_userinfo">Información de Usuario (nombre, email, etc.)</string>
 
 <!--  New on 1.12.0 -->
-<string name="expire_messages">Borrar mensajes leídos</string>
-<string name="msglist_group_showread">Mostrar Leídos</string>
-<string name="msglist_group_hideread">Ocultar Leídos</string>
-<string name="expiring_d">Expirando mensajes leídos...</string>
+	<string name="expire_messages">Borrar mensajes leídos</string>
+	<string name="msglist_group_showread">Mostrar Leídos</string>
+	<string name="msglist_group_hideread">Ocultar Leídos</string>
+	<string name="expiring_d">Expirando mensajes leídos...</string>
+
+
+<!--  New on 1.13.0 -->
+	<!-- Notifications category options at settings -->
+	<string name="preference_enable_notif_title">Notificaciones</string>	
+	<string name="preference_enable_notif_summary">Comprobar nuevos mensajes y notificar</string>
+	<string name="preference_wifiOnly">Sólo con WIFI</string>
+	<string name="pref_notif_period">Intervalo</string>
+	<string name="preference_useSound_title">Reproducir audio</string>
+	<string name="preference_useVibration_title">Vibrar</string>
+	<string name="preference_useLight_title">Luz</string>
+	<string name="summary_posting_screen">Opciones relacionadas con publicación</string>
+	<!-- This is shown on Android bar notifications area (when expanded) -->
+	<string name="new_messages">Nuevos Mensajes de Usenet</string>
 
 </resources>
