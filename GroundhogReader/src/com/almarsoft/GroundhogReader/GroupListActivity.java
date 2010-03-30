@@ -171,7 +171,7 @@ public class GroupListActivity extends Activity {
     	
     	// Check if we came here from a notification, offer to sync messages in that case
     	Bundle extras = getIntent().getExtras();
-		if (extras.containsKey("fromNotify")) {
+		if (extras != null && extras.containsKey("fromNotify")) {
 			getIntent().removeExtra("fromNotify");
 			getAllMessages();
 		}
