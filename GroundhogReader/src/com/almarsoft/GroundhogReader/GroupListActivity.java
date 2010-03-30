@@ -57,9 +57,6 @@ public class GroupListActivity extends Activity {
 	private static final int ID_DIALOG_UNSUBSCRIBING = 1;
 	private static final int ID_DIALOG_MARKREAD = 2;
 	
-	// XXX Quitar
-	private boolean XXXcheckllamado = false; 
-
 	// Real name of the groups, used for calling the MessageListActivity with the correct name
 	private String[] mGroupsArray;
 	private String mTmpSelectedGroup;
@@ -134,13 +131,6 @@ public class GroupListActivity extends Activity {
 					}
 		);
 		
-		//XXX
-		/*
-		if (!XXXcheckllamado) {
-				XXXcheckTest();
-				XXXcheckllamado = true;
-		}
-		*/
     }
 
     
@@ -181,16 +171,10 @@ public class GroupListActivity extends Activity {
     	
     	// Check if we came here from a notification, offer to sync messages in that case
     	Bundle extras = getIntent().getExtras();
-    	if (extras == null) {
-    		Log.d("XXX", "Extras es null");
-    	}
-    	else {
-    		if (extras.containsKey("fromNotify")) {
-    			getIntent().removeExtra("fromNotify");
-    			getAllMessages();
-    		}
-    	}
-		
+		if (extras != null && extras.containsKey("fromNotify")) {
+			getIntent().removeExtra("fromNotify");
+			getAllMessages();
+		}
     }
     
 	@Override
@@ -252,7 +236,11 @@ public class GroupListActivity extends Activity {
     		mDownloader = null;
     	
     	String[] proxyGroupsArray = DBUtils.getSubscribedGroups(mContext);
-    	int count = proxyGroupsArray.length;
+    	int count = 0;
+    	if (proxyGroupsArray != null) 
+    		count = proxyGroupsArray.length;
+    	else
+    		proxyGroupsArray = new String[0];
     	String[] proxyGroupsUnreadCount = new String[count];
     	
     	String curGroup = null;
@@ -690,66 +678,5 @@ public class GroupListActivity extends Activity {
     	msgList.putExtra("selectedGroup", mTmpSelectedGroup);
     	startActivity(msgList);
     }
-    
-    // XXXXXXXXXXXXXXXX Callbacks only for debugging XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX XXX
-    /*
-    private ServerMessageGetter mXXXServerMessageGetter = null;
-    
-    @SuppressWarnings("unchecked")
-	public void XXXcheckTest() {
-    	Log.d("XXX", "XXXcheckTest");
-    	try{
-			Class postPartypes[] = new Class[2];
-			postPartypes[0] = String.class;
-			postPartypes[1] = Integer.class;
-			Method postCallback = this.getClass().getMethod("XXXpostCheckMessagesCallBack", postPartypes);
-		
-			Log.d("XXX", "Iniciando ServerMessageGetter");
-			ServerManager myServerManager = new ServerManager(mContext);
-			mXXXServerMessageGetter = new ServerMessageGetter(this, null, null, postCallback, 
-					                                                                            mContext, myServerManager, 100, false, true);
-			Vector<String> groups = new Vector<String>(1);
-			groups.add("es.charla.motor");
-			//groups.add("es.pruebas");
-			mXXXServerMessageGetter.execute(groups);
-    	} catch(NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch(SecurityException e) {
-			e.printStackTrace();
-		}
-    }
-
-    
-	public void XXXpostCheckMessagesCallBack(String status, Integer resultObj) {
-		Log.d("XXX", "En postCheckMessagesCallback");
-		
-		int result = resultObj.intValue();
-
-		if (result == 5) {		
-			if (status != null) {
-				Log.d("XXX", "Status:");
-				Log.d("XXX", status);
-			} else Log.d("XXX", "Status es null!"); 
-		} else{
-			Log.d("XXX", "Otro result: " + result);
-			return;
-		}
-
-		mXXXServerMessageGetter = null;
-		
-        NotificationManager nm = (NotificationManager)  mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notif = new Notification(R.drawable.icon, status, System.currentTimeMillis());
-        //notif.defaults |= Notification.DEFAULT_SOUND;
-        //notif.defaults |= Notification.DEFAULT_VIBRATE;
-        //notif.defaults |= Notification.DEFAULT_LIGHTS;
-        notif.flags      |= Notification.FLAG_AUTO_CANCEL;
-        
-        Intent notifyIntent     = new Intent(mContext, GroupListActivity.class);
-        notifyIntent.putExtra("fromNotify", true);
-        PendingIntent intent = PendingIntent.getActivity(this, 0, notifyIntent, android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-        notif.setLatestEventInfo(mContext, "New Messages", status, intent);
-        nm.notify(12345, notif);
-	}
-	*/
 }
 

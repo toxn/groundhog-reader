@@ -17,7 +17,7 @@ public final class UsenetConstants {
 	public final static int TEXTSIZE_LARGER = 3;
 	public final static int TEXTSIZE_LARGEST = 4;
 	
-	public final static int CHECK_ALARM_CODE = 534366991;
+	public final static int CHECK_ALARM_CODE = 534366991;	
 	
 	public final static String APPNAME = "Groundhog";
 	public final static String ATTACHMENTSDIR = "attachments";

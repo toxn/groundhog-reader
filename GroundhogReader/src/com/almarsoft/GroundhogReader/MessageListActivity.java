@@ -599,7 +599,6 @@ public class MessageListActivity extends Activity {
 		@Override
 		protected Integer doInBackground(Void... arg0) {
 
-			//Log.d("XXX", "Inicio threadMessages " + System.currentTimeMillis()/1000);
 			MessageListActivity act = MessageListActivity.this;
 			String charset = mPrefs.getString("readDefaultCharset", "ISO8859-15");
 			DBHelper dbhelper = new DBHelper(getApplicationContext());
@@ -618,14 +617,6 @@ public class MessageListActivity extends Activity {
 			//SQLiteStatement getGroupMessages = null;
 			
 			if(mPrefs.getBoolean("showRead", false)) {
-				// XXX YYY ZZZ: Probar las consultas preparadas con esto
-				/*
-				getGroupMessages = db.compileStatement("SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
-					         + " FROM headers "
-					         + " WHERE subscribed_group_id=?");
-				getGroupMessages.bindLong(1, mGroupID);
-				*/
-				
 				query = "SELECT server_article_id, server_article_number, date, from_header, subject_header, reference_list, clean_subject"
 					         + " FROM headers "
 					         + " WHERE subscribed_group_id="
@@ -656,7 +647,6 @@ public class MessageListActivity extends Activity {
 
 			cur.moveToFirst();
 			Article currentArticle = null;
-			//Log.d("XXX", "Inicio bucle threadMessages " + System.currentTimeMillis()/1000);
 			String dbrefs = null;
 			String[] artRefs = null;
 			
@@ -686,9 +676,7 @@ public class MessageListActivity extends Activity {
 				cur.moveToNext();
 			}
 
-			//Log.d("XXX", "Fin bucle thredMessages " + System.currentTimeMillis()/1000);
 			cur.close(); db.close(); dbhelper.close();
-			//Log.d("XXX", "Tras cerrar la BBDD" + System.currentTimeMillis()/1000);
 			
 			mHeaderItemsList = new ArrayList<HeaderItemClass>();
 			
@@ -704,7 +692,6 @@ public class MessageListActivity extends Activity {
 			articles = null;
 			mNumUnread = numArticles;
 			DBUtils.updateUnreadInGroupsTable(mNumUnread, mGroupID, getApplicationContext());
-			//Log.d("XXX", "Fin threadMessages " + System.currentTimeMillis()/1000);
 			return DBGETTER_FINISHED_OK;
 		}
 		

@@ -1,7 +1,5 @@
 package com.almarsoft.GroundhogReader;
 
-import com.almarsoft.GroundhogReader.lib.UsenetConstants;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -9,7 +7,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.preference.CheckBoxPreference;
+//import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -82,38 +80,23 @@ public class OptionsActivity extends PreferenceActivity {
 	/**
 	 * Check that the alarm changed to enable/reset/disable the current alarm
 	 */
-	// XXX YYY ZZZ: Cambiar el setRepeating por setInexactRepeating
 	protected void checkAlarmChanged() {		
 		boolean newAlarm = mPrefs.getBoolean("enableNotifications", false);
 		long        newAlarmPeriod = new Long(mPrefs.getString("notifPeriod", "3600000")).longValue();
 		
-		// XXX YYY ZZZ QUTAR
-		newAlarmPeriod = 5000;
-
-		Intent alarmIntent = new Intent(getApplicationContext(), GroupsCheckAlarmReceiver.class);
-		PendingIntent sender = null;
+		Intent alarmIntent = new Intent(this, GroupsCheckAlarmReceiver.class);
+		PendingIntent sender = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);		
-		//new Intent(getApplicationContext(), GroupsCheckAlarmReceiver.class);
-		
-		Log.d("XXX", "oldAlarm |" + oldAlarm + "| newAlarm: |" + newAlarm + "|");
 		
 		if (oldAlarm == false && newAlarm == true) { // User enabled the alarm
-			Log.d("XXX", "XXX1");
-			sender =  PendingIntent.getBroadcast(getApplicationContext(), UsenetConstants.CHECK_ALARM_CODE, alarmIntent, 0);
-			//am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + newAlarmPeriod, newAlarmPeriod, sender);			
-			am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + newAlarmPeriod, newAlarmPeriod, sender);
+			am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+newAlarmPeriod, newAlarmPeriod, sender);			
 		}
 		else if (oldAlarm == true && newAlarm == false) { // User disabled the alarm
-			Log.d("XXX", "XXX2");
-			sender =  PendingIntent.getBroadcast(getApplicationContext(), UsenetConstants.CHECK_ALARM_CODE, alarmIntent, 0);
 			am.cancel(sender);
 		}
 		else if (newAlarm == true && (oldAlarmPeriod != newAlarmPeriod)) { // User changed the interval
-			Log.d("XXX", "XXX3");
-			sender =  PendingIntent.getBroadcast(getApplicationContext(), UsenetConstants.CHECK_ALARM_CODE, alarmIntent, 0);
 			am.cancel(sender);
-			//am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + newAlarmPeriod, newAlarmPeriod, sender);
-			am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + newAlarmPeriod, newAlarmPeriod, sender);
+			am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+newAlarmPeriod, newAlarmPeriod, sender);
 		}
 	}
 	

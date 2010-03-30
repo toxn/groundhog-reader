@@ -193,7 +193,7 @@
 	</PreferenceScreen>
 	
 	<PreferenceScreen
-		android:title="@string/category_notification"		
+		android:title="@string/preference_enable_notif_title"		
 	>
 		<CheckBoxPreference
 		android:key="enableNotifications"
@@ -233,6 +233,14 @@
 		android:id="@+id/preference_notif_useLight"
 		android:title="@string/preference_useLight_title"					
 		android:checked="true"
+		android:dependency="enableNotifications"	
+		/>
+		
+		<CheckBoxPreference
+		android:key="notif_wifiOnly"
+		android:id="@+id/preference_notif_wifiOnly"
+		android:title="@string/preference_wifiOnly"					
+		android:checked="false"
 		android:dependency="enableNotifications"	
 		/>
 		

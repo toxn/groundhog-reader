@@ -138,7 +138,6 @@ public class FSUtils {
 		try {
 			process = Runtime.getRuntime().exec("rm -r " + directory);
 			process.waitFor();
-			Log.d("XXX", "DeleteDirectory END");
 			if (process.exitValue() == 0)
 				return true;
 		} catch (IOException e) {

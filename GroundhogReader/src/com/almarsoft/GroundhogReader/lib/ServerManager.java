@@ -101,8 +101,6 @@ final public class ServerManager {
 			
 		// Get the configuration host, port, username and pass
 		mClient.connect(host, port);
-		Log.d("XXX", "clogin: " + clogin);
-		Log.d("XXX", "cpass: " + cpass);
 		
 		if (needsAuth) {
 			if (!mClient.authenticate(clogin, cpass)) {
@@ -125,17 +123,7 @@ final public class ServerManager {
 		clientConnectIfNot();
 		
 		mGroupInfo = new NewsgroupInfo();
-		
-		// XXX
-		if (mGroup == null)
-			Log.d("XXX", "mGroup es null");
-		else
-			Log.d("XXX", "mGroup es " + group);
-		
-		if (mGroupInfo == null)
-			Log.d("XXX", "mGroupInfo es null");
-		else
-			Log.d("XXX", "mGroupInfo no es null");
+
 		
 		try {
 			return mClient.selectNewsgroup(mGroup, mGroupInfo);
