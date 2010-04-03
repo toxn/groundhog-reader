@@ -1,3 +1,7 @@
+1.13.1
+- Bugfix: dont allow the subscribe groups search box to use more than
+  one term.
+
 1.13.0
 - Configurable background checking of new messages and notifications
 - Chinesse translation added thanks to Whynonna Zeng.

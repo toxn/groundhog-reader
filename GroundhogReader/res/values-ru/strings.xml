@@ -221,4 +221,19 @@
 
 <!-- On the settings, summary for the User Info section -->
 <string name="summary_userinfo">Пользовательская информация (имя, email и т.д.)</string>
+
+<!--  New on 1.13.0 -->
+       <!-- Notifications category options at settings -->
+       <string name="preference_enable_notif_title">Уведомления</string>
+       <string name="preference_enable_notif_summary">Проверять новые сообщения и уведомлять</string>
+       <string name="preference_wifiOnly">Только при активном WIFI</string>
+       <string name="pref_notif_period">Интервал проверки</string>
+       <string name="preference_useSound_title">Воспроизвести звук</string>
+       <string name="preference_useVibration_title">Вибро</string>
+       <string name="preference_useLight_title">Индикация</string>
+       <string name="summary_posting_screen">Парамеры постинга сообщений</string>
+
+       <!-- This is shown on Android bar notifications area (when expanded) -->
+       <string name="new_messages">Новые сообщения на nntp-сервере</string>
+
 </resources>

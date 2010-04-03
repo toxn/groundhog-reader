@@ -193,7 +193,8 @@ public class SubscribeActivity extends Activity {
     	private NewsgroupInfo[] mSearchResults;
     	
 		public void onClick(View v) {
-			String searchText = mSearchText.getText().toString();
+			String searchText = mSearchText.getText().toString();			
+			int numWords = searchText.split(" ").length;			
 			
 			// Check that the text it's not too short 
 			if (searchText.length() < 3) {
@@ -204,7 +205,15 @@ public class SubscribeActivity extends Activity {
 			    .setNeutralButton(getString(R.string.close), null)
 			    .show();			
 			     								
-			} else {
+			}
+			else if (numWords != 1) {
+				new AlertDialog.Builder(SubscribeActivity.this)
+				.setTitle(getString(R.string.only_one_word_title))
+				.setMessage(getString(R.string.only_one_word))    							    		 
+			    .setNeutralButton(getString(R.string.close), null)
+			    .show();					
+			}
+			else {
 
 				searchGroups(searchText);
 				Log.d(UsenetConstants.APPNAME, "SearchButton:" + searchText);

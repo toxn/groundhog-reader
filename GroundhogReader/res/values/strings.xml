@@ -270,6 +270,9 @@
 	<!-- This is shown on Android bar notifications area (when expanded) -->
 	<string name="new_messages">New Usenet Messages</string>
 
-
+<!-- New on 1.13.1 -->
+	<!-- User can't currently input more than one word on the subscribe screen search textbox: -->
+	<string name="only_one_word_title">Too many words</string>
+	<string name="only_one_word">Currently only one term (or wildcard) is allowed</string>
 
 </resources>

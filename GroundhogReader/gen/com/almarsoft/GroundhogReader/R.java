@@ -222,7 +222,7 @@ public final class R {
  Connection settings 
          */
         public static final int category_connection=0x7f050006;
-        public static final int category_grouplist=0x7f0500e5;
+        public static final int category_grouplist=0x7f0500e7;
         /**  Writing settings 
          */
         public static final int category_posting=0x7f050025;
@@ -242,7 +242,7 @@ public final class R {
         public static final int compose_decreasesize=0x7f05004c;
         public static final int compose_deletetext=0x7f05004a;
         public static final int compose_increasesize=0x7f05004b;
-        public static final int confirm_delete_cache=0x7f0500e6;
+        public static final int confirm_delete_cache=0x7f0500e8;
         public static final int confirm_expire_messages=0x7f05007f;
         public static final int could_not_fetch_header=0x7f0500b0;
         public static final int could_not_save_colon=0x7f05009f;
@@ -308,7 +308,7 @@ public final class R {
          */
         public static final int groupscolon=0x7f050002;
         public static final int headers=0x7f05008e;
-        public static final int hello=0x7f0500e7;
+        public static final int hello=0x7f0500e9;
         public static final int hostname_not_configured_goto_settings=0x7f0500cc;
         public static final int increase_text_size=0x7f050068;
         public static final int interrupted=0x7f050090;
@@ -350,10 +350,11 @@ public final class R {
         public static final int name_title=0x7f05001c;
         /**  This is shown on Android bar notifications area (when expanded) 
  This is shown on Android bar notifications area (when expanded) 
+ This is shown on Android bar notifications area (when expanded) 
          */
         public static final int new_messages=0x7f0500e2;
         public static final int new_subject=0x7f0500b9;
-        public static final int next=0x7f0500e4;
+        public static final int next=0x7f0500e6;
         public static final int no=0x7f050084;
         public static final int no_enter_anyway=0x7f05008a;
         public static final int no_more_messages=0x7f050099;
@@ -365,6 +366,13 @@ public final class R {
         public static final int offline_group_has_no_messages_sync=0x7f0500ce;
         public static final int offlinemode_summary=0x7f050036;
         public static final int offlinemode_title=0x7f050035;
+        public static final int only_one_word=0x7f0500e4;
+        /**  New on 1.13.1 
+ User can't currently input more than one word on the subscribe screen search textbox: 
+ New on 1.13.1 
+ User can't currently input more than one word/wildcar on the subscribe screen search textbox: 
+         */
+        public static final int only_one_word_title=0x7f0500e3;
         public static final int open=0x7f05009b;
         public static final int open_save_attach_question=0x7f05009a;
         /**  On the summary of the reading options in the settings 
@@ -387,13 +395,15 @@ public final class R {
  Notifications category options at settings 
   New on 1.13.0 
  Notifications category options at settings 
+  New on 1.13.0 
+ Notifications category options at settings 
          */
         public static final int preference_enable_notif_title=0x7f0500da;
         public static final int preference_useLight_title=0x7f0500e0;
         public static final int preference_useSound_title=0x7f0500de;
         public static final int preference_useVibration_title=0x7f0500df;
         public static final int preference_wifiOnly=0x7f0500dc;
-        public static final int prev=0x7f0500e3;
+        public static final int prev=0x7f0500e5;
         public static final int quote_summary=0x7f05002a;
         public static final int quote_title=0x7f050029;
         public static final int quotestring_dialog_message=0x7f050033;
