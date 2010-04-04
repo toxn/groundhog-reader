@@ -1,7 +1,6 @@
 package com.almarsoft.GroundhogReader;
 
 import java.lang.reflect.Method;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Stack;
@@ -21,7 +20,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -38,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -51,7 +50,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.almarsoft.GroundhogReader.lib.DBHelper;
 import com.almarsoft.GroundhogReader.lib.DBUtils;
-import com.almarsoft.GroundhogReader.lib.FSUtils;
 import com.almarsoft.GroundhogReader.lib.HeaderItemClass;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
 import com.almarsoft.GroundhogReader.lib.MiniHeader;
@@ -853,6 +851,8 @@ public class MessageListActivity extends Activity {
 		mNumbersArray = numbersArrayProxy;
 	}
 
+	
+	
 	// ===================================================================
 	// Extension of ArrayAdapter which holds and maps the article fields
 	// ===================================================================
@@ -886,12 +886,15 @@ public class MessageListActivity extends Activity {
 			if (it != null) {
 				Article article = it.getArticle();
 				
-				LinearLayout layout = (LinearLayout) v.findViewById(R.id.layout_item);
-				TextView level = (TextView) v.findViewById(R.id.text_level);
-				level.setText(it.getLevelStr(), TextView.BufferType.SPANNABLE);
+				LinearLayout fullItemLayout = (LinearLayout) v.findViewById(R.id.full_item_layout);
 				
-				View subjectChangeLine = (View) v.findViewById(R.id.msglist_line);
-				subjectChangeLine.setPadding(0, 2, 0, 2);
+				View indentView = (View) v.findViewById(R.id.indentation_view);
+				LayoutParams indentLayoutParams = indentView.getLayoutParams();
+				indentLayoutParams.width = 4*it.getLevel();
+				indentView.setLayoutParams(indentLayoutParams);
+				
+				View subjectChangeLine = (View) v.findViewById(R.id.subject_change_line);
+				LayoutParams subjectLineLayoutParams = subjectChangeLine.getLayoutParams();								
 				
 				/*
 				 * Check the references of the article. If the first reference of the article it's equal than the last article
@@ -907,7 +910,20 @@ public class MessageListActivity extends Activity {
 					prevArticleReferences = prevArt.getReferences();
 				} 
 				
-				int subjectChangeValue = View.INVISIBLE;
+				final ImageView star = (ImageView) v .findViewById(R.id.img_thread_star);
+				LayoutParams starLayoutParams = star.getLayoutParams();	
+				
+				star.setOnClickListener(new OnClickListener() {
+
+					public void onClick(View v) {
+						itemStarClicked(position);
+					}
+				});	
+				
+				TextView bigText = (TextView) v.findViewById(R.id.text_big);
+				TextView smallText = (TextView) v.findViewById(R.id.text_small);
+				
+				boolean subjectChange = false;
 				
 				// If there are no references in this article or the previous it's a new subject. It is, too, 
 				// if both have references but the previous article first reference it's different from this article first reference.
@@ -915,57 +931,81 @@ public class MessageListActivity extends Activity {
 				    prevArticleReferences == null         ||
 						(prevArticleReferences != null    && 
 						 prevArticleReferences.length > 0  &&
-						 !prevArticleReferences[0].equalsIgnoreCase(thisArticleReferences[0]))) {
+						 !prevArticleReferences[0].equalsIgnoreCase(thisArticleReferences[0]))) {					
 					
-					subjectChangeValue = View.VISIBLE;
+					subjectChange = true;
 				}
 				
-				subjectChangeLine.setVisibility(subjectChangeValue);
+				// New subject
+				if (subjectChange) {		
+					
+					fullItemLayout.setBackgroundColor(0x9956a5ec);
+					
+					// Show the subject change line
+					subjectLineLayoutParams.height=8; 
+					subjectChangeLine.setLayoutParams(subjectLineLayoutParams);
+					subjectChangeLine.setVisibility(View.VISIBLE);
+					
+					// Show the star
+					starLayoutParams.width=LayoutParams.FILL_PARENT; 
+					star.setLayoutParams(starLayoutParams);
+					star.setVisibility(View.VISIBLE);
+					
+					if (it.starred)
+						star.setImageDrawable(getResources().getDrawable(R.drawable.star_big_on));
+					else
+						star.setImageDrawable(getResources().getDrawable(R.drawable.star_big_off));
+					
+					// Subject in big text, author in small text
+					bigText.setText(article.getSubject(), TextView.BufferType.SPANNABLE);
+					smallText.setText(it.getFromNoEmail());
 				
-				/*
-				ImageView arrow = (ImageView) v.findViewById(R.id.img_reply);
-				if (it.getLevel() == 0) arrow.setVisibility(View.INVISIBLE);
-				else arrow.setVisibility(View.VISIBLE);
-				*/
-
-				TextView subject = (TextView) v.findViewById(R.id.text_subject);
-				subject.setText(it.getSpaceStr() + article.getSubject(), TextView.BufferType.SPANNABLE);
-
-				TextView from = (TextView) v.findViewById(R.id.text_author);
-				from.setText(it.getFromNoEmail());
+				}
+				// Non-first message in a thread
+				else {
+					// Hide the subject change line
+					subjectLineLayoutParams.height=0;
+					subjectChangeLine.setLayoutParams(subjectLineLayoutParams);
+					subjectChangeLine.setVisibility(View.INVISIBLE);
+					
+					// Hide the star widget
+					starLayoutParams.width=0;
+					star.setLayoutParams(starLayoutParams);
+					star.setVisibility(View.INVISIBLE);
+					
+					// Author in big text, subject in small text
+					bigText.setText(it.getFromNoEmail(), TextView.BufferType.SPANNABLE);
+					smallText.setText(article.getSubject());
+					
+				}			
 				
 				ImageView fav = (ImageView) v.findViewById(R.id.messagelistitem_img_love);
+				LayoutParams favLayoutParams = fav.getLayoutParams();				
 				
 	    		// Show or hide the heart marking favorite authors
 	            if (MessageListActivity.this.mFavoritesSet.contains(article.getFrom())) {
 	            	fav.setImageDrawable(getResources().getDrawable(R.drawable.love));
-	            } else {
+	            	favLayoutParams.width=LayoutParams.FILL_PARENT;
+	            	fav.setLayoutParams(favLayoutParams);
+	            } 
+	            else {
 	            	fav.setImageDrawable(getResources().getDrawable(R.drawable.nullimage));
+	            	favLayoutParams.width=0;
+	            	fav.setLayoutParams(favLayoutParams);	            	
 	            }
 				
-				final ImageView star = (ImageView) v .findViewById(R.id.img_thread_star);
-				star.setOnClickListener(new OnClickListener() {
-
-					public void onClick(View v) {
-						itemStarClicked(position);
-					}
-				});
-
 				if (MessageListActivity.this.mReadSet.contains(article.getArticleId())) {  
-					//it.read = true;
-					layout.setBackgroundColor(0x99aaaaaa);
-				} else if (it.myreply) {
-					layout.setBackgroundColor(Color.YELLOW);
-				} else {
+					//it.read = true; read messages in grey
+					fullItemLayout.setBackgroundColor(0x99aaaaaa);
+				} 				
+				else if (it.myreply) {
+					// replies to the user in yellow
+					fullItemLayout.setBackgroundColor(0x99ffff00);
+				} 
+				else if (!subjectChange){
 					//it.read = false;
-					layout.setBackgroundColor(Color.TRANSPARENT);
+					fullItemLayout.setBackgroundColor(Color.TRANSPARENT);
 				}
-				
-
-				if (it.starred)
-					star.setImageDrawable(getResources().getDrawable(R.drawable.star_big_on));
-				else
-					star.setImageDrawable(getResources().getDrawable(R.drawable.star_big_off));
 			}
 			return v;
 		}
