@@ -201,4 +201,10 @@
 <string name="error_auth_check_pass_go_settings">有一个服务器的验证错误，检查您的用户名和密码设置。您想现在转到设置吗?</string>
 <string name="go_to_settings">转到设置</string>
 <string name="hostname_not_configured_goto_settings">您的 usenet 组服务器主机未配置。你想现在配置该程序吗?</string>
+
+<!-- New on 1.13.1 -->
+	<!-- User can't currently input more than one word/wildcar on the
+subscribe screen search textbox: -->
+	<string name="only_one_word_title">太多字符</string>
+	<string name="only_one_word">当前只有一个项是(或通配符)允许的</string>
 </resources>

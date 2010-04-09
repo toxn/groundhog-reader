@@ -377,6 +377,15 @@ public final class R {
  User can't currently input more than one word/wildcar on the subscribe screen search textbox: 
  New on 1.13.1 
  User can't currently input more than one word/wildcar on the subscribe screen search textbox: 
+ New on 1.13.1 
+ User can't currently input more than one word/wildcar on the
+subscribe screen search textbox: 
+ New on 1.13.1 
+ User can't currently input more than one word/wildcar on the
+subscribe screen search textbox: 
+ New on 1.13.1 
+ User can't currently input more than one word/wildcar on the
+subscribe screen search textbox: 
          */
         public static final int only_one_word_title=0x7f0500e3;
         public static final int open=0x7f05009b;

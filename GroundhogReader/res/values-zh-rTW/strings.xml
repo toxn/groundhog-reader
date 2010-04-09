@@ -201,4 +201,10 @@
 <string name="error_auth_check_pass_go_settings">有一個伺服器的驗證錯誤，檢查您的使用者名稱和密碼設定。您想現在轉到設定嗎?</string>
 <string name="go_to_settings">轉到設定</string>
 <string name="hostname_not_configured_goto_settings">您的 usenet 組伺服器主機未組態。你想現在組態該程式嗎?</string>
+
+<!-- New on 1.13.1 -->
+	<!-- User can't currently input more than one word/wildcar on the
+subscribe screen search textbox: -->
+	<string name="only_one_word_title">太多字元</string>
+	<string name="only_one_word">當前只有一個項是(或萬用字元)允許的</string>
 </resources>
