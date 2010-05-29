@@ -183,7 +183,7 @@
 <string name="new_subject">新主题: \n</string>
 <string name="no_unread_use_sync">没有未读邮件, 点击菜单-&gt;同步获取更多</string>
 <string name="article_menu">菜单条</string>
-<string name="thread_ignore">未来线程信息将被忽略, 使用 菜单-&gt;更多-&gt;'设法让禁止的线程取消忽略</string>
+<string name="thread_ignore">未来线程信息将被忽略, 使用 菜单-&gt;更多-&gt;设法让禁止的线程取消忽略</string>
 
 <string name="future_unignored_willbe_fetched">将提取来自取消忽略的线程的未来信息</string>
 <string name="deleting_messages_caches">删除已读邮件和缓存</string>

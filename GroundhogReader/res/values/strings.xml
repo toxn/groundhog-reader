@@ -170,7 +170,8 @@
 <string name="unsubscribe_question">Do you want to unsubscribe from {0}?</string>
 <string name="unsubscribe">Unsubscribe</string>
 <string name="get_new">Get new</string>
-<string name="warning_online_to_offline_sync">Warning: the group has messages with headers but without contents (downloaded in online mode.) Do you want to get the contents now? (if you don't, the content will be fetched from the net when you click on a message, even in offline mode)</string>
+<string name="warning_online_to_offline_sync">Warning: the group has messages with headers but without contents (downloaded in online mode.) Do you want to get the contents now? (if you don\'t, the content will be
+ fetched from the net when you click on a message, even in offline mode)</string>
 <string name="yes_sync">Yes (sync)</string>
 <string name="no_enter_anyway">No (enter anyway)</string>
 <string name="fetch_headers_question">Do you want to fetch new headers for {0}?</string>
@@ -186,7 +187,7 @@
 <string name="download_interrupted_sleep">Download interrupted (Android sent me to sleep, probably)</string>
 <string name="error_authenticating_check_pass">There was an error trying to authenticate. Please check your user and password with your server:\n</string>
 <string name="loading_help_d">Loading help...</string>
-<string name="at_first_message">You're already at the first message</string>
+<string name="at_first_message">You\'re already at the first message</string>
 <string name="no_more_messages">There are no more messages in the group</string>
 <string name="open_save_attach_question">Open or save attachment?</string>
 <string name="open">Open</string>
@@ -199,16 +200,16 @@
 <string name="message_discarded">Message discarded</string>
 <string name="reload_tosee_unbanned_authors">Use reload on the message list to see un-banned authors</string>
 <string name="nothing_to_unban">Nothing to unban</string>
-<string name="cant_reply_no_header_data">Can't reply; no header data</string>
+<string name="cant_reply_no_header_data">Can\'t reply; no header data</string>
 <string name="message_marked_unread">Message marked as unread</string>
 <string name="author_banned_reload_tohide">Author banned, reload on the message list to hide</string>
-<string name="cant_ban_no_header_data">Can't ban author; no header data</string>
+<string name="cant_ban_no_header_data">Can\'t ban author; no header data</string>
 <string name="followup_multigroup_question">The message goes to more than one group. Do you want to followup to all or only to the current group? The groups are:\n</string>
 <string name="followup_all_groups">All</string>
 <string name="followup_current_group">Current</string>
 <string name="must_fill_name_email_goto_settings">You must fill your name and email (can be fake) on the settings (on the User Info section). Do you want to go to the settings now?</string>
 <string name="user_info_unset">User info unset</string>
-<string name="cant_make_favorite_no_header">Can't make favorite; no header data</string>
+<string name="cant_make_favorite_no_header">Can\'t make favorite; no header data</string>
 <string name="fetching_body">Fetching message body</string>
 <string name="could_not_fetch_header">Could not fetch header from server</string>
 <string name="requesting_message">Requesting message</string>
@@ -217,12 +218,12 @@
 <string name="error_loading_kept_unread_long">There was an error trying to retrieve the message body. Please check your server settings and connection status (this message will be kept unread.)</string>
 <string name="error_saving_kept_unread">Error saving message  (message has been kept unread)</string>
 <string name="error_saving_kept_unread_long">There was an error trying to save the message to the sdcard or disk. Please check your sdcard (message has been kept unread)</string>
-<string name="server_doesnt_have_message">The server doesn't have the message anymore.</string>
-<string name="server_doesnt_have_message_long">[The server doesn't have the message anymore, it's probably too old or was spam]</string>
+<string name="server_doesnt_have_message">The server doesn\'t have the message anymore.</string>
+<string name="server_doesnt_have_message_long">[The server doesn\'t have the message anymore, it\'s probably too old or was spam]</string>
 <string name="new_subject">New Subject: \n</string>
 <string name="no_unread_use_sync">No unread messages, use Menu-&gt;Sync to get more</string>
 <string name="article_menu">Article menu</string>
-<string name="thread_ignore">Future thread messages will be ignored, use Menu-&gt;More-&gt;'Manage banned threads' to unignore</string>
+<string name="thread_ignore">Future thread messages will be ignored, use Menu-&gt;More-&gt;Manage banned threads to unignore</string>
 
 <string name="future_unignored_willbe_fetched">Future messages from unignored threads will be fetched</string>
 <string name="deleting_messages_caches">Deleting read messages and caches</string>
@@ -232,7 +233,7 @@
 <string name="subscribe_question">Do you want to subscribe to the group {0}?</string>
 <string name="already_subscribed_long">You are already subscribed to {0}!</string>
 <string name="already_subscribed_excl">Already Subscribed!</string>
-<string name="subscribed_ok">You've subscribed to {0}; use the BACK button for the group list</string>
+<string name="subscribed_ok">You\'ve subscribed to {0}; use the BACK button for the group list</string>
 <string name="too_short_excl">Too Short!</string>
 <string name="too_short_three_chars">The search text must be at least 3 chars long</string>
 <string name="not_configured">Not configured</string>

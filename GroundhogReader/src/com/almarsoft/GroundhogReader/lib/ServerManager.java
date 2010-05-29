@@ -9,6 +9,7 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.net.SocketException;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -266,14 +267,18 @@ final public class ServerManager {
 			// Extract the article information
 			// Mandatory format (from NNTP RFC 2980) is :
 			// Subject\tAuthor\tDate\tID\tReference(s)\tByte Count\tLine Count
-
+			
 			StringTokenizer stt = new StringTokenizer(st.nextToken(), "\t");
-			article = new Article();
-			article.setArticleNumber(Integer.parseInt(stt.nextToken()));
-			article.setSubject(stt.nextToken());
-			article.setFrom(stt.nextToken());
-			article.setDate(stt.nextToken());
-			article.setArticleId(stt.nextToken());
+			try {
+				article = new Article();
+				article.setArticleNumber(Integer.parseInt(stt.nextToken()));
+				article.setSubject(stt.nextToken());
+				article.setFrom(stt.nextToken());
+				article.setDate(stt.nextToken());
+				article.setArticleId(stt.nextToken());
+			} catch (NoSuchElementException e) {
+				Log.w(UsenetConstants.APPNAME, "NoSuchElementException parsing the article info, malformed or interrupted message?: " + theInfo);
+			}
 			
 			String refsStr = stt.nextToken();
 			

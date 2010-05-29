@@ -183,7 +183,7 @@
 <string name="new_subject">新主題: \n</string>
 <string name="no_unread_use_sync">沒有未讀郵件, 按功能表-&gt;同步獲取更多</string>
 <string name="article_menu">功能表列</string>
-<string name="thread_ignore">未來執行緒資訊將被略過, 使用 功能表-&gt;更多-&gt;'設法讓禁止的執行緒取消略過</string>
+<string name="thread_ignore">未來執行緒資訊將被略過, 使用 功能表-&gt;更多-&gt;設法讓禁止的執行緒取消略過</string>
 
 <string name="future_unignored_willbe_fetched">將提取來自取消略過的執行緒的未來資訊</string>
 <string name="deleting_messages_caches">移除已讀郵件和快取</string>

@@ -671,11 +671,19 @@ public class MessageTextProcessor {
 			if (line.length() > 70) {
 				
 				while(true) {
+					
 					indexSpace = line.substring(0, 70).lastIndexOf(' ');
-					if (indexSpace == -1)
-						indexSpace = 70;
+					
+					if (indexSpace == -1) {
+						if (line.length() < 70) 					
+							indexSpace = line.length() - 1;
+						else
+							indexSpace = 70;
+					}
+					
   				    builder.append(line.substring(0, indexSpace + 1) + "\n");
 					line = line.substring(indexSpace + 1);
+					
 					if (line.length() < 70) {
 						builder.append(line + "\n");
 						break;

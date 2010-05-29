@@ -88,7 +88,7 @@
 <string name="grouplist_add_groups">Grup ekle</string>
 <string name="grouplist_set_offline">Çevrim dışı ayarla</string>
 
-<string name="show_help">HızlıYardım 'ı görüntüle</string>
+<string name="show_help">HızlıYardım \'ı görüntüle</string>
 <string name="global_settings">Ayarlar</string>
 <string name="clear_cache">Ön belleği temizle</string>
 <string name="msglist_mark_thread_read">Tüm ilmekleri "Okundu" olarak işaretle</string>
@@ -119,7 +119,7 @@
 <string name="return_">Dön</string>
 
 <string name="encoding">Kodlama</string>
-<string name="change_encoding_tip"> &amp; Kodlama 'yı menü 'den değiştirebilirsiniz.</string>
+<string name="change_encoding_tip"> &amp; Kodlama \'yı menü \'den değiştirebilirsiniz.</string>
 <string name="posting_message">Gönderiliyor...</string>
 <string name="empty_groups">Gruplar boş!</string>
 <string name="must_select_group">&quot; Grup seçmelisiniz!</string>
@@ -187,7 +187,7 @@
 <string name="followup_all_groups">Tümü</string>
 
 <string name="followup_current_group">Şu anki</string>
-<string name="must_fill_name_email_goto_settings">Ayarlar menüsünden İsim ve E-posta alanlarını doldurmalısınız. E-posta adresi gerçek olmak zorunda değildir.. Ayarlar 'a gitmek ister misiniz?</string>
+<string name="must_fill_name_email_goto_settings">Ayarlar menüsünden İsim ve E-posta alanlarını doldurmalısınız. E-posta adresi gerçek olmak zorunda değildir.. Ayarlar \'a gitmek ister misiniz?</string>
 <string name="user_info_unset">Kullanıcı bilgilerini boşalt</string>
 <string name="cant_make_favorite_no_header">Favori eklenemiyor. Başlık verisi yok.</string>
 <string name="fetching_body">Mesaj içeriği alınıyor..</string>
@@ -202,7 +202,7 @@
 <string name="server_doesnt_have_message">Mesaj sunucuda yok.</string>
 <string name="server_doesnt_have_message_long">[Bu mesaj artık sunucuda yok.. Çok eski ya da Spam olabilir..]</string>
 <string name="new_subject">Yeni konu: \n</string>
-<string name="no_unread_use_sync">Okunmamış mesaj yok.. Daha fazla mesaj için Menü-&gt; 'den Eşle yapın.</string>
+<string name="no_unread_use_sync">Okunmamış mesaj yok.. Daha fazla mesaj için Menü-&gt; \'den Eşle yapın.</string>
 <string name="article_menu">Başlık Menüsü</string>
 
 <string name="thread_ignore">Sonraki mesajlar yok sayılacak. Menü-&gt;Daha-&gt; seçimi ile engellenmiş ilmekleri yönetebilirsiniz.</string>
@@ -219,8 +219,8 @@
 <string name="too_short_excl">Çok kısa!</string>
 <string name="too_short_three_chars">Arama metni en az 3 karakter içermelidir.</string>
 <string name="not_configured">Ayarlanmadı..</string>
-<string name="error_retrieving_check_connection">Sonuçlar alınamadı.. Bağlantı ayarlarınızı, özellikle de sunucu adresinizi ve kullanıcı bilgilerinizi kontrol ediniz.. Ayarlar 'a gitmek ister misiniz</string>
-<string name="error_auth_check_pass_go_settings">Sunucuya oturum açılamadı.. Kullanıcı adı ve parolanızı kontrol ediniz.. Ayarlar 'a gitmek ister misiniz?</string>
+<string name="error_retrieving_check_connection">Sonuçlar alınamadı.. Bağlantı ayarlarınızı, özellikle de sunucu adresinizi ve kullanıcı bilgilerinizi kontrol ediniz.. Ayarlar \'a gitmek ister misiniz</string>
+<string name="error_auth_check_pass_go_settings">Sunucuya oturum açılamadı.. Kullanıcı adı ve parolanızı kontrol ediniz.. Ayarlar \'a gitmek ister misiniz?</string>
 <string name="go_to_settings">Ayarlara git</string>
 
 <string name="hostname_not_configured_goto_settings">Haber sunucunuzun adı tanımlanmamış.. Şimdi bir tanım yapmak ister misiniz?</string>

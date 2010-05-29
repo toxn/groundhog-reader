@@ -182,7 +182,7 @@
 <string name="new_subject">Новая тема: \n</string>
 <string name="no_unread_use_sync">Непрочитанные сообщения отсутствуют, для получения нажмите Меню-&gt;Синхронизация</string>
 <string name="article_menu">Меню сообщения</string>
-<string name="thread_ignore">Дальнейший тред с обсуждением будет игнорироваться, используйте Меню-&gt;Больше-&gt;'Управление забаненными тредами' для отказа от игнорирования</string>
+<string name="thread_ignore">Дальнейший тред с обсуждением будет игнорироваться, используйте Меню-&gt;Больше-&gt;Управление забаненными тредами для отказа от игнорирования</string>
 
 <string name="future_unignored_willbe_fetched">В дальнейшем будут загружены сообщения в треде, который более не игнорируется</string>
 <string name="deleting_messages_caches">Удаление прочитанных сообщений и кеша</string>

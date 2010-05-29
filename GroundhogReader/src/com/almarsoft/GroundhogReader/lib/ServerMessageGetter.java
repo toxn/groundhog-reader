@@ -128,8 +128,6 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					}
 					else { 
 						firstToFetch = lastFetched + 1;
-						if (mIsOnlyCheck) 
-							currentLimit = 9999; // No limit on new message checking except when the group is new
 					}
 					
 					Vector<Long> articleList = mServerManager.getArticleNumbers(firstToFetch, currentLimit);

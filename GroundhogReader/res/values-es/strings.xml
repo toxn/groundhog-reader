@@ -182,7 +182,7 @@
 <string name="new_subject">Nuevo Asunto: \n</string>
 <string name="no_unread_use_sync">Sin mensajes no leídos, usa Menu-&gt;Sync para obtener más</string>
 <string name="article_menu">Menú Artículo</string>
-<string name="thread_ignore">Mensajes futuros se ignorarán, usaMenu-&gt;More-&gt;'Ver hilos baneados' para des-ignorar</string>
+<string name="thread_ignore">Mensajes futuros se ignorarán, usaMenu-&gt;More-&gt;Ver hilos baneados para des-ignorar</string>
 <string name="future_unignored_willbe_fetched">Se obtendrán próximos mensajes de hilos</string>
 <string name="deleting_messages_caches">Borrando mensajes leídos y cachés</string>
 <string name="threading_messages">Anidando mensajes</string>
