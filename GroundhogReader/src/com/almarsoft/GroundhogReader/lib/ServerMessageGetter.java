@@ -190,8 +190,9 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 							offlineData = DBUtils.isHeaderInDatabase(number, group, mContext);
 							
 							// Wasn't on the DB, get and insert it
-							if (offlineData == null) 								
+							if (offlineData == null) {		
 								offlineData = mServerManager.getAndInsertArticleInfo(number, prefs.getString("readDefaultCharset", "ISO8859-15"), dbwrite);
+							}
 							
 							// Offline mode: save also the article contents to the cache
 							if (mOfflineMode) {

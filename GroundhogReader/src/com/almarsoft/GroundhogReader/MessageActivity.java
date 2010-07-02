@@ -760,6 +760,10 @@ public class MessageActivity extends Activity {
 			mErrorMsg = getString(R.string.error);
 			e.printStackTrace();			
 			return FETCH_FINISHED_ERROR;
+		} catch (OutOfMemoryError e) {
+			mErrorMsg = "Memory error, message with too huge attachments? : " + getString(R.string.error);
+			e.printStackTrace();
+			return FETCH_FINISHED_ERROR;
 		}
     }
     	

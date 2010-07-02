@@ -677,7 +677,8 @@ public class MessageListActivity extends Activity {
 			cur.close(); db.close(); dbhelper.close();
 			
 			mHeaderItemsList = new ArrayList<HeaderItemClass>();
-			
+	
+			// XXX YYY ZZZ: ORDENAR AQUI
 			if (articles.length > 0) {
 				Threader threader = new Threader();
 				// XXX: This crash the stack if there are lots of messages, reimplement using a iterative version

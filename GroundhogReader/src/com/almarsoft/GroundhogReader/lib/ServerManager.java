@@ -220,24 +220,30 @@ final public class ServerManager {
 	throws IOException, UsenetReaderException, ServerAuthException {
 		clientConnectIfNot();
 		
+
+		long ddbbId = -1;
+		Vector<Object> ret = null;
+		
 		// Get the article information (shorter than the header; we'll fetch the body and the
 		// body when the user clicks on an article.)
 		Article articleInfo = getArticleInfo(articleNumber);
-		String from = articleInfo.getFrom();
-		long ddbbId = -1;
-
+		
 		if (articleInfo != null) {
-			
+			String from = articleInfo.getFrom();
 			if (  (!mBannedThreadsSet.contains(articleInfo.simplifiedSubject())) 
 			    &&(!mBannedTrollsSet.contains(from))) {
 				
-				ddbbId = insertArticleInDB(articleInfo, articleNumber, from, charset, catchedDB);
+				ddbbId = insertArticleInDB(articleInfo, articleNumber, from, charset, catchedDB);				
 			} 
+			
+			ret = new Vector<Object>(2);
+			ret.add(ddbbId);
+			ret.add(articleInfo.getArticleId());
 		}
-		
-		Vector<Object> ret = new Vector<Object>(2);
-		ret.add(ddbbId);
-		ret.add(articleInfo.getArticleId());
+
+		if (ret == null) {
+			throw new IOException("getAndInsertArticleInfo: could not get or insert the article");
+		}
 		return ret;
 	}
 
@@ -263,24 +269,31 @@ final public class ServerManager {
 			}
 			
 			StringTokenizer st = new StringTokenizer(theInfo, "\n");
+			String refsStr = null;
 
-			// Extract the article information
-			// Mandatory format (from NNTP RFC 2980) is :
-			// Subject\tAuthor\tDate\tID\tReference(s)\tByte Count\tLine Count
-			
-			StringTokenizer stt = new StringTokenizer(st.nextToken(), "\t");
 			try {
+				// Extract the article information
+				// Mandatory format (from NNTP RFC 2980) is :
+				// Subject\tAuthor\tDate\tID\tReference(s)\tByte Count\tLine Count
+			
+				StringTokenizer stt = new StringTokenizer(st.nextToken(), "\t");
 				article = new Article();
 				article.setArticleNumber(Integer.parseInt(stt.nextToken()));
 				article.setSubject(stt.nextToken());
 				article.setFrom(stt.nextToken());
 				article.setDate(stt.nextToken());
-				article.setArticleId(stt.nextToken());
-			} catch (NoSuchElementException e) {
-				Log.w(UsenetConstants.APPNAME, "NoSuchElementException parsing the article info, malformed or interrupted message?: " + theInfo);
-			}
+				article.setArticleId(stt.nextToken());			
 			
-			String refsStr = stt.nextToken();
+				refsStr = stt.nextToken();
+			}
+			 catch (NoSuchElementException e) {
+					Log.w(UsenetConstants.APPNAME, "NoSuchElementException parsing the article info, malformed or interrupted message?: " + theInfo);
+					return null;
+			 }
+			 
+			 catch (NumberFormatException e) {
+				 Log.e(UsenetConstants.APPNAME, "NumberFormatException in getArticleInfo: " + theInfo + " " + e.toString());
+			 }
 			
 			// Crappy heuristics... but nextToken skips the empty reference if it's no reference and give up the 
 			// next token as reference
