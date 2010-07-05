@@ -1,3 +1,6 @@
+1.15.1
+- Bugfixes (lots, thanks to the Market new crash reporting tool)
+
 1.14.0
 - Basic and kludgy nested threading
 - Mark new threads more clearly
