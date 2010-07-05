@@ -233,7 +233,7 @@
 <string name="subscribe_question">Do you want to subscribe to the group {0}?</string>
 <string name="already_subscribed_long">You are already subscribed to {0}!</string>
 <string name="already_subscribed_excl">Already Subscribed!</string>
-<string name="subscribed_ok">You\'ve subscribed to {0}; use the BACK button for the group list</string>
+<string name="subscribed_ok">You have subscribed to {0}; use the BACK button for the group list</string>
 <string name="too_short_excl">Too Short!</string>
 <string name="too_short_three_chars">The search text must be at least 3 chars long</string>
 <string name="not_configured">Not configured</string>

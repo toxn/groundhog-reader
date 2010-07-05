@@ -227,9 +227,9 @@ public class QuotingActivity extends Activity {
 				});
 				
 				if (it.imageActive)
-					banimg.setImageDrawable(getResources().getDrawable( R.drawable.btn_check_on));
+					banimg.setImageDrawable(getResources().getDrawable(R.drawable.btn_check_on));
 				else
-					banimg.setImageDrawable(getResources().getDrawable( R.drawable.btn_check_off));
+					banimg.setImageDrawable(getResources().getDrawable(R.drawable.btn_check_off));
 			}
 			return v;
 		}

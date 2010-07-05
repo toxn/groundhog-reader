@@ -444,11 +444,12 @@ public class MessageActivity extends Activity {
 			    				return true;
 			    			}
 			    		}
-			    	}
+			    	} 
 			    	
 			    	startPostingOrQuotingActivity(multipleFollowup);
-				} else
+				} else {
 					Toast.makeText(this, getString(R.string.cant_reply_no_header_data), Toast.LENGTH_SHORT).show();
+				}
 				
 		    	return true;
 				
@@ -559,6 +560,7 @@ public class MessageActivity extends Activity {
 		
 		boolean useQuoter = mPrefs.getBoolean("useQuotingView", true);
 		if (useQuoter) {
+			
 			Intent intent_Quote = new Intent(MessageActivity.this, QuotingActivity.class);
 			intent_Quote.putExtra("origText", mOriginalText);
 			intent_Quote.putExtra("multipleFollowup", multipleFollowup);
@@ -568,9 +570,18 @@ public class MessageActivity extends Activity {
 			
 			Intent intent_Post = new Intent(MessageActivity.this, ComposeActivity.class);
 			intent_Post.putExtra("isNew", false);
+			intent_Post.putExtra("From", mAuthorText);
 			intent_Post.putExtra("bodytext", mOriginalText);
 			intent_Post.putExtra("multipleFollowup", multipleFollowup);
 			intent_Post.putExtra("group", mGroup);
+			intent_Post.putExtra("Newsgroups", mHeader.getField("Newsgroups").getBody().trim());
+			intent_Post.putExtra("Date", mHeader.getField("Date").getBody().trim());
+			intent_Post.putExtra("Message-ID", mHeader.getField("Message-ID").getBody().trim());
+			if (mHeader.getField("References") != null)
+				intent_Post.putExtra("References", mHeader.getField("References").getBody().trim());
+			if (mSubjectText != null)
+				intent_Post.putExtra("Subject", mSubjectText);
+			
 			startActivityForResult(intent_Post, UsenetConstants.COMPOSEMESSAGEINTENT);
 		}    	
     }
