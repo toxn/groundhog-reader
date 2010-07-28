@@ -12,9 +12,11 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.Collections;
 
 import org.apache.commons.net.io.DotTerminatedMessageReader;
 import org.apache.commons.net.nntp.Article;
+import org.apache.commons.net.nntp.ArticlePointer;
 import org.apache.commons.net.nntp.NewsgroupInfo;
 import org.apache.james.mime4j.message.Header;
 import org.apache.james.mime4j.message.Message;
@@ -40,6 +42,7 @@ final public class ServerManager {
 	private Context mContext;
 	private HashSet<String> mBannedThreadsSet;
 	private HashSet<String> mBannedTrollsSet;
+	private boolean mFetchLatest = false;
 	
 	
 	public ServerManager(Context callerContext) {
@@ -124,7 +127,6 @@ final public class ServerManager {
 		clientConnectIfNot();
 		
 		mGroupInfo = new NewsgroupInfo();
-
 		
 		try {
 			return mClient.selectNewsgroup(mGroup, mGroupInfo);
@@ -161,10 +163,42 @@ final public class ServerManager {
 	// of articles
 	// considering the user limit
 	// =====================================================================================
-
-	public Vector<Long> getArticleNumbers(long firstMsg, int limit) throws IOException, ServerAuthException, UsenetReaderException {
+	
+	public Vector<Long> selectGroupAndgetArticleNumbersReverse(String group, long lastFetched, int limit)
+	throws IOException, ServerAuthException, UsenetReaderException {
 		clientConnectIfNot();
 		
+		// This also loads the mGroupInfo class
+		if (!selectNewsGroupConnecting(group)) {
+			throw new UsenetReaderException("Could not select group " + group);
+		}
+		
+		Vector<Long> msgNumbers = new Vector<Long>(limit);
+		
+		// Select the last article and retrieve its data
+		ArticlePointer artPointer = new ArticlePointer();
+		mClient.selectArticle(mGroupInfo.getLastArticle(), artPointer);
+		
+		for (int i=0;i<limit;i++) {
+			
+			if (lastFetched >= artPointer.articleNumber)
+				break;
+			
+			if (!mClient.selectPreviousArticle(artPointer))
+				break;
+			
+			msgNumbers.add(artPointer.articleNumber);
+		}
+		
+		Collections.reverse(msgNumbers);
+		return msgNumbers;
+	}
+
+	public Vector<Long> selectGroupAndGetArticleNumbers(String group, long firstMsg, int limit) 
+	throws IOException, ServerAuthException, UsenetReaderException {
+		clientConnectIfNot();
+		
+		selectNewsGroupConnecting(group);
 		Vector<Long> msgNumbers = new Vector<Long>(limit);
 		long[] allNumbers;
 	
@@ -183,16 +217,17 @@ final public class ServerManager {
 		int countSaved = 0;
 		int init;
 		
-		if (firstMsg == -1 && allNumbers.length > limit) {
+		int allNumbersLen = allNumbers.length;
+		if (firstMsg == -1 && allNumbersLen > limit) {
 			// Special case for first time entering a group; instead of getting the 100 (or limit) 
 			// older we get the 100 newer
-			init = allNumbers.length - limit;
+			init = allNumbersLen - limit;
 			
 		} else {
 			init = 0;
 		}
 		
-		int allNumbersLen = allNumbers.length;
+		
 		long currentNum;
 
 		for (; init < allNumbersLen; init++) {
@@ -491,7 +526,7 @@ final public class ServerManager {
 	// String instead of a Hashtable
 	// ===================================================================================
 	public String getBody(long id, String msgId, boolean isoffline, boolean iscatched) 
-	                      throws UsenetReaderException, ServerAuthException, IOException {		
+	throws UsenetReaderException, ServerAuthException, IOException {		
 		String body = null;
 		
 		if (!iscatched) {
@@ -638,6 +673,17 @@ final public class ServerManager {
 		}
 		
 		return error;
+	}
+
+
+	public void setFetchLatest(boolean getLatestOption) {
+		/* Enable or disable the fetching of the newest messages in the group (getNewOption=true) or the oldest */
+		this.mFetchLatest = getLatestOption;
+		
+	}
+	
+	public boolean getFetchLatest() {
+		return this.mFetchLatest;
 	}
 
 		

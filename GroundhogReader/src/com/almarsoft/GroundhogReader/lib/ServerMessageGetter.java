@@ -115,13 +115,13 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					
 					publishProgress(0, currentLimit);
 					Log.i(UsenetConstants.APPNAME, "Selecting group " + group);
-					mServerManager.selectNewsGroupConnecting(group);
 
 					long lastFetched, firstToFetch;
 					lastFetched = DBUtils.getGroupLastFetchedNumber(group, mContext);
 					
 					// First time for this group, keep the -1 so getArticleNumbers knows what to do, but if it's not the 
 					// first time, get the lastFetched + 1 as the firstToFetch
+					// XXX Sacar el last article number y si fetchLatest=true, firstToFetch = latest - mLimit salvo que sea menor que firstToFetch (en ese caso sera lastFetched)
 					if (lastFetched == -1) {
 						firstToFetch = lastFetched;		
 						currentLimit = mLimit;
@@ -130,7 +130,14 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 						firstToFetch = lastFetched + 1;
 					}
 					
-					Vector<Long> articleList = mServerManager.getArticleNumbers(firstToFetch, currentLimit);
+					Log.i(UsenetConstants.APPNAME, "Getting artice numbers");
+					
+					Vector<Long> articleList;
+					if (mServerManager.getFetchLatest()) {
+						articleList = mServerManager.selectGroupAndgetArticleNumbersReverse(group, firstToFetch, currentLimit);
+					} else {
+						articleList = mServerManager.selectGroupAndGetArticleNumbers(group, firstToFetch, currentLimit);
+					}
 					
 					if (mIsOnlyCheck) {
 						mStatusMsg = mStatusMsg + mCurrentGroup + ":" + articleList.size() + ";";
@@ -206,7 +213,6 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 									// Message not in server, mark as read and ignore
 									e.printStackTrace();
 									DBUtils.markAsRead(number, mContext);
-									mServerManager.selectNewsGroupConnecting(group);
 									continue;
 								}
 							}

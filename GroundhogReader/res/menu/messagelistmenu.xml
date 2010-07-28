@@ -59,6 +59,13 @@
 		android:icon="@android:drawable/ic_menu_preferences" 
 		android:title="@string/global_settings"
 	/>
+	
+	<item 
+		android:id="@+id/messagelist_menu_get_latest"
+		android:orderInCategory="910"
+		android:icon="@android:drawable/ic_menu_set_as" 
+		android:title="@string/getlatest"
+	/>
 </menu>
 
 

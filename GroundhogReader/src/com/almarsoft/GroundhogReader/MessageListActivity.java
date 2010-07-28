@@ -277,7 +277,11 @@ public class MessageListActivity extends Activity {
 				return true;
 	
 			case R.id.messagelist_menu_getnew:
-				getNewMessagesFromServer();
+				getNewMessagesFromServer(false);
+				return true;
+				
+			case R.id.messagelist_menu_get_latest:
+				getNewMessagesFromServer(true);
 				return true;
 	
 			case R.id.messagelist_menu_refresh:
@@ -326,7 +330,7 @@ public class MessageListActivity extends Activity {
 	// and pass him the callback pointing to threadMessagesFromDB so when it 
 	// finishes the messagelist get reloaded
 	@SuppressWarnings("unchecked")
-	private void getNewMessagesFromServer() {
+	private void getNewMessagesFromServer(boolean getlatest) {
 		Vector<String> groupVector = new Vector<String>(1);
 		groupVector.add(mGroup);
 		Class[] noargs = new Class[0];
@@ -334,6 +338,7 @@ public class MessageListActivity extends Activity {
 		try {
 			callback = this.getClass().getMethod("threadMessagesFromDB", noargs);
 			
+			mServerManager.setFetchLatest(getlatest);
 			mDownloader = new GroupMessagesDownloadDialog(mServerManager, this);
 			mDownloader.synchronize(mOfflineMode, groupVector, callback, this);
 			

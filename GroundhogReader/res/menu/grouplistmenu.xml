@@ -33,5 +33,9 @@
 	android:orderInCategory="6"
 	android:icon="@android:drawable/ic_menu_close_clear_cancel"
 	android:id="@+id/grouplist_menu_expire_messages" android:title="@string/expire_messages"/>
-			
+	
+	<item
+	android:orderInCategory="7"
+	android:icon="@android:drawable/ic_menu_set_as"
+	android:id="@+id/grouplist_get_latest" android:title="@string/getlatest_all"/>
 </menu>

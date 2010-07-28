@@ -16,8 +16,7 @@ public class ServerMessagePoster extends AsyncTaskProxy {
 	private ServerManager mServerManager = null;
 	private AsyncTask<Void, Void, Integer> mTask  = null;
 	
-	public ServerMessagePoster(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, 
-			                                       Context context, ServerManager serverManager) {
+	public ServerMessagePoster(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, Context context, ServerManager serverManager) {
 		
 		super(callerInstance, preCallback, progressCallback, postCallback, context);
 		

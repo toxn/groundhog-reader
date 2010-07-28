@@ -162,7 +162,7 @@ public class GroupListActivity extends Activity {
     	Bundle extras = getIntent().getExtras();
 		if (extras != null && extras.containsKey("fromNotify")) {
 			getIntent().removeExtra("fromNotify");
-			getAllMessages();
+			getAllMessages(false);
 		}
     }
     
@@ -308,8 +308,11 @@ public class GroupListActivity extends Activity {
 				return true;
 				
 			case R.id.grouplist_menu_getall:
-				getAllMessages();
+				getAllMessages(false);
 				return true;
+				
+			case R.id.grouplist_get_latest:
+				getAllMessages(true);
 				
 			case R.id.grouplist_menu_offline:
 				mOfflineMode = !mOfflineMode;
@@ -330,6 +333,7 @@ public class GroupListActivity extends Activity {
 			case R.id.grouplist_menu_quickhelp:
 				startActivity(new Intent(GroupListActivity.this, HelpActivity.class));
 				return true;
+				
 		}
 		return false;
 	}
@@ -379,7 +383,7 @@ public class GroupListActivity extends Activity {
 
 	
 	@SuppressWarnings("unchecked")
-	private void getAllMessages() {
+	private void getAllMessages(boolean getlatest) {
 		
 		int groupslen = mGroupsArray.length;
 		
@@ -398,6 +402,7 @@ public class GroupListActivity extends Activity {
 			
 			Method callback = this.getClass().getMethod("updateGroupList", noargs);
 			
+			mServerManager.setFetchLatest(getlatest);
 			mDownloader = new GroupMessagesDownloadDialog(mServerManager, this);
 			mDownloader.synchronize(mOfflineMode, groupVector, callback, this);
 			
@@ -551,6 +556,7 @@ public class GroupListActivity extends Activity {
 									Class[] noargs = new Class[0];
 									// This will be called after the synchronize from mDownloader:
 									Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
+									mServerManager.setFetchLatest(false);
 									mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
 									mDownloader.synchronize(true, groupVector, callback, GroupListActivity.this);
 								} catch (SecurityException e) {
@@ -591,6 +597,7 @@ public class GroupListActivity extends Activity {
 									Class[] noargs = new Class[0];
 									// This will be called after the synchronize from mDownloader:
 									Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
+									mServerManager.setFetchLatest(false);
 									mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
 									mDownloader.synchronize(true, groupVector, callback, GroupListActivity.this);
 								} catch (SecurityException e) {
@@ -636,6 +643,7 @@ public class GroupListActivity extends Activity {
 							try {
 								Class[] noargs = new Class[0];
 								Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
+								mServerManager.setFetchLatest(false);
 								mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
 								mDownloader.synchronize(false, groupVector, callback, GroupListActivity.this);
 							} catch (SecurityException e) {
