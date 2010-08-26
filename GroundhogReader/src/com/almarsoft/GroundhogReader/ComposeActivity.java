@@ -1,5 +1,6 @@
 package com.almarsoft.GroundhogReader;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
 
@@ -8,10 +9,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -24,9 +27,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.almarsoft.GroundhogReader.lib.FSUtils;
 import com.almarsoft.GroundhogReader.lib.MessagePosterLib;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
 import com.almarsoft.GroundhogReader.lib.ServerAuthException;
+import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 import com.almarsoft.GroundhogReader.lib.UsenetReaderException;
 
 public class ComposeActivity extends Activity {
@@ -60,14 +65,32 @@ public class ComposeActivity extends Activity {
 		
     	sendButton.setOnClickListener(new OnClickListener() {
     		public void onClick(View v) {
-    			ComposeActivity.this.postMessage();
+    			new AlertDialog.Builder(ComposeActivity.this).setTitle(getString(R.string.confirm_send)).setMessage(
+    					                 getString(R.string.confirm_send_question))
+    				.setPositiveButton(getString(R.string.yes),
+    					new DialogInterface.OnClickListener() {
+    						public void onClick(DialogInterface dlg, int sumthin) {
+    							ComposeActivity.this.postMessage();
+    						}
+    					}
+    				).setNegativeButton(getString(R.string.no),	null)
+    				.show();
     		}
     	}
     	);
 		
     	discardButton.setOnClickListener(new OnClickListener() {
     		public void onClick(View v) {
-    			ComposeActivity.this.finish();
+    			new AlertDialog.Builder(ComposeActivity.this).setTitle(getString(R.string.confirm_discard)).setMessage(
+    			    		            getString(R.string.confirm_discard_question))
+    				.setPositiveButton(getString(R.string.yes),
+    					new DialogInterface.OnClickListener() {
+    						public void onClick(DialogInterface dlg, int sumthin) {
+    							ComposeActivity.this.finish();
+    						}
+    					}
+    				).setNegativeButton(getString(R.string.no),	null)
+    				.show();    			
     		}
     	}
     	);

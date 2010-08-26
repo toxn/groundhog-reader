@@ -7,9 +7,12 @@ import java.util.Vector;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.ServerMessageGetter;
@@ -46,6 +49,7 @@ public class GroupMessagesDownloadDialog {
 	// Used to pass information from synchronize() to the other two
 	// method-threads
 	private Method mCallback = null;
+	private Method mCancelCallback = null;
 	private Object mCallerInstance = null;
 	private boolean mTmpOfflineMode = false;
 	private Vector<String> mTmpGroups = null;
@@ -54,6 +58,7 @@ public class GroupMessagesDownloadDialog {
 	
 	private ProgressDialog mProgressGetMessages = null;
 	private ProgressDialog mProgressPostMessages = null;
+	
 
 	public GroupMessagesDownloadDialog(ServerManager manager, Context context) {
 		mServerManager = manager;
@@ -78,11 +83,12 @@ public class GroupMessagesDownloadDialog {
 			mProgressGetMessages.dismiss();
 	}
 
-	public void synchronize(boolean offlineMode, final Vector<String> groups, Method callback, Object caller) {
+	public void synchronize(boolean offlineMode, final Vector<String> groups, Method callback, Method cancelCallback, Object caller) {
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		mLimit = new Integer(prefs.getString("maxFetch", "100").trim());
 		mCallback = callback;
+		mCancelCallback = cancelCallback;
 		mCallerInstance = caller;
 		mTmpOfflineMode = offlineMode;
 		mTmpGroups = groups;
@@ -100,6 +106,13 @@ public class GroupMessagesDownloadDialog {
 		mProgressGetMessages.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mProgressGetMessages.setTitle(mContext.getString(R.string.group));
 		mProgressGetMessages.setMessage(mContext.getString(R.string.asking_new_articles));
+		mProgressGetMessages.setOnCancelListener(new OnCancelListener() {
+			public void onCancel(DialogInterface dialog) {
+				if (mServerMessageGetter != null) {
+					mServerMessageGetter.interrupt();
+				}
+			}
+		});
 		mProgressGetMessages.show();	
 	}
 	
@@ -108,6 +121,25 @@ public class GroupMessagesDownloadDialog {
 		mProgressGetMessages.setProgress(progressCurrent);
 		mProgressGetMessages.setMessage(status);
 		mProgressGetMessages.setTitle(title);
+	}
+	
+	public void cancelGetMessagesCallBack() {
+		if (mWakeLock.isHeld())
+			mWakeLock.release();
+		
+		if (mProgressGetMessages != null)
+			mProgressGetMessages.dismiss();
+
+		Object[] noparams = new Object[0];
+		try {
+			mCancelCallback.invoke(mCallerInstance, noparams);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void postGetMessagesCallBack(String status, Integer resultObj) {
@@ -174,8 +206,10 @@ public class GroupMessagesDownloadDialog {
 			postPartypes[1] = Integer.class;
 			Method postCallback = this.getClass().getMethod("postGetMessagesCallBack", postPartypes);
 			
-			mServerMessageGetter = new ServerMessageGetter(this, preCallback, progressCallback, postCallback, 
-					                                                                            mContext, mServerManager, mLimit, mTmpOfflineMode, false);
+			Method cancelCallback = this.getClass().getMethod("cancelGetMessagesCallBack", null);
+			
+			mServerMessageGetter = new ServerMessageGetter(this, preCallback, progressCallback, postCallback, cancelCallback,
+					                                       mContext, mServerManager, mLimit, mTmpOfflineMode, false);
 			mServerMessageGetter.execute(mTmpGroups);
 		} catch(NoSuchMethodException e) {
 			e.printStackTrace();
@@ -190,9 +224,37 @@ public class GroupMessagesDownloadDialog {
 	// ============================================================
 	
 	public void prePostMessagesCallBack() {
+		mProgressPostMessages = new ProgressDialog(mContext);
+		mProgressPostMessages.setTitle(mContext.getString(R.string.posting));
+		mProgressPostMessages.setMessage(mContext.getString(R.string.posting_pending_messages));
+		mProgressPostMessages.setOnCancelListener(new OnCancelListener() {
+			public void onCancel(DialogInterface dialog) {
+				if (mServerMessagePoster != null) {
+					mServerMessagePoster.interrupt();
+				}
+			}
+			
+		});
+		mProgressPostMessages.show();
+	}
+	
+	public void postCancelMessagesCallBack() {
+		if (mWakeLock.isHeld())
+			mWakeLock.release();
 		
-		mProgressPostMessages = ProgressDialog.show(mContext, mContext.getString(R.string.posting), 
-				                                                                      mContext.getString(R.string.posting_pending_messages));
+		if (mProgressGetMessages != null)
+			mProgressGetMessages.dismiss();
+	
+		Object[] noparams = new Object[0];
+		try {
+			mCancelCallback.invoke(mCallerInstance, noparams);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void postPostMessagesCallBack(String status, Integer resultObj) {
@@ -233,15 +295,16 @@ public class GroupMessagesDownloadDialog {
 	@SuppressWarnings("unchecked")
 	private void postPendingOutgoingMessages() {
 		try {
-			Class prePartypes[] = new Class[0];		
-			Method preCallback = this.getClass().getMethod("prePostMessagesCallBack", prePartypes);
+			Method preCallback = this.getClass().getMethod("prePostMessagesCallBack", new Class[0]);
 			
 			Class postPartypes[] = new Class[2];
 			postPartypes[0] = String.class;
 			postPartypes[1] = Integer.class;
 			Method postCallback = this.getClass().getMethod("postPostMessagesCallBack", postPartypes);
 			
-			mServerMessagePoster = new ServerMessagePoster(this, preCallback, null, postCallback, mContext, mServerManager);
+			Method cancelCallback = this.getClass().getMethod("postCancelMessagesCallBack", new Class[0]);
+			
+			mServerMessagePoster = new ServerMessagePoster(this, preCallback, null, postCallback, cancelCallback, mContext, mServerManager);
 			mServerMessagePoster.execute();
 			
 		} catch(NoSuchMethodException e) {

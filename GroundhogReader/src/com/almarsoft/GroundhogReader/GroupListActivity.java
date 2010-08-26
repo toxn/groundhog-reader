@@ -1,5 +1,6 @@
 package com.almarsoft.GroundhogReader;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Vector;
 
@@ -27,10 +28,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.almarsoft.GroundhogReader.lib.DBUtils;
+import com.almarsoft.GroundhogReader.lib.ServerAuthException;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 
@@ -41,10 +44,12 @@ public class GroupListActivity extends Activity {
 	
 	private static final int MENU_ITEM_MARKALLREAD = 1;
 	private static final int MENU_ITEM_UNSUBSCRIBE = 2;
+	private static final int MENU_ITEM_CATCHUP = 3;
 
 	private static final int ID_DIALOG_DELETING = 0;
 	private static final int ID_DIALOG_UNSUBSCRIBING = 1;
 	private static final int ID_DIALOG_MARKREAD = 2;
+	private static final int ID_DIALOG_CATCHUP=3;
 	
 	// Real name of the groups, used for calling the MessageListActivity with the correct name
 	private String[] mGroupsArray;
@@ -184,27 +189,36 @@ public class GroupListActivity extends Activity {
 	
 	@Override
 	protected Dialog onCreateDialog(int id) {
+		ProgressDialog loadingDialog = null;
+		
 		if(id == ID_DIALOG_DELETING){
-			ProgressDialog loadingDialog = new ProgressDialog(this);
+			loadingDialog = new ProgressDialog(this);
 			loadingDialog.setMessage(getString(R.string.expiring_d));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;
 			
 		} else if(id == ID_DIALOG_UNSUBSCRIBING){
-			ProgressDialog loadingDialog = new ProgressDialog(this);
+			loadingDialog = new ProgressDialog(this);
 			loadingDialog.setMessage(getString(R.string.unsubscribing_deleting_caches));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;
 			
 		} else if(id == ID_DIALOG_MARKREAD){
-			ProgressDialog loadingDialog = new ProgressDialog(this);
+			loadingDialog = new ProgressDialog(this);
 			loadingDialog.setMessage(getString(R.string.marking_read_deleting_caches));
 			loadingDialog.setIndeterminate(true);
 			loadingDialog.setCancelable(true);
 			return loadingDialog;
-		}  		
+		} else if(id == ID_DIALOG_CATCHUP){
+			loadingDialog = new ProgressDialog(this);
+			loadingDialog.setMessage(getString(R.string.catchingup_server));
+			loadingDialog.setIndeterminate(true);
+			loadingDialog.setCancelable(false);
+			return loadingDialog;
+			
+		} 
 
 		return super.onCreateDialog(id);
 	}
@@ -240,14 +254,14 @@ public class GroupListActivity extends Activity {
 			curGroup = proxyGroupsArray[i];
 			unread = DBUtils.getGroupUnreadCount(curGroup, mContext);
 			
-			if (unread == -1) 
+			if (unread <= 0) 
 				proxyGroupsUnreadCount[i] = curGroup;
 			else {              
 				proxyGroupsUnreadCount[i] = builder
+							                .append('(')
+							                .append(unread)
+							                .append(") ")				
 			                                .append(curGroup)
-			                                .append(" (")
-			                                .append(unread)
-			                                .append(')')
 			                                .toString();
 				builder.delete(0, builder.length());
 			}
@@ -334,6 +348,9 @@ public class GroupListActivity extends Activity {
 				startActivity(new Intent(GroupListActivity.this, HelpActivity.class));
 				return true;
 				
+			case R.id.grouplist_catchup_server_all:
+				catchupGroups(mGroupsArray);
+				return true;
 		}
 		return false;
 	}
@@ -380,6 +397,37 @@ public class GroupListActivity extends Activity {
 		showDialog(ID_DIALOG_DELETING);
 		readExpirerTask.execute(expireAll);
 	}
+	
+	private void catchupGroups(String[] groups) {
+		AsyncTask<String, Void, Void> catchupTask = new AsyncTask<String, Void, Void>() {
+			
+			@Override
+			protected Void doInBackground(String... groupArr) {
+				
+				for(String group : groupArr) {
+					
+					try {
+						mServerManager.catchupGroup(group);
+					} catch (IOException e) {
+						Log.w("Groundhog", "Problem catching up with the server");
+						e.printStackTrace();
+					} catch (ServerAuthException e) {
+						Log.w("Groundhog", "Problem catching up with the server");
+						e.printStackTrace();
+					}
+				}
+				return null;
+			}
+			
+			protected void onPostExecute(Void arg0) {
+				Toast.makeText(GroupListActivity.this, R.string.catchup_done, Toast.LENGTH_SHORT);
+				dismissDialog(ID_DIALOG_CATCHUP);
+			}
+		};
+		
+		showDialog(ID_DIALOG_CATCHUP);
+		catchupTask.execute(groups);
+	}	
 
 	
 	@SuppressWarnings("unchecked")
@@ -396,15 +444,14 @@ public class GroupListActivity extends Activity {
 			groupVector.add(mGroupsArray[i]);
 		}
 		
-		Class[] noargs = new Class[0];
-		
 		try {
-			
-			Method callback = this.getClass().getMethod("updateGroupList", noargs);
+			Class[] noargs = new Class[0];
+			Method successCallback = this.getClass().getMethod("updateGroupList", noargs);
 			
 			mServerManager.setFetchLatest(getlatest);
 			mDownloader = new GroupMessagesDownloadDialog(mServerManager, this);
-			mDownloader.synchronize(mOfflineMode, groupVector, callback, this);
+			// Even if it is interrupted we update the counters, so we pass the same callback twice
+			mDownloader.synchronize(mOfflineMode, groupVector, successCallback, successCallback, this);
 			
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -454,7 +501,7 @@ public class GroupListActivity extends Activity {
     	}
     	
     	// "Unsubscribe group" => Show confirm dialog and call unsubscribe
-    	if (order == MENU_ITEM_UNSUBSCRIBE) {
+    	else if (order == MENU_ITEM_UNSUBSCRIBE) {
     		String msg = getString(R.string.unsubscribe_question);
     		msg = java.text.MessageFormat.format(msg, groupname);     		
     		
@@ -472,6 +519,14 @@ public class GroupListActivity extends Activity {
 		     .show();	
     		return true;
     	}
+    	
+    	else if (order == MENU_ITEM_CATCHUP) {
+    		String[] groupArr = new String[1];
+    		groupArr[0] = groupname;
+    		catchupGroups(groupArr);
+    	}
+    	
+    	
         return false;
     }
     
@@ -546,25 +601,8 @@ public class GroupListActivity extends Activity {
 					
 				    .setPositiveButton(getString(R.string.yes_sync), 
 				    	new DialogInterface.OnClickListener() {
-				    	
-				    		@SuppressWarnings("unchecked")
 							public void onClick(DialogInterface dlg, int sumthin) {
-				    			Vector<String> groupVector = new Vector<String>(1);
-				    			groupVector.add(mTmpSelectedGroup);
-				    			
-								try {
-									Class[] noargs = new Class[0];
-									// This will be called after the synchronize from mDownloader:
-									Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
-									mServerManager.setFetchLatest(false);
-									mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
-									mDownloader.synchronize(true, groupVector, callback, GroupListActivity.this);
-								} catch (SecurityException e) {
-									e.printStackTrace();
-								} catch (NoSuchMethodException e) {
-									e.printStackTrace();
-								}
-				    			
+									callDownloaderForMessageList(mTmpSelectedGroup);
 				    		} 
 				        } 
 				     )		     
@@ -587,25 +625,8 @@ public class GroupListActivity extends Activity {
 					
 				    .setPositiveButton(getString(R.string.yes_sync), 
 				    	new DialogInterface.OnClickListener() {
-				    	
-				    		@SuppressWarnings("unchecked")
 							public void onClick(DialogInterface dlg, int sumthin) {
-				    			Vector<String> groupVector = new Vector<String>(1);
-				    			groupVector.add(mTmpSelectedGroup);
-				    			
-								try {
-									Class[] noargs = new Class[0];
-									// This will be called after the synchronize from mDownloader:
-									Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
-									mServerManager.setFetchLatest(false);
-									mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
-									mDownloader.synchronize(true, groupVector, callback, GroupListActivity.this);
-								} catch (SecurityException e) {
-									e.printStackTrace();
-								} catch (NoSuchMethodException e) {
-									e.printStackTrace();
-								}
-				    			
+									callDownloaderForMessageList(mTmpSelectedGroup);
 				    		} 
 				        } 
 				     )		     
@@ -635,23 +656,8 @@ public class GroupListActivity extends Activity {
 				
 			    .setPositiveButton(getString(R.string.yes), 
 			    	new DialogInterface.OnClickListener() {
-			    		@SuppressWarnings("unchecked")
 						public void onClick(DialogInterface dlg, int sumthin) {
-			    			Vector<String> groupVector = new Vector<String>(1);
-			    			groupVector.add(mTmpSelectedGroup);
-			    			
-							try {
-								Class[] noargs = new Class[0];
-								Method callback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
-								mServerManager.setFetchLatest(false);
-								mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
-								mDownloader.synchronize(false, groupVector, callback, GroupListActivity.this);
-							} catch (SecurityException e) {
-								e.printStackTrace();
-							} catch (NoSuchMethodException e) {
-								e.printStackTrace();
-							}
-			    			
+								callDownloaderForMessageList(mTmpSelectedGroup);
 			    		} 
 			        } 
 			     )		     
@@ -667,7 +673,28 @@ public class GroupListActivity extends Activity {
 	    }
 	};
 	
-	
+
+	@SuppressWarnings("unchecked")
+	private void callDownloaderForMessageList(String group) {
+		
+		try {
+			Vector<String> groupVector = new Vector<String>(1);
+			groupVector.add(group);
+			
+			Class[] noargs = new Class[0];
+			// This will be called after the synchronize from mDownloader:
+			Method successCallback = GroupListActivity.this.getClass().getMethod("fetchFinishedStartMessageList", noargs);
+			Method cancelledCallback = this.getClass().getMethod("updateGroupList", noargs);
+			mServerManager.setFetchLatest(false);
+			mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
+			mDownloader.synchronize(true, groupVector, successCallback, cancelledCallback, GroupListActivity.this);
+			
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}			
+	}
 	
     public void fetchFinishedStartMessageList() {
   		mDownloader = null;

@@ -38,4 +38,11 @@
 	android:orderInCategory="7"
 	android:icon="@android:drawable/ic_menu_set_as"
 	android:id="@+id/grouplist_get_latest" android:title="@string/getlatest_all"/>
+	
+	<item
+	android:orderInCategory="8"
+	android:icon="@android:drawable/ic_media_ff"
+	android:id="@+id/grouplist_catchup_server_all" android:title="@string/catchup_menu_all"/>
+	
+	
 </menu>

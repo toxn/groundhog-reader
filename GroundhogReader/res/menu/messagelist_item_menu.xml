@@ -19,4 +19,8 @@ android:title="@string/msglist_ban_thread"/>
   android:orderInCategory="5"
 android:title="@string/msglist_ban_author"/>
 
+<item android:id="@+id/catchup_single_group"
+  android:orderInCategory="6"
+android:title="@string/catchup_menu"/>
+
 </menu>

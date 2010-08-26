@@ -26,10 +26,10 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 	private boolean mIsOnlyCheck;
 	private AsyncTask<Vector<String>, Integer, Integer> mTask  = null;
 	
-	public ServerMessageGetter(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, 
+	public ServerMessageGetter(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, Method cancelCallback,
 			                    Context context, ServerManager serverManager, int limit, boolean offlineMode, boolean isOnlyCheck) {
 		
-		super(callerInstance, preCallback, progressCallback, postCallback, context);
+		super(callerInstance, preCallback, progressCallback, postCallback, cancelCallback, context);
 		
 		mServerManager = serverManager;
 		mLimit = limit;
@@ -121,7 +121,6 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					
 					// First time for this group, keep the -1 so getArticleNumbers knows what to do, but if it's not the 
 					// first time, get the lastFetched + 1 as the firstToFetch
-					// XXX Sacar el last article number y si fetchLatest=true, firstToFetch = latest - mLimit salvo que sea menor que firstToFetch (en ese caso sera lastFetched)
 					if (lastFetched == -1) {
 						firstToFetch = lastFetched;		
 						currentLimit = mLimit;
@@ -186,7 +185,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 							if (isCancelled()) {
 								if (j > 0 && !mIsOnlyCheck) 
 									DBUtils.storeGroupLastFetchedMessageNumber(group, lastFetched, mContext);
-								
+
 								return FINISHED_INTERRUPTED;
 							}
 							publishProgress(j, len);
@@ -288,7 +287,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					Object[] postParams = new Object[2];
 					postParams[0] = mStatusMsg;
 					postParams[1] = resultObj;
-					
+
 					mPostCallback.invoke(mCallerInstance, postParams);
 
 			   } catch (IllegalArgumentException e) {
@@ -300,6 +299,20 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 				}
 			}
 			mTask = null;
+		}
+		
+		
+		@Override
+		protected void onCancelled() {
+			try {
+				mCancelCallback.invoke(mCallerInstance,  new Object[0]);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

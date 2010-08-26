@@ -104,7 +104,7 @@
 	<string name="banned_menu_deselect">Deselect all</string>
 	
 <!-- These strings are used on the compose message screen where the user can compose new messages -->	
-	<string name="send">Send</string>
+	<string name="send">Post</string>
 	<string name="discard">Discard</string>
 	<string name="compose_deletetext">Delete all text</string>
 	<string name="compose_increasesize">Increase text size</string>
@@ -195,7 +195,7 @@
 <string name="saved_to">Saved to </string>
 <string name="attachment">Attachment</string>
 <string name="could_not_save_colon">Could not save: </string>
-<string name="stored_outbox_send_next_sync">Article stored in outbox, will be send in next sync</string>
+<string name="stored_outbox_send_next_sync">Article stored in outbox, will be posted in next sync</string>
 <string name="message_sent">Article sent</string>
 <string name="message_discarded">Article discarded</string>
 <string name="reload_tosee_unbanned_authors">Use reload on the article list to see un-banned authors</string>
@@ -279,4 +279,15 @@
 <!--  New on 1.16.0 -->
 	<string name="getlatest_all">Get All Recent</string>
 	<string name="getlatest">Get Recent Articles</string>
+	
+<!-- New on 1.17.0 -->
+	<string name="confirm_send">Post</string>
+	<string name="confirm_send_question">Post Article?</string>
+	<string name="confirm_discard">Discard</string>
+	<string name="confirm_discard_question">Discard Article?</string>
+	<string name="catchup_menu">Catchup Group</string>
+	<string name="catchup_menu_all">Catchup All</string>
+	<string name="catchingup_server">Catching up with the server</string>
+	<string name="catchup_done">Server catchup completed</string>
+	
 </resources>

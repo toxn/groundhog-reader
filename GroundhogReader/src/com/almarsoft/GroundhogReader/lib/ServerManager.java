@@ -136,6 +136,18 @@ final public class ServerManager {
 		}		
 	}
 	
+	/**
+	 * Catchup with the server, so only messages from now on will be downloaded 
+	 * 
+	 */
+	public void catchupGroup(String group) throws IOException, ServerAuthException {
+		
+		if (mGroup == null || mGroup.compareTo(group) != 0 || mGroupInfo == null || mGroupInfo.getNewsgroup().compareTo(group) != 0) {
+			selectNewsGroupConnecting(group);
+		}
+		DBUtils.storeGroupLastFetchedMessageNumber(group, mGroupInfo.getLastArticle(), mContext);
+	}
+	
 	
 	// XXX YYY ZZZ: Ver las llamadas que usan selectNewsGroup para ver si comprueban el valor devuelto
 	// XXX YYY ZZZ: mBannedThreadSet, seria conveniente que se leyera externamente y se le pasara como argumento

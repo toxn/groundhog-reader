@@ -8,6 +8,7 @@ import java.util.Vector;
 import com.almarsoft.GroundhogReader.R;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 public class ServerMessagePoster extends AsyncTaskProxy {
@@ -16,9 +17,10 @@ public class ServerMessagePoster extends AsyncTaskProxy {
 	private ServerManager mServerManager = null;
 	private AsyncTask<Void, Void, Integer> mTask  = null;
 	
-	public ServerMessagePoster(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, Context context, ServerManager serverManager) {
+	public ServerMessagePoster(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, Method cancelCallback,
+			                    Context context, ServerManager serverManager) {
 		
-		super(callerInstance, preCallback, progressCallback, postCallback, context);
+		super(callerInstance, preCallback, progressCallback, postCallback, cancelCallback, context);
 		
 		mServerManager = serverManager;
 	}
@@ -139,6 +141,21 @@ public class ServerMessagePoster extends AsyncTaskProxy {
 				}
 			}
 			mTask = null;
+		}
+		
+		
+		
+		@Override
+		protected void onCancelled() {
+			try {
+				mCancelCallback.invoke(mCallerInstance,  new Object[0]);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}	

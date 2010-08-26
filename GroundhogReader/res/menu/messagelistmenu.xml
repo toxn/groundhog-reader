@@ -62,9 +62,16 @@
 	
 	<item 
 		android:id="@+id/messagelist_menu_get_latest"
-		android:orderInCategory="910"
+		android:orderInCategory="10"
 		android:icon="@android:drawable/ic_menu_set_as" 
 		android:title="@string/getlatest"
+	/>
+	
+		<item 
+		android:id="@+id/messagelist_menu_catchup"
+		android:orderInCategory="11"
+		android:icon="@android:drawable/ic_media_ff" 
+		android:title="@string/catchup_menu"
 	/>
 </menu>
 

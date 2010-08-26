@@ -1,5 +1,6 @@
 package com.almarsoft.GroundhogReader;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import org.apache.commons.net.nntp.Threader;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,6 +55,7 @@ import com.almarsoft.GroundhogReader.lib.DBUtils;
 import com.almarsoft.GroundhogReader.lib.HeaderItemClass;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
 import com.almarsoft.GroundhogReader.lib.MiniHeader;
+import com.almarsoft.GroundhogReader.lib.ServerAuthException;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 
@@ -67,6 +70,8 @@ public class MessageListActivity extends Activity {
 	private static final int MENU_ITEM_STARTHREAD = 3;
 	private static final int MENU_ITEM_BANTHREAD = 4;
 	private static final int MENU_ITEM_BANUSER = 5;
+	
+	private static final int ID_DIALOG_CATCHUP = 1;
 
 	// packagevisibility because it used by inner class (see dev guide)
 	String mGroup;
@@ -222,6 +227,22 @@ public class MessageListActivity extends Activity {
 	}
 	
 	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		
+		ProgressDialog dialog = null;
+		if(id == ID_DIALOG_CATCHUP){
+			dialog = new ProgressDialog(this);
+			dialog.setMessage(getString(R.string.catchingup_server));
+			dialog.setIndeterminate(true);
+			dialog.setCancelable(false);
+			return dialog;
+			
+		} 
+
+		return super.onCreateDialog(id);
+	}	
+	
 	private void checkNoUnread() {
 		if (mNumUnread == 0) 
 			Toast.makeText(this, getString(R.string.no_unread_use_sync), Toast.LENGTH_LONG).show();
@@ -320,12 +341,45 @@ public class MessageListActivity extends Activity {
 				intent_bannedusers.putExtra("typeban", UsenetConstants.BANNEDTROLLS);
 				intent_bannedusers.putExtra("group", mGroup);
 				startActivityForResult(intent_bannedusers, UsenetConstants.BANNEDACTIVITYINTENT);
-				return true;			
+				return true;
+				
+			case R.id.messagelist_menu_catchup:
+				catchupGroup();
+				return true;
 		}
 		return false;
 	}
 	
 	
+	private void catchupGroup() {
+		AsyncTask<String, Void, Void> catchupTask = new AsyncTask<String, Void, Void>() {
+			
+			@Override
+			protected Void doInBackground(String... groupArr) {
+				String lgroup = groupArr[0];
+				
+				try {
+					mServerManager.catchupGroup(mGroup);
+				} catch (IOException e) {
+					Log.w("Groundhog", "Problem catching up with the server");
+					e.printStackTrace();
+				} catch (ServerAuthException e) {
+					Log.w("Groundhog", "Problem catching up with the server");
+					e.printStackTrace();
+				}
+				return null;
+			}
+			
+			protected void onPostExecute(Void arg0) {
+				Toast.makeText(MessageListActivity.this, R.string.catchup_done, Toast.LENGTH_SHORT);
+				dismissDialog(ID_DIALOG_CATCHUP);
+			}
+		};
+		
+		showDialog(ID_DIALOG_CATCHUP);
+		catchupTask.execute(mGroup);
+	}
+
 	// Call groupMessagesDownloader to download messages from this group, 
 	// and pass him the callback pointing to threadMessagesFromDB so when it 
 	// finishes the messagelist get reloaded
@@ -340,7 +394,7 @@ public class MessageListActivity extends Activity {
 			
 			mServerManager.setFetchLatest(getlatest);
 			mDownloader = new GroupMessagesDownloadDialog(mServerManager, this);
-			mDownloader.synchronize(mOfflineMode, groupVector, callback, this);
+			mDownloader.synchronize(mOfflineMode, groupVector, callback, callback, this);
 			
 		} catch (SecurityException e) {
 			e.printStackTrace();

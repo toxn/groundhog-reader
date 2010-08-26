@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.apache.commons.net.io.DotTerminatedMessageReader;
+//import org.apache.commons.net.io.DotTerminatedMessageReader;
 import org.apache.commons.net.nntp.ArticlePointer;
 import org.apache.commons.net.nntp.NNTPClient;
 import org.apache.commons.net.nntp.NNTPCommand;
@@ -16,7 +16,7 @@ import android.util.Log;
 // Extends the apache commons NNTPClient to add support for the 
 public class NNTPExtended extends NNTPClient {
 	
-	
+	/*
 	private long[] __parseListGroup() throws NumberFormatException, IOException {
 		
 		String line;
@@ -39,6 +39,7 @@ public class NNTPExtended extends NNTPClient {
 		
 		return retval;
 	}
+	*/
 
 	
 	// ============================================================================================
@@ -49,8 +50,11 @@ public class NNTPExtended extends NNTPClient {
 	
 	public long[] listGroup(String group, long fromArticle, int limit) throws IOException {
 		
-		String params;
+		//String params;
 		
+		return getGroupArticles(group, fromArticle, limit);
+		
+		/* Disabled, too getGroupArticles give less headaches 
 		if (fromArticle == -1) { 
 			//params = group;
 			// The first time we use the slower getGroupArticles which is faster than asking for the 
@@ -67,12 +71,12 @@ public class NNTPExtended extends NNTPClient {
 		}
 		
 		return __parseListGroup();
-		
+		*/
 	}
 	
 	
 	// ================================================================================================
-	// Select a group and an article and user "next" to get all the numbers. This is slower than using 
+	// Select a group and an article and use "next" to get all the numbers. This is slower than using 
 	// listgroup with a range but not all servers support that (mainly giganews)
 	// ================================================================================================
 	
