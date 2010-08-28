@@ -1,7 +1,11 @@
 package com.almarsoft.GroundhogReader;
 
+import com.almarsoft.GroundhogReader.lib.UsenetReaderException;
+
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -13,6 +17,7 @@ import android.view.KeyEvent;
 
 public class OptionsActivity extends PreferenceActivity {
 	
+	// XXX YYY ZZZ: Usar la extension de Activity como variable global en vez de la ñapa de usar mPrefs
 	private SharedPreferences mPrefs; 
 
 	// Used to detect changes
@@ -101,12 +106,11 @@ public class OptionsActivity extends PreferenceActivity {
 	
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            checkHostChanged();
-            checkCharsetChanged();
-            checkAlarmChanged();
-        }
-        return super.onKeyDown(keyCode, event);
+
+        checkHostChanged();
+        checkCharsetChanged();
+        checkAlarmChanged();
+        
+      	return super.onKeyDown(keyCode, event);
     }
-	
 }

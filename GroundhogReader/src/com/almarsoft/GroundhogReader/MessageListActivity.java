@@ -52,6 +52,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.almarsoft.GroundhogReader.lib.DBHelper;
 import com.almarsoft.GroundhogReader.lib.DBUtils;
+import com.almarsoft.GroundhogReader.lib.GroundhogApplication;
 import com.almarsoft.GroundhogReader.lib.HeaderItemClass;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
 import com.almarsoft.GroundhogReader.lib.MiniHeader;
@@ -180,6 +181,24 @@ public class MessageListActivity extends Activity {
 		super.onResume();
 		
 		Log.d(UsenetConstants.APPNAME, "ListActivity onResume");
+		
+    	// =============================================
+    	// Detect empty-values errors in the settings
+    	// =============================================
+    	GroundhogApplication grapp = (GroundhogApplication)getApplication();
+    	
+    	if (grapp.checkEmptyConfigValues(this, mPrefs)) {
+    			new AlertDialog.Builder(this)
+    		    .setTitle(grapp.getConfigValidation_errorTitle()).setMessage(grapp.getConfigValidation_errorText())
+    			.setPositiveButton(getString(R.string.ok),
+    				new DialogInterface.OnClickListener() {
+    					public void onClick(DialogInterface dlg, int sumthin) {
+    						startActivity(new Intent(MessageListActivity.this, OptionsActivity.class));
+    					}
+    				}
+    			)
+    			.show();
+    	}		
 		
 		// ==================================================================================
 		// Detect server hostname or charset changes in the settings (if true, go to the

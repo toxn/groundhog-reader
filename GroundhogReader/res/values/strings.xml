@@ -289,5 +289,16 @@
 	<string name="catchup_menu_all">Catchup All</string>
 	<string name="catchingup_server">Catching up with the server</string>
 	<string name="catchup_done">Server catchup completed</string>
-	
+
+<!-- New on 1.17.1 -->
+    <string name="ok">Ok</string>
+    <string name="empty_host_title">Empty Address</string>
+    <string name="empty_host_error">The server address is empty. Enter an address in Connection->Server Address</string>
+    <string name="empty_port_title">Empty Port</string>
+    <string name="empty_port_error">The port is empty. Enter a port address in Connection->Port</string>
+    <string name="empty_login_title">Empty Login</string>
+    <string name="empty_login_error">The login name is empty. Enter a login name in Connection->Login Name</string>
+    <string name="empty_pass_title">Empty Pass</string>
+    <string name="empty_pass_error">The password is empty. Enter a password in Connection->Password</string>
+    
 </resources>

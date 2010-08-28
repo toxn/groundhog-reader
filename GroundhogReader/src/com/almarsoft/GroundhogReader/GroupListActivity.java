@@ -33,6 +33,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.almarsoft.GroundhogReader.lib.DBUtils;
+import com.almarsoft.GroundhogReader.lib.GroundhogApplication;
 import com.almarsoft.GroundhogReader.lib.ServerAuthException;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
 import com.almarsoft.GroundhogReader.lib.UsenetConstants;
@@ -67,6 +68,7 @@ public class GroupListActivity extends Activity {
 	private boolean mOfflineMode;
 	private SharedPreferences mPrefs;
 	private Context mContext;
+	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,10 +135,29 @@ public class GroupListActivity extends Activity {
     	super.onResume();
     	
     	Log.d(UsenetConstants.APPNAME, "GroupList onResume");
+    	
+    	// =============================================
+    	// Detect empty-values errors in the settings
+    	// =============================================
+    	GroundhogApplication grapp = (GroundhogApplication)getApplication();
+    	
+    	if (grapp.checkEmptyConfigValues(this, mPrefs)) {
+    			new AlertDialog.Builder(this)
+    		    .setTitle(grapp.getConfigValidation_errorTitle()).setMessage(grapp.getConfigValidation_errorText())
+    			.setPositiveButton(getString(R.string.ok),
+    				new DialogInterface.OnClickListener() {
+    					public void onClick(DialogInterface dlg, int sumthin) {
+    						startActivity(new Intent(GroupListActivity.this, OptionsActivity.class));
+    					}
+    				}
+    			)
+    			.show();
+    	}
 		
 		// =====================================================
-        // Try to detect server hostname changes in the settings
+        // Detect server hostname changes in the settings
     	// =====================================================
+    	
 		if (mPrefs.getBoolean("hostChanged", false)) {
 			// The host  has changed in the prefs, show the dialog and clean the group headers
 			new AlertDialog.Builder(GroupListActivity.this)

@@ -9,11 +9,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.SocketException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.Collections;
 
 import org.apache.commons.net.io.DotTerminatedMessageReader;
 import org.apache.commons.net.nntp.Article;
@@ -23,11 +23,12 @@ import org.apache.james.mime4j.message.Header;
 import org.apache.james.mime4j.message.Message;
 import org.apache.james.mime4j.parser.MimeEntityConfig;
 import org.apache.james.mime4j.storage.DefaultStorageProvider;
-import org.apache.james.mime4j.storage.MemoryStorageProvider;
-import org.apache.james.mime4j.storage.StorageProvider;
+import org.apache.james.mime4j.storage.TempFileStorageProvider;
+import org.apache.james.mime4j.storage.ThresholdStorageProvider;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -87,12 +88,22 @@ final public class ServerManager {
 
 	
 	private void connect() throws SocketException, IOException, ServerAuthException {
-
-		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		
-		// XXX YYY ZZZ Aqui casca, poner a 119 si no es un numero valido y validar en los settings
-		int port          = new Integer(prefs.getString("port", "119").trim());
+		String tmpPort = prefs.getString("port", "119");
+		
+		if (tmpPort != null) 
+			tmpPort = tmpPort.trim();
+		
+		if (tmpPort == null || tmpPort.length() == 0) {
+			// Fix for migrating f*cked config files (from a bug in a previous version)
+			tmpPort = "119";
+			Editor edit = prefs.edit();
+			edit.putString("port", tmpPort);
+			edit.commit();
+		}
+		
+		int port          = new Integer(tmpPort);
 		boolean needsAuth = prefs.getBoolean("needsAuth", false);
 		
 		String host = prefs.getString("host", null);
@@ -559,7 +570,9 @@ final public class ServerManager {
 	// =============================================================================================
 	// Construct a Message object with the given Header and the body taken from the cache or the net
 	// =============================================================================================
-	public Message getMessage(Header header, long id, String msgId, boolean isoffline, boolean iscatched, String charset) 
+	public Message getMessage(Header header, long id, String msgId, boolean isoffline, 
+			                   boolean iscatched, String charset, File internalCacheDir)
+	
 	throws UsenetReaderException, ServerAuthException, IOException {
 		
 		Message message = null;	
@@ -575,10 +588,11 @@ final public class ServerManager {
 		readers.add(bodyReader);
 		MergeReader messageReader = new MergeReader(readers);
 
-		// XXX YYY ZZZ: Usar otro MemoryStorageProvider pasandole EXTERNALSTORAGE + "/tmp/", creando el directorio si no existe
-		// tambien hay que hacer limpieza de ese directorio cuando salgamos del grupo o cuando se vacia la cache
-		StorageProvider storageProvider = new MemoryStorageProvider();
+		// Store in memory until 2MB of message size, then use the disk
+		TempFileStorageProvider cacheProvider = new TempFileStorageProvider(internalCacheDir);
+		ThresholdStorageProvider storageProvider = new ThresholdStorageProvider(cacheProvider, 2097152);
 		DefaultStorageProvider.setInstance(storageProvider);
+		
 		MimeEntityConfig mimeConfig = new MimeEntityConfig();
 		mimeConfig.setMaxLineLen(-1);
 		ReaderInputStream msgStream = new  ReaderInputStream(messageReader);

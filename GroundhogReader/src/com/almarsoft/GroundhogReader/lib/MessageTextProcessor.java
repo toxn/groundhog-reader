@@ -509,92 +509,81 @@ public class MessageTextProcessor {
 	}
 
 
-	public static Vector<HashMap<String, String>> saveUUEncodedAttachments(String bodyText, String group) { 
+	public static Vector<HashMap<String, String>> saveUUEncodedAttachments(BufferedReader bodyTextReader, String group) 
+	throws IOException { 
 		
 		Vector<HashMap<String, String>> bodyAttachments = new Vector<HashMap<String, String>>(1);
 		String newBody = null;
 		Vector<HashMap<String, String>> attachDatas = null;
 		
-		// Shortcut in case there are no attachment
+		StringBuilder newBodyBuilder = new StringBuilder();
+		StringBuilder attachment     = new StringBuilder();
 		
-		if (!bodyText.contains("begin ") || !bodyText.contains("end")) {
-			newBody = bodyText;
-		} 
+		boolean inAttach = false;
+		boolean firstOfTheEnd = false;
 		
-		// Could have attachment, could have not; let's see
-		else {
+		String line, sline, filename = null;
+		HashMap<String, String> attachData = null;
+		
+		attachDatas = new Vector<HashMap<String, String>>();
+		
+		//for (int i=0; i<bodyLinesLen; i++) {
+		while ((line = bodyTextReader.readLine()) != null) {
 			
-			StringBuilder newBodyBuilder = new StringBuilder();
-			StringBuilder attachment     = new StringBuilder();
-			String[] bodyLines           = bodyText.split("\n");
-			bodyText = null;
-			int bodyLinesLen = bodyLines.length;
+			// XXX YYY ZZZ: Probar a quitar esto (optimizacion)
+			sline = line.trim();
 			
-			boolean inAttach = false;
-			boolean firstOfTheEnd = false;
-			
-			String line, sline, filename = null;
-			HashMap<String, String> attachData = null;
-			
-			attachDatas = new Vector<HashMap<String, String>>();
-			
-			for (int i=0; i<bodyLinesLen; i++) {
-				
-				line  = bodyLines[i];
-				sline = line.trim();
-				
-				if (sline.equals("`")) {
-					firstOfTheEnd = true;
-					attachment.append(line + "\n");
-				}
-				
-				else if (firstOfTheEnd && inAttach && sline.equals("end")) {
-					
-					attachment.append(line + "\n");
-					if (attachDatas == null)
-						attachDatas = new Vector<HashMap<String, String>>();
-					
-					try {
-						attachData = FSUtils.saveUUencodedAttachment(attachment.toString(), filename, group);
-						attachDatas.add(attachData);
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (UsenetReaderException e) {
-						e.printStackTrace();
-					}
-					attachment = null;
-					inAttach = false;
-					firstOfTheEnd = false;
-				} 
-				
-				else if (firstOfTheEnd && inAttach && !sline.equals("end")) {
-					firstOfTheEnd = false; // False alarm?
-				}
-				
-				// XXX: ESTO NO SOPORTA UUENCODED SIN PERMISOS!!!
-				else if (sline.length() >= 11 && sline.substring(0, 6).equals("begin ") 
-						  && Character.isDigit(sline.charAt(6))
-						  && Character.isDigit(sline.charAt(7))
-						  && Character.isDigit(sline.charAt(8))
-						  && Character.isWhitespace(sline.charAt(9))
-						  && !Character.isWhitespace(sline.charAt(10))) {
-					
-					filename = sline.substring(10);
-					inAttach = true;
-					attachment.append(line + "\n");
-				}
-				
-				else if (inAttach) {
-					attachment.append(line + "\n");
-				}
-				
-				else {
-					newBodyBuilder.append(line + "\n");
-				}
-								  
+			if (sline.equals("`")) {
+				firstOfTheEnd = true;
+				attachment.append(line + "\n");
 			}
-			newBody = newBodyBuilder.toString();
+			
+			else if (firstOfTheEnd && inAttach && sline.equals("end")) {
+				
+				attachment.append(line + "\n");
+				if (attachDatas == null)
+					attachDatas = new Vector<HashMap<String, String>>();
+				
+				try {
+					attachData = FSUtils.saveUUencodedAttachment(attachment.toString(), filename, group);
+					attachDatas.add(attachData);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (UsenetReaderException e) {
+					e.printStackTrace();
+				}
+				attachment = null;
+				inAttach = false;
+				firstOfTheEnd = false;
+			} 
+			
+			else if (firstOfTheEnd && inAttach && !sline.equals("end")) {
+				firstOfTheEnd = false; // False alarm?
+			}
+			
+			// XXX: ESTO NO SOPORTA UUENCODED SIN PERMISOS!!!
+			else if (sline.length() >= 11 && sline.substring(0, 6).equals("begin ") 
+					  && Character.isDigit(sline.charAt(6))
+					  && Character.isDigit(sline.charAt(7))
+					  && Character.isDigit(sline.charAt(8))
+					  && Character.isWhitespace(sline.charAt(9))
+					  && !Character.isWhitespace(sline.charAt(10))) {
+				
+				filename = sline.substring(10);
+				inAttach = true;
+				attachment.append(line + "\n");
+			}
+			
+			else if (inAttach) {
+				attachment.append(line + "\n");
+			}
+			
+			else {
+				newBodyBuilder.append(line + "\n");
+			}
+							  
 		}
+		newBody = newBodyBuilder.toString();
 		
 		// Add the new body as first element
 		HashMap<String, String> bodyMap = new HashMap<String, String>(1);

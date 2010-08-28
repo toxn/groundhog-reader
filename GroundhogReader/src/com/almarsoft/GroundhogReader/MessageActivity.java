@@ -1,5 +1,6 @@
 package com.almarsoft.GroundhogReader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -46,6 +47,7 @@ import android.widget.Toast;
 
 import com.almarsoft.GroundhogReader.lib.DBUtils;
 import com.almarsoft.GroundhogReader.lib.FSUtils;
+import com.almarsoft.GroundhogReader.lib.GroundhogApplication;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
 import com.almarsoft.GroundhogReader.lib.ServerAuthException;
 import com.almarsoft.GroundhogReader.lib.ServerManager;
@@ -328,6 +330,24 @@ public class MessageActivity extends Activity {
 		super.onResume();
 		
 		Log.d(UsenetConstants.APPNAME, "MessageActivity onResume");
+		
+    	// =============================================
+    	// Detect empty-values errors in the settings
+    	// =============================================
+    	GroundhogApplication grapp = (GroundhogApplication)getApplication();
+    	
+    	if (grapp.checkEmptyConfigValues(this, mPrefs)) {
+    			new AlertDialog.Builder(this)
+    		    .setTitle(grapp.getConfigValidation_errorTitle()).setMessage(grapp.getConfigValidation_errorText())
+    			.setPositiveButton(getString(R.string.ok),
+    				new DialogInterface.OnClickListener() {
+    					public void onClick(DialogInterface dlg, int sumthin) {
+    						startActivity(new Intent(MessageActivity.this, OptionsActivity.class));
+    					}
+    				}
+    			)
+    			.show();
+    	}
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -713,17 +733,14 @@ public class MessageActivity extends Activity {
 	    		mMessage = mServerManager.getMessage(mHeader, 
 	    				                             (Integer)articleData.get("id"),
 	    				                             (String)articleData.get("server_article_id"),
-	    				                             false, isCatched, mCharset);
-	    		
+	    				                             false, isCatched, mCharset, getCacheDir());
+
 	    		Vector<Object> body_attachs = MessageTextProcessor.extractBodySaveAttachments(mGroup, mMessage);
 	    		TextBody textBody = (TextBody)body_attachs.get(0);
 	    		
 	    		if (mHeader.getField("MIME-Version") != null)
 	    			mMimePartsVector  = (Vector<HashMap<String, String>>)body_attachs.get(1);
-	    		
-	    		// XXX YYY ZZZ: Esto puede dar otro OutofMemory. Hacer que el saveUUEncodedAttachments
-	    		// lea directamente el textBody.getReader() y devuelva el subject sin el tocho
-	    		mBodyText = MessageTextProcessor.readerToString(textBody.getReader()).trim();
+
 	    		
 	    		if (mSubjectText != null)
 	    			mLastSubject = Article.simplifySubject(mSubjectText);
@@ -731,7 +748,8 @@ public class MessageActivity extends Activity {
 	    		mSubjectText = MessageTextProcessor.decodeSubject(mHeader.getField("Subject"), mCharset, mMessage);
 	    		
 	    		// Check for uuencoded attachments
-	    		Vector<HashMap<String, String>> uuattachData = MessageTextProcessor.saveUUEncodedAttachments(mBodyText, mGroup);
+	    		BufferedReader bodyReader = new BufferedReader(textBody.getReader());
+	    		Vector<HashMap<String, String>> uuattachData = MessageTextProcessor.saveUUEncodedAttachments(bodyReader, mGroup);
 	    		
 	    		if (uuattachData != null) {
 	    			mBodyText = uuattachData.get(0).get("body");
