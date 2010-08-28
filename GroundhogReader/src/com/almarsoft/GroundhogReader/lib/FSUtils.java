@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.HashMap;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -25,7 +26,6 @@ public class FSUtils {
 							throws UsenetReaderException, IOException {
 
 		String ret = null;
-		
 		File f = new File(fullPath);
 		
 		if (!existenceChecked && !f.exists()) {
@@ -48,6 +48,19 @@ public class FSUtils {
 		return ret;
 	}
 	
+	public static FileReader getReaderFromDiskFile(String fullPath, boolean existenceChecked) 
+	throws UsenetReaderException, IOException {
+
+		File f = new File(fullPath);
+
+		if (!existenceChecked && !f.exists()) {
+			throw new UsenetReaderException("File could not be found in " + fullPath);
+		}
+
+		return new FileReader(fullPath);		
+	}
+
+	
 	
 	public static void writeStringToDiskFile(String data, String fullPath, String fileName) throws IOException {
 		
@@ -68,6 +81,37 @@ public class FSUtils {
 				out.close();
 		}
 	}	
+	
+	public static void writeReaderToDiskFile(Reader data, String fullPath, String fileName) throws IOException {
+		
+		File outDir = new File(fullPath);
+		
+		if (!outDir.exists()) 
+			outDir.mkdirs();
+		
+		BufferedWriter out = null;
+		
+		try {
+			FileWriter writer = new FileWriter(fullPath + fileName);
+			out = new BufferedWriter(writer);
+			
+			String readData = null;
+			char[] buf = new char[1024];
+			int numRead = 0;
+			
+			while((numRead = data.read(buf)) != -1) {
+				readData = String.valueOf(buf, 0, numRead);
+				out.write(readData);
+				buf = new char[1024];
+			}
+			
+			//out.write(data);
+			out.flush();
+		} finally {
+			if (out != null) 
+				out.close();
+		}
+	}
 
 	// Currently used only for saving attachments
 	public static long writeInputStreamAndGetSize(String directory, String filename, InputStream is) 

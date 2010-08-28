@@ -571,7 +571,7 @@ public class MessageTextProcessor {
 					firstOfTheEnd = false; // False alarm?
 				}
 				
-				// XXX YYY ZZZ: ESTO NO SOPORTA UUENCODED SIN PERMISOS!!!
+				// XXX: ESTO NO SOPORTA UUENCODED SIN PERMISOS!!!
 				else if (sline.length() >= 11 && sline.substring(0, 6).equals("begin ") 
 						  && Character.isDigit(sline.charAt(6))
 						  && Character.isDigit(sline.charAt(7))

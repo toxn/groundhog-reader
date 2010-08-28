@@ -13,7 +13,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-// XXX YYY ZZZ: Usar las funciones de consultas preparadas
+// XXX: Usar las funciones de consultas preparadas
 
 public class DBUtils {
 	
@@ -907,6 +907,10 @@ public class DBUtils {
 	}
 
 
+	/*
+	 * Receive a vector of  "attachData" hashmaps which is a key-value with data of an attachment, update the database record
+	 * for the header with the information of the attachment/s filename/s so both are related
+	 */
 	public static void updateHeaderRecordAttachments(int headerId, Vector<HashMap<String, String>> attachsVector, Context context) {
 
 			if (attachsVector == null || attachsVector.size() == 0)

@@ -721,6 +721,8 @@ public class MessageActivity extends Activity {
 	    		if (mHeader.getField("MIME-Version") != null)
 	    			mMimePartsVector  = (Vector<HashMap<String, String>>)body_attachs.get(1);
 	    		
+	    		// XXX YYY ZZZ: Esto puede dar otro OutofMemory. Hacer que el saveUUEncodedAttachments
+	    		// lea directamente el textBody.getReader() y devuelva el subject sin el tocho
 	    		mBodyText = MessageTextProcessor.readerToString(textBody.getReader()).trim();
 	    		
 	    		if (mSubjectText != null)

@@ -2,6 +2,7 @@ package com.almarsoft.GroundhogReader.lib;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
@@ -48,7 +49,7 @@ final public class ServerManager {
 	public ServerManager(Context callerContext) {
 
 		mContext = callerContext;
-		// XXX YYY ZZZ: Ver si esto se puede hacer fuera de aqui o pasarselo... solo se usa en un sitio
+		// XXX: Ver si esto se puede hacer fuera de aqui o pasarselo... solo se usa en un sitio
 		mBannedTrollsSet  = DBUtils.getBannedTrolls(mContext);
 	}
 
@@ -86,9 +87,11 @@ final public class ServerManager {
 
 	
 	private void connect() throws SocketException, IOException, ServerAuthException {
+
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		
+		// XXX YYY ZZZ Aqui casca, poner a 119 si no es un numero valido y validar en los settings
 		int port          = new Integer(prefs.getString("port", "119").trim());
 		boolean needsAuth = prefs.getBoolean("needsAuth", false);
 		
@@ -149,8 +152,8 @@ final public class ServerManager {
 	}
 	
 	
-	// XXX YYY ZZZ: Ver las llamadas que usan selectNewsGroup para ver si comprueban el valor devuelto
-	// XXX YYY ZZZ: mBannedThreadSet, seria conveniente que se leyera externamente y se le pasara como argumento
+	// XXX: Ver las llamadas que usan selectNewsGroup para ver si comprueban el valor devuelto
+	// XXX: mBannedThreadSet, seria conveniente que se leyera externamente y se le pasara como argumento
 	public boolean selectNewsGroup(String group, boolean offlineMode) 
 	throws ServerAuthException, IOException {
 
@@ -429,12 +432,11 @@ final public class ServerManager {
 	// Get a body from the server and store it in the sdcard cache
 	// ====================================================================================
 	
-	private String GetAndCacheBody(long headerTableId, String msgId, String group) 
+	private FileReader getAndCacheBody(long headerTableId, String msgId, String group) 
 	throws ServerAuthException, IOException, UsenetReaderException {
 		clientConnectIfNot();
 		
 		Reader reader = null;
-		String body   = null;
 		
 		try {
 			reader = (DotTerminatedMessageReader) mClient.retrieveArticleBody(msgId);
@@ -447,16 +449,13 @@ final public class ServerManager {
 		if (reader == null) 
 			return null;
 
-		body = MessageTextProcessor.readerToString(reader);
-		
-		if (body == null) 
-			return null;
-		
 		// Now we have the header from the server, store it into the sdcard
 		String outputPath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/body/";
-		FSUtils.writeStringToDiskFile(body, outputPath, Long.toString(headerTableId));
+		String fileName = Long.toString(headerTableId);
+		FSUtils.writeReaderToDiskFile(reader, outputPath, fileName);
 		DBUtils.setMessageCatched(headerTableId, true, mContext);
-		return body;
+		
+		return FSUtils.getReaderFromDiskFile(outputPath + "/" + fileName, true);
 	}
 	
 	
@@ -486,23 +485,26 @@ final public class ServerManager {
 	// ===================================================
 	// Read a body from the cache
 	// ===================================================
-	private String readBodyFromCache(long id, String msgId, String group) 
+	private FileReader getBodyReaderFromCache(long id, String msgId, String group) 
 	throws UsenetReaderException, IOException, ServerAuthException {
 	
-		String body;
+		FileReader bodyReader = null;
 		String partFilePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/body/" + id;
 		File f = new File(partFilePath);
 		
 		if (!f.exists()) {
 			// For some odd reason, its not on the disk, fetch it from the net and write it to the cache
 			Log.d(UsenetConstants.APPNAME, "Message supposedly catched wasn't; catching from the net");
-			body = GetAndCacheBody(id, msgId, group);
+			bodyReader = getAndCacheBody(id, msgId, group);
 		}
 		else {
-			body = FSUtils.loadStringFromDiskFile(partFilePath, true);
+			//body = FSUtils.loadStringFromDiskFile(partFilePath, true);
+			bodyReader = new FileReader(partFilePath);
 		}
 		
-		return body;
+		Log.d("XXX", "Path: " + partFilePath);
+		
+		return bodyReader;
 	}
 
 	
@@ -537,18 +539,18 @@ final public class ServerManager {
 	// See the comment on getHeader, this is the same but getting the body and returning a
 	// String instead of a Hashtable
 	// ===================================================================================
-	public String getBody(long id, String msgId, boolean isoffline, boolean iscatched) 
+	public Reader getBody(long id, String msgId, boolean isoffline, boolean iscatched) 
 	throws UsenetReaderException, ServerAuthException, IOException {		
-		String body = null;
+		Reader body = null;
 		
 		if (!iscatched) {
 			if (isoffline)
 				throw new UsenetReaderException("Offline mode enabled but bodytext for " + id + " not catched");
 			else {
-				body = GetAndCacheBody(id, msgId, mGroup);
+				body = getAndCacheBody(id, msgId, mGroup);
 			}
 		} else {
-			body = readBodyFromCache(id, msgId, mGroup);
+			body = getBodyReaderFromCache(id, msgId, mGroup);
 		}
 		return body;
 	}
@@ -562,19 +564,24 @@ final public class ServerManager {
 		
 		Message message = null;	
 		
-		String strBody = getBody(id, msgId, isoffline, iscatched);
-		if (strBody == null || header == null)
+		Reader bodyReader = getBody(id, msgId, isoffline, iscatched);
+		if (bodyReader == null || header == null)
 			throw new UsenetReaderException("Error getting body or header");
 		
-		String messageStr = header.toString() + "\r\n" + strBody;
+		//String messageStr = header.toString() + "\r\n" + strBody;
+		StringReader headerReader = new StringReader(header.toString() + "\r\n");
+		Vector<Reader> readers = new Vector<Reader>();
+		readers.add(headerReader);
+		readers.add(bodyReader);
+		MergeReader messageReader = new MergeReader(readers);
 
+		// XXX YYY ZZZ: Usar otro MemoryStorageProvider pasandole EXTERNALSTORAGE + "/tmp/", creando el directorio si no existe
+		// tambien hay que hacer limpieza de ese directorio cuando salgamos del grupo o cuando se vacia la cache
 		StorageProvider storageProvider = new MemoryStorageProvider();
 		DefaultStorageProvider.setInstance(storageProvider);
 		MimeEntityConfig mimeConfig = new MimeEntityConfig();
 		mimeConfig.setMaxLineLen(-1);
-		//ByteArrayInputStream bis = new ByteArrayInputStream(messageStr.getBytes());
-		StringReader strReader = new StringReader(messageStr); 
-		ReaderInputStream msgStream = new  ReaderInputStream(strReader);
+		ReaderInputStream msgStream = new  ReaderInputStream(messageReader);
 		message = new Message(msgStream, mimeConfig, charset);
 		
 		return message;

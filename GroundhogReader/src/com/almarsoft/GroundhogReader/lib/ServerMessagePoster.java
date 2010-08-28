@@ -92,8 +92,8 @@ public class ServerMessagePoster extends AsyncTaskProxy {
 					long pId = pendingIds.get(i);
 					msgPath = basePath + Long.toString(pId);
 					try {
-						message = FSUtils
-								.loadStringFromDiskFile(msgPath, false);
+						// XXX: Aqui seria mejor usar el getDiskFromDiskFile para no petar la memoria si es muy grande
+						message = FSUtils.loadStringFromDiskFile(msgPath, false);
 						mServerManager.postArticle(message, true);
 					} catch (UsenetReaderException e) {
 						// Message not found for some reason, just skip but

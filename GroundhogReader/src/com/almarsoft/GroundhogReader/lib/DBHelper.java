@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
-	// XXX YYY ZZZ: Cambiar nombre BBDD
+	// XXX: Cambiar nombre BBDD
 	private static final String DATABASE_NAME = "com.juanjux.usenetreader";
 	private static final int DATABASE_VERSION = 5;
 	
