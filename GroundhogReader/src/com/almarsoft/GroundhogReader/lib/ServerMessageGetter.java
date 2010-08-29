@@ -89,6 +89,8 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 		}		
 		
 		
+		// XXX YYY ZZZ: Cambiar de metodo. Hacemos un GROUP, sacamos los indices, "estimamos" los numeros,
+		// y pedimos los articulos.
 		@Override
 		protected Integer doInBackground(Vector<String>...groupsmult) {
 			groups = groupsmult[0];
@@ -113,7 +115,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					if (!mIsOnlyCheck)
 						mStatusMsg = mContext.getString(R.string.asking_new_articles);
 					
-					publishProgress(0, currentLimit);
+					//publishProgress(0, currentLimit);
 					Log.i(UsenetConstants.APPNAME, "Selecting group " + group);
 
 					long lastFetched, firstToFetch;
@@ -131,7 +133,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					
 					Log.i(UsenetConstants.APPNAME, "Getting artice numbers");
 					
-					Vector<Long> articleList;
+					Vector<Long> articleList = null;
 					if (mServerManager.getFetchLatest()) {
 						articleList = mServerManager.selectGroupAndgetArticleNumbersReverse(group, firstToFetch, currentLimit);
 					} else {
@@ -144,6 +146,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					}
 					
 					
+					// XXX YYY ZZZ: Probar online=>bajar cabeceras, offline=>sincronizar existentes
 					if (mOfflineMode) {
 						// Get a vector with the server article numbers of articleInfos downloaded (and unread) but
 						// not catched, then join the two vectors. It's very important than the newly adquired articles
@@ -166,7 +169,8 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 		    			mStatusMsg = java.text.MessageFormat.format(msg, typeFetch);
 		    		
 					int len = articleList.size();
-					publishProgress(0, len);
+					if (len > 0)
+						publishProgress(0, len);
 					
 					long msgid, number;
 					String server_msg_id;
@@ -196,15 +200,23 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 							offlineData = DBUtils.isHeaderInDatabase(number, group, mContext);
 							
 							// Wasn't on the DB, get and insert it
+							// XXX YYY ZZZ: Aqui se debe meter el header, hay que cambiar getHeader y getBody para que
+							// vayan por numero y no por msgid cadena
+						
 							if (offlineData == null) {		
+								Log.d("XXX", "Number para insertArticleInfo: " + number);
 								offlineData = mServerManager.getAndInsertArticleInfo(number, prefs.getString("readDefaultCharset", "ISO8859-15"), dbwrite);
+								if (offlineData == null) {
+									// No article with that number (it is normal since we guess the numbers)
+									continue;
+								}
 							}
 							
 							// Offline mode: save also the article contents to the cache
 							if (mOfflineMode) {
 								msgid = (Long) offlineData.get(0);
 								server_msg_id = (String) offlineData.get(1);
-								
+								Log.d("XXX", "msgid para getHeader: " + msgid);
 								try {
 									mServerManager.getHeader(msgid, server_msg_id, false, false);
 									mServerManager.getBody  (msgid, server_msg_id, false, false);
@@ -216,6 +228,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 								}
 							}
 							
+							Log.d("XXX", "lastFetched: " + number);
 							lastFetched = number;
 						}
 						
@@ -225,7 +238,7 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 
 					if (!mIsOnlyCheck)
 						if (articleListLen > 0) 
-							DBUtils.storeGroupLastFetchedMessageNumber(group, articleList.lastElement(), mContext);
+							DBUtils.storeGroupLastFetchedMessageNumber(group, lastFetched, mContext);
 					
 						if (groups.lastElement().equalsIgnoreCase(group))
 							return FETCH_FINISHED_OK;

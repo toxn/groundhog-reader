@@ -113,10 +113,11 @@ public class GroupMessagesDownloadDialog {
 				}
 			}
 		});
-		mProgressGetMessages.show();	
 	}
 	
 	public void progressGetMessagesCallBack(String status, String title, Integer progressCurrent, Integer progressMax) {
+		if (!mProgressGetMessages.isShowing())
+			mProgressGetMessages.show();
 		mProgressGetMessages.setMax(progressMax);
 		mProgressGetMessages.setProgress(progressCurrent);
 		mProgressGetMessages.setMessage(status);

@@ -708,7 +708,7 @@ public class GroupListActivity extends Activity {
 			Method cancelledCallback = this.getClass().getMethod("updateGroupList", noargs);
 			mServerManager.setFetchLatest(false);
 			mDownloader    = new GroupMessagesDownloadDialog(mServerManager, GroupListActivity.this);
-			mDownloader.synchronize(true, groupVector, successCallback, cancelledCallback, GroupListActivity.this);
+			mDownloader.synchronize(mOfflineMode, groupVector, successCallback, cancelledCallback, GroupListActivity.this);
 			
 		} catch (SecurityException e) {
 			e.printStackTrace();

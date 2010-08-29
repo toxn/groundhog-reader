@@ -190,6 +190,7 @@ final public class ServerManager {
 	// considering the user limit
 	// =====================================================================================
 	
+	// XXX YYY ZZZ: Reimplementar!!!
 	public Vector<Long> selectGroupAndgetArticleNumbersReverse(String group, long lastFetched, int limit)
 	throws IOException, ServerAuthException, UsenetReaderException {
 		clientConnectIfNot();
@@ -199,74 +200,64 @@ final public class ServerManager {
 			throw new UsenetReaderException("Could not select group " + group);
 		}
 		
-		Vector<Long> msgNumbers = new Vector<Long>(limit);
+		lastFetched++;
+		long lastMessage = mGroupInfo.getLastArticle();
+		long firstMessage = 0;
 		
-		// Select the last article and retrieve its data
-		ArticlePointer artPointer = new ArticlePointer();
-		mClient.selectArticle(mGroupInfo.getLastArticle(), artPointer);
-		
-		for (int i=0;i<limit;i++) {
-			
-			if (lastFetched >= artPointer.articleNumber)
-				break;
-			
-			if (!mClient.selectPreviousArticle(artPointer))
-				break;
-			
-			msgNumbers.add(artPointer.articleNumber);
+		if ((lastMessage - limit) > lastFetched) {
+			firstMessage = lastMessage - limit;
+		}
+		else {
+			firstMessage = lastFetched ;
 		}
 		
-		Collections.reverse(msgNumbers);
+		// XXX YYY ZZZ: Si es negativo el vector es de tamaño cero y salimos
+		Vector<Long> msgNumbers = new Vector<Long>((int) (lastMessage - (firstMessage -1) ));
+		for(long i=firstMessage;i<=lastMessage;i++) {
+			msgNumbers.add(i);
+		}
+
+		Log.d("XXX", "Primero: " + firstMessage);
+		Log.d("XXX", "Ultimo : " + lastMessage);
+		
 		return msgNumbers;
 	}
 
+	
 	public Vector<Long> selectGroupAndGetArticleNumbers(String group, long firstMsg, int limit) 
 	throws IOException, ServerAuthException, UsenetReaderException {
 		clientConnectIfNot();
 		
-		selectNewsGroupConnecting(group);
-		Vector<Long> msgNumbers = new Vector<Long>(limit);
-		long[] allNumbers;
-	
-		try {
-			allNumbers = mClient.listGroup(mGroup, firstMsg, limit);			
-		} catch (IOException e) {
-			e.printStackTrace();
-			Log.d(UsenetConstants.APPNAME, "Connection seems lost, reconnecting");
-			connect();
-			allNumbers = mClient.listGroup(mGroup, firstMsg, limit);
+		// This also loads the mGroupInfo class
+		if (!selectNewsGroupConnecting(group)) {
+			throw new UsenetReaderException("Could not select group " + group);
 		}
 		
-		if (allNumbers == null)
-			throw new UsenetReaderException("Error requesting message list, maybe the group doesn't exist on this server?");
-
-		int countSaved = 0;
-		int init;
-		
-		int allNumbersLen = allNumbers.length;
-		if (firstMsg == -1 && allNumbersLen > limit) {
-			// Special case for first time entering a group; instead of getting the 100 (or limit) 
-			// older we get the 100 newer
-			init = allNumbersLen - limit;
-			
-		} else {
-			init = 0;
+		if (firstMsg == -1) {
+			// -1 = flag marking the first time in the group, get the last messages
+			return selectGroupAndgetArticleNumbersReverse(group, 1, limit);
 		}
 		
-		
-		long currentNum;
-
-		for (; init < allNumbersLen; init++) {
-			currentNum = allNumbers[init];
-			
-			if (currentNum < firstMsg)
-				continue;
-			if (countSaved > limit)
-				break;
-			msgNumbers.add(new Long(currentNum));
-			countSaved++;
+		long lastMessage = 0;
+		if (mGroupInfo.getLastArticle() < firstMsg + limit) {
+			lastMessage = mGroupInfo.getLastArticle();
+			Log.d("XXX", "Cogiendo ultimo de getLastArticle");
 		}
-			
+		else {
+			Log.d("XXX", "Cogiendo ultimo de firstMsg + limit");
+			lastMessage = firstMsg + limit;
+		}
+		
+		Log.d("XXX", "Primero: " + firstMsg);
+		Log.d("XXX", "Ultimo : " + lastMessage);
+		
+		// XXX YYY ZZZ: Si es negativo el vector es de tamaño cero y salimos
+		Vector<Long> msgNumbers = new Vector<Long>((int) (lastMessage - (firstMsg - 1) ));
+		
+		for(long i=firstMsg;i<=lastMessage;i++) {
+			msgNumbers.add(i);
+		}
+		
 		return msgNumbers;
 	}
 
@@ -302,9 +293,6 @@ final public class ServerManager {
 			ret.add(articleInfo.getArticleId());
 		}
 
-		if (ret == null) {
-			throw new IOException("getAndInsertArticleInfo: could not get or insert the article");
-		}
 		return ret;
 	}
 
@@ -406,7 +394,7 @@ final public class ServerManager {
 	// Get a header from the server, store it in the sdcard cache and return it
 	// ====================================================================================
 	
-	private Header GetAndCacheHeader(long headerTableId, String msgId, String group)
+	private Header getAndCacheHeader(long headerTableId, String msgId, String group)
 	throws ServerAuthException, IOException, UsenetReaderException {
 
 		clientConnectIfNot();	
@@ -483,7 +471,7 @@ final public class ServerManager {
 		if (!f.exists()) {
 			// For some odd reason, its not on the disk, fetch it from the net and write it to the cache
 			Log.d(UsenetConstants.APPNAME, "Message supposedly catched wasn't; catching from the net");
-			return GetAndCacheHeader(id, msgId, group);
+			return getAndCacheHeader(id, msgId, group);
 		}
 		else {
 			header = FSUtils.loadStringFromDiskFile(headerFilePath, true);
@@ -536,7 +524,7 @@ final public class ServerManager {
 			if (isoffline) 
 				throw new UsenetReaderException("Offline mode enabled but header " + id + " not catched");
 			else
-				headerObj = GetAndCacheHeader(id, msgId, mGroup);
+				headerObj = getAndCacheHeader(id, msgId, mGroup);
 		
 		} else // Catched, read if from the cache
 			headerObj = readHeaderFromCache(id, msgId, mGroup);
