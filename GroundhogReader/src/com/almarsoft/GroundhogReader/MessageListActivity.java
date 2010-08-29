@@ -99,6 +99,7 @@ public class MessageListActivity extends Activity {
 	private ListView mMsgList;
 	private TextView mTitleBar;
 	private ImageButton mGoGroups;
+	private AlertDialog mConfigAlert;
 	
 
 	@Override
@@ -108,6 +109,16 @@ public class MessageListActivity extends Activity {
 		
 		setContentView(R.layout.messagelist);
 		Context context = getApplicationContext();
+		
+    	// Config checker alert dialog
+    	mConfigAlert = new AlertDialog.Builder(this).create();
+		mConfigAlert.setButton(getString(R.string.ok),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dlg, int sumthin) {
+						startActivity(new Intent(MessageListActivity.this, OptionsActivity.class));
+					}
+				}
+		); 
 
 		mNumUnread = 0; // Loaded in OnResume || threadMessagesFromDB()
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -186,19 +197,16 @@ public class MessageListActivity extends Activity {
     	// Detect empty-values errors in the settings
     	// =============================================
     	GroundhogApplication grapp = (GroundhogApplication)getApplication();
-    	
+		
     	if (grapp.checkEmptyConfigValues(this, mPrefs)) {
-    			new AlertDialog.Builder(this)
-    		    .setTitle(grapp.getConfigValidation_errorTitle()).setMessage(grapp.getConfigValidation_errorText())
-    			.setPositiveButton(getString(R.string.ok),
-    				new DialogInterface.OnClickListener() {
-    					public void onClick(DialogInterface dlg, int sumthin) {
-    						startActivity(new Intent(MessageListActivity.this, OptionsActivity.class));
-    					}
-    				}
-    			)
-    			.show();
-    	}		
+    		mConfigAlert.setTitle(grapp.getConfigValidation_errorTitle());
+			mConfigAlert.setMessage(grapp.getConfigValidation_errorText());
+			if (mConfigAlert.isShowing()) mConfigAlert.hide();
+			mConfigAlert.show();
+    	}
+    	else {
+    		if (mConfigAlert.isShowing()) mConfigAlert.hide();
+    	}   	
 		
 		// ==================================================================================
 		// Detect server hostname or charset changes in the settings (if true, go to the

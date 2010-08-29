@@ -95,6 +95,7 @@ public class MessageActivity extends Activity {
 	private ImageButton mButton_GoGroup;
 	private ScrollView mScroll;
 	private Context mContext;
+	private AlertDialog mConfigAlert;
 	
 	private SharedPreferences mPrefs;
 	final Handler mHandler = new Handler();
@@ -107,6 +108,16 @@ public class MessageActivity extends Activity {
     
     	mContext = getApplicationContext();
     	setContentView(R.layout.message);
+    	
+    	// Config checker alert dialog
+    	mConfigAlert = new AlertDialog.Builder(this).create();
+		mConfigAlert.setButton(getString(R.string.ok),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dlg, int sumthin) {
+						startActivity(new Intent(MessageActivity.this, OptionsActivity.class));
+					}
+				}
+		); 
     	
     	mPrefs   = PreferenceManager.getDefaultSharedPreferences(this);
     	
@@ -335,18 +346,15 @@ public class MessageActivity extends Activity {
     	// Detect empty-values errors in the settings
     	// =============================================
     	GroundhogApplication grapp = (GroundhogApplication)getApplication();
-    	
+		
     	if (grapp.checkEmptyConfigValues(this, mPrefs)) {
-    			new AlertDialog.Builder(this)
-    		    .setTitle(grapp.getConfigValidation_errorTitle()).setMessage(grapp.getConfigValidation_errorText())
-    			.setPositiveButton(getString(R.string.ok),
-    				new DialogInterface.OnClickListener() {
-    					public void onClick(DialogInterface dlg, int sumthin) {
-    						startActivity(new Intent(MessageActivity.this, OptionsActivity.class));
-    					}
-    				}
-    			)
-    			.show();
+    		mConfigAlert.setTitle(grapp.getConfigValidation_errorTitle());
+			mConfigAlert.setMessage(grapp.getConfigValidation_errorText());
+			if (mConfigAlert.isShowing()) mConfigAlert.hide();
+			mConfigAlert.show();
+    	}
+    	else {
+    		if (mConfigAlert.isShowing()) mConfigAlert.hide();
     	}
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);

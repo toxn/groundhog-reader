@@ -41,8 +41,6 @@ import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 public class GroupListActivity extends Activity {
     /** Activity showing the list of subscribed groups. */
 	
-	//private final String MAGIC_GROUP_ADD_STRING = "Subscribe to group...";
-	
 	private static final int MENU_ITEM_MARKALLREAD = 1;
 	private static final int MENU_ITEM_UNSUBSCRIBE = 2;
 	private static final int MENU_ITEM_CATCHUP = 3;
@@ -68,6 +66,7 @@ public class GroupListActivity extends Activity {
 	private boolean mOfflineMode;
 	private SharedPreferences mPrefs;
 	private Context mContext;
+	private AlertDialog mConfigAlert; 
 	
 	
     @Override
@@ -76,11 +75,24 @@ public class GroupListActivity extends Activity {
 
     	Log.d(UsenetConstants.APPNAME, "GroupList onCreate");
     	setContentView(R.layout.grouplist);
+
+    	// Config checker alert dialog
+    	GroundhogApplication grapp = (GroundhogApplication)getApplication();
+    	mConfigAlert = new AlertDialog.Builder(this).create();
+		mConfigAlert.setButton(getString(R.string.ok),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dlg, int sumthin) {
+						startActivity(new Intent(GroupListActivity.this, OptionsActivity.class));
+					}
+				}
+		);    	
     	
+		// Group list
     	mGroupsList = (ListView) this.findViewById(R.id.list_groups);
     	mGroupsList.setOnItemClickListener(mListItemClickListener);
 		registerForContextMenu(mGroupsList);
 		
+		// ServerManager
 		mContext = getApplicationContext();
 		mServerManager = new ServerManager(mContext);
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -128,7 +140,7 @@ public class GroupListActivity extends Activity {
 		);
 		
     }
-
+    
     
     @Override
     protected void onResume() {
@@ -142,18 +154,17 @@ public class GroupListActivity extends Activity {
     	GroundhogApplication grapp = (GroundhogApplication)getApplication();
     	
     	if (grapp.checkEmptyConfigValues(this, mPrefs)) {
-    			new AlertDialog.Builder(this)
-    		    .setTitle(grapp.getConfigValidation_errorTitle()).setMessage(grapp.getConfigValidation_errorText())
-    			.setPositiveButton(getString(R.string.ok),
-    				new DialogInterface.OnClickListener() {
-    					public void onClick(DialogInterface dlg, int sumthin) {
-    						startActivity(new Intent(GroupListActivity.this, OptionsActivity.class));
-    					}
-    				}
-    			)
-    			.show();
+    		mConfigAlert.setTitle(grapp.getConfigValidation_errorTitle());
+			mConfigAlert.setMessage(grapp.getConfigValidation_errorText());
+			if (mConfigAlert.isShowing()) 
+				mConfigAlert.hide();
+			mConfigAlert.show();
     	}
-		
+    	else {
+    		if (mConfigAlert.isShowing())
+    			mConfigAlert.hide();
+    	}
+    	
 		// =====================================================
         // Detect server hostname changes in the settings
     	// =====================================================
@@ -191,6 +202,7 @@ public class GroupListActivity extends Activity {
 			getAllMessages(false);
 		}
     }
+    
     
 	@Override
 	protected void onPause() {
@@ -249,12 +261,13 @@ public class GroupListActivity extends Activity {
 	public void onConfigurationChanged(Configuration newConfig) {
 		// ignore orientation change because it would cause the message list to
 		// be reloaded
+		
 		super.onConfigurationChanged(newConfig);
 	}
 
     
     public void updateGroupList() {
-    	
+
     	// We're probably called from mDownloader, so clear it
     	if (mDownloader != null) 
     		mDownloader = null;
@@ -265,8 +278,8 @@ public class GroupListActivity extends Activity {
     		count = proxyGroupsArray.length;
     	else
     		proxyGroupsArray = new String[0];
-    	String[] proxyGroupsUnreadCount = new String[count];
     	
+    	String[] proxyGroupsUnreadCount = new String[count];
     	String curGroup = null;
 		int unread;
 		StringBuilder builder = new StringBuilder(80);
@@ -304,6 +317,7 @@ public class GroupListActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
 		new MenuInflater(getApplication()).inflate(R.menu.grouplistmenu, menu);
+		Log.d("XXX", "onCreateOptionsMenu");
 		return(super.onCreateOptionsMenu(menu));
 		
 	}
@@ -489,6 +503,7 @@ public class GroupListActivity extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     	new MenuInflater(getApplicationContext()).inflate(R.menu.grouplist_item_menu, menu);
     	menu.setHeaderTitle(getString(R.string.group_menu));
+    	Log.d("XXX", "OnCreateContext");
     	super.onCreateContextMenu(menu, v, menuInfo);
     }
     
@@ -597,9 +612,6 @@ public class GroupListActivity extends Activity {
     // OnItem Clicked Listener (start the MessageListActivity and pass the clicked group name
     // ==================================================================================================
 
-    
-    // Dialog code in swing/android is soooooooooooooooooo ugly :(
-    
 	OnItemClickListener mListItemClickListener = new OnItemClickListener() {
 
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
