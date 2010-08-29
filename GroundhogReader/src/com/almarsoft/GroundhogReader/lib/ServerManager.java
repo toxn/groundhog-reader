@@ -21,6 +21,7 @@ import org.apache.commons.net.nntp.ArticlePointer;
 import org.apache.commons.net.nntp.NewsgroupInfo;
 import org.apache.james.mime4j.message.Header;
 import org.apache.james.mime4j.message.Message;
+import org.apache.james.mime4j.parser.Field;
 import org.apache.james.mime4j.parser.MimeEntityConfig;
 import org.apache.james.mime4j.storage.DefaultStorageProvider;
 import org.apache.james.mime4j.storage.TempFileStorageProvider;
@@ -190,7 +191,6 @@ final public class ServerManager {
 	// considering the user limit
 	// =====================================================================================
 	
-	// XXX YYY ZZZ: Reimplementar!!!
 	public Vector<Long> selectGroupAndgetArticleNumbersReverse(String group, long lastFetched, int limit)
 	throws IOException, ServerAuthException, UsenetReaderException {
 		clientConnectIfNot();
@@ -217,9 +217,6 @@ final public class ServerManager {
 			msgNumbers.add(i);
 		}
 
-		Log.d("XXX", "Primero: " + firstMessage);
-		Log.d("XXX", "Ultimo : " + lastMessage);
-		
 		return msgNumbers;
 	}
 
@@ -241,15 +238,10 @@ final public class ServerManager {
 		long lastMessage = 0;
 		if (mGroupInfo.getLastArticle() < firstMsg + limit) {
 			lastMessage = mGroupInfo.getLastArticle();
-			Log.d("XXX", "Cogiendo ultimo de getLastArticle");
 		}
 		else {
-			Log.d("XXX", "Cogiendo ultimo de firstMsg + limit");
 			lastMessage = firstMsg + limit;
 		}
-		
-		Log.d("XXX", "Primero: " + firstMsg);
-		Log.d("XXX", "Ultimo : " + lastMessage);
 		
 		// XXX YYY ZZZ: Si es negativo el vector es de tamaño cero y salimos
 		Vector<Long> msgNumbers = new Vector<Long>((int) (lastMessage - (firstMsg - 1) ));
@@ -268,7 +260,7 @@ final public class ServerManager {
 	// can be null to let the DBUtils create it every time.)
 	// ===============================================================================
 
-	public Vector<Object> getAndInsertArticleInfo(long articleNumber, String charset, SQLiteDatabase catchedDB) 
+	public Vector<Object> getArticleInfoFromXOVER(long articleNumber, String charset, SQLiteDatabase catchedDB) 
 	throws IOException, UsenetReaderException, ServerAuthException {
 		clientConnectIfNot();
 		
@@ -278,7 +270,7 @@ final public class ServerManager {
 		
 		// Get the article information (shorter than the header; we'll fetch the body and the
 		// body when the user clicks on an article.)
-		Article articleInfo = getArticleInfo(articleNumber);
+		Article articleInfo = buildArticleInfoFromXOVER(articleNumber);
 		
 		if (articleInfo != null) {
 			String from = articleInfo.getFrom();
@@ -295,13 +287,84 @@ final public class ServerManager {
 
 		return ret;
 	}
-
 	
-	private Article getArticleInfo(long articleNumber) throws IOException, ServerAuthException {
+	
+	// =======================================================================================================
+	// This is the same as getAndInsertArticleInfo, but instead of using the (small) data from XOVER uses the 
+	// complete header. This is used in offline mode so we don't have to do an XOVER and then a HEADER, which 
+	// is redundant
+	// =======================================================================================================
+	// VVV
+	public Vector<Object> getArticleInfoAndHeaderFromHEAD(long serverNumber, String charset, SQLiteDatabase catchedDB, String group) 
+	throws IOException, UsenetReaderException, ServerAuthException {
+		clientConnectIfNot();
+		
+		long ddbbId = -1;
+		Vector<Object> ret = null;
+		Reader reader = null;
+		
+		try {
+			reader = (DotTerminatedMessageReader) mClient.retrieveArticleHeader(serverNumber);
+		} catch (IOException e) {
+			connect();
+			reader = (DotTerminatedMessageReader) mClient.retrieveArticleHeader(serverNumber);
+		}
+		
+		if (reader != null) {
+			Header header = new Header(new ReaderInputStream(reader));
+			Article article = new Article();
+			article.setArticleNumber(serverNumber);
+			article.setSubject(header.getField("Subject").getBody().trim());
+			article.setFrom(header.getField("From").getBody().trim());
+			article.setDate(header.getField("Date").getBody().trim());
+			article.setArticleId(header.getField("Message-ID").getBody().trim());
+			
+			// Take the references
+			Field refsField = header.getField("References");
+			String refsStr = null;
+			
+			if (refsField != null)
+				refsStr = header.getField("References").getBody().trim();
+	
+			if (refsStr != null) {
+				String[] refs = refsStr.split(" ");
+				
+				for (String r : refs) {
+					if (r.trim().length() == 0)	
+						continue;
+					Log.d("XXX", "Reference: |" + r + "|");
+					article.addReference(r.trim());
+				}
+			}
+			
+			if (article != null) {
+				String from = article.getFrom();
+				if (  (!mBannedThreadsSet.contains(article.simplifiedSubject())) 
+				    &&(!mBannedTrollsSet.contains(from))) {
+					
+					ddbbId = insertArticleInDB(article, serverNumber, from, charset, catchedDB);				
+				}
+			}
+			
+			// Meter la cabecera en la BBDD
+			String outputPath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/groups/" + group + "/header/";
+			FSUtils.writeStringToDiskFile(header.toString(), outputPath, Long.toString(ddbbId));
+			DBUtils.setMessageCatched(ddbbId, true, mContext);
+			
+			ret = new Vector<Object>(2);
+			ret.add(ddbbId);
+			ret.add(article.getArticleId());
+		}
+		
+		return ret;
+	}
+	
+	
+	private Article buildArticleInfoFromXOVER(long articleNumber) throws IOException, ServerAuthException {
 		clientConnectIfNot();
 		
 		Article article = null;
-		Reader reader;
+		Reader reader = null;
 		
 		try {
 			reader = (DotTerminatedMessageReader) mClient.retrieveArticleInfo(articleNumber);
@@ -327,7 +390,7 @@ final public class ServerManager {
 			
 				StringTokenizer stt = new StringTokenizer(st.nextToken(), "\t");
 				article = new Article();
-				article.setArticleNumber(Integer.parseInt(stt.nextToken()));
+				article.setArticleNumber(Long.parseLong(stt.nextToken()));
 				article.setSubject(stt.nextToken());
 				article.setFrom(stt.nextToken());
 				article.setDate(stt.nextToken());
@@ -349,8 +412,8 @@ final public class ServerManager {
 			if (refsStr.contains("@")) { 
 				String[] refs = refsStr.split(" ");
 
-				for (int i = 0; i < refs.length; i++) 
-					article.addReference(refs[i]);
+				for (String r: refs) 
+					article.addReference(r);
 			}
 		}
 			
@@ -393,7 +456,6 @@ final public class ServerManager {
 	// ====================================================================================
 	// Get a header from the server, store it in the sdcard cache and return it
 	// ====================================================================================
-	
 	private Header getAndCacheHeader(long headerTableId, String msgId, String group)
 	throws ServerAuthException, IOException, UsenetReaderException {
 
@@ -426,6 +488,7 @@ final public class ServerManager {
 		return MessageTextProcessor.strToHeader(strHeader);		
 	}
 
+	
 	
 	// ====================================================================================
 	// Get a body from the server and store it in the sdcard cache
@@ -501,10 +564,10 @@ final public class ServerManager {
 			bodyReader = new FileReader(partFilePath);
 		}
 		
-		Log.d("XXX", "Path: " + partFilePath);
-		
 		return bodyReader;
 	}
+	
+
 
 	
 	// ================================================================================================================

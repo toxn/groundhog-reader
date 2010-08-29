@@ -38,6 +38,7 @@
 		android:title="@string/server_need_login_title"
 		android:summary="@string/server_need_login_summary"			
 		android:checked="true"
+		android:defaultValue="true"
 		/>
 
 		<EditTextPreference	
@@ -112,7 +113,8 @@
 		android:summary="@string/read_charset_summary"  
 		android:entries="@array/postCharsetKeys" 
 		android:entryValues="@array/postCharsetValues" 
-		android:dialogTitle="@string/read_charset_dialog_title" 
+		android:dialogTitle="@string/read_charset_dialog_title"
+		android:defaultValue="ISO8859-15" 
 		/>	
 	
 		<CheckBoxPreference
@@ -121,6 +123,7 @@
 		android:title="@string/replies_title"
 		android:summary="@string/replies_summary"			
 		android:checked="true"
+		android:defaultValue="true"
 		/>	
 		
 		<ListPreference
@@ -130,6 +133,7 @@
 		android:entries="@array/expireModeKeys"
 		android:entryValues="@array/expireModeValues"
 		android:dialogTitle="@string/expire_modes_dialog_title"
+		android:defaultValue="604800000"
 		/>
 	</PreferenceScreen>
 	
@@ -145,6 +149,7 @@
 		android:entries="@array/postCharsetKeys" 
 		android:entryValues="@array/postCharsetValues" 
 		android:dialogTitle="@string/post_charset_dialog_title" 
+		android:defaultValue="ISO8859-15" 
 		/>
 	
 	
@@ -154,6 +159,7 @@
 		android:title="@string/quote_title"
 		android:summary="@string/quote_summary"			
 		android:checked="true"
+		android:defaultValue="true"
 		/>
 		
 		<CheckBoxPreference
@@ -162,6 +168,7 @@
 		android:title="@string/replycursor_title"
 		android:summary="@string/replycursor_summary"			
 		android:checked="false"
+		android:defaultValue="false"
 		/>		
 		
 		 <ListPreference  
@@ -170,6 +177,7 @@
 		 android:summary="@string/followup_summary"  
 		 android:entries="@array/followupOptionKeys"  
 		 android:entryValues="@array/followupOptionValues"  
+		 android:defaultValue="ASK"
 		 android:dialogTitle="@string/followup_dialog_title" />
 		 
 		<EditTextPreference
@@ -180,7 +188,7 @@
 		android:dialogTitle="@string/quotestring_dialog_title"
 		android:dialogMessage="@string/quotestring_dialog_message"
 		android:singleLine="false"	
-		android:defaultValue="@string/default_quote_header"		
+		android:defaultValue="@string/default_quote_header"
 		/>		  		
 
 		<CheckBoxPreference
@@ -189,6 +197,7 @@
 		android:title="@string/offlinemode_title"
 		android:summary="@string/offlinemode_summary"			
 		android:checked="true"
+		android:defaultValue="true"
 		/>	
 	</PreferenceScreen>
 	
@@ -201,6 +210,7 @@
 		android:title="@string/preference_enable_notif_title"
 		android:summary="@string/preference_enable_notif_summary"			
 		android:checked="false"
+		android:defaultValue="false"
 		/>
 		
 		<ListPreference
@@ -210,6 +220,7 @@
 		android:entryValues="@array/notifPeriodValues" 
 		android:dialogTitle="@string/pref_notif_period"
 		android:dependency="enableNotifications" 
+		android:defaultValue="1800000"
 		/>	
 		
 		<CheckBoxPreference
@@ -218,6 +229,7 @@
 		android:title="@string/preference_useSound_title"					
 		android:checked="true"
 		android:dependency="enableNotifications"	
+		android:defaultValue="true"
 		/>
 		
 		<CheckBoxPreference
@@ -226,6 +238,7 @@
 		android:title="@string/preference_useVibration_title"					
 		android:checked="true"
 		android:dependency="enableNotifications"	
+		android:defaultValue="true"
 		/>
 		
 		<CheckBoxPreference
@@ -233,7 +246,8 @@
 		android:id="@+id/preference_notif_useLight"
 		android:title="@string/preference_useLight_title"					
 		android:checked="true"
-		android:dependency="enableNotifications"	
+		android:dependency="enableNotifications"
+		android:defaultValue="true"	
 		/>
 		
 		<CheckBoxPreference
@@ -241,7 +255,8 @@
 		android:id="@+id/preference_notif_wifiOnly"
 		android:title="@string/preference_wifiOnly"					
 		android:checked="false"
-		android:dependency="enableNotifications"	
+		android:dependency="enableNotifications"
+		android:defaultValue="true"	
 		/>
 		
 	</PreferenceScreen>

@@ -300,5 +300,5 @@
     <string name="empty_login_error">The login name is empty. Enter a login name in Connection->Login Name</string>
     <string name="empty_pass_title">Empty Pass</string>
     <string name="empty_pass_error">The password is empty. Enter a password in Connection->Password</string>
-    
+	<string name="starting_download">Connecting for download</string>    
 </resources>

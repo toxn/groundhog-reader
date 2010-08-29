@@ -105,7 +105,7 @@ public class GroupMessagesDownloadDialog {
 		mProgressGetMessages = new ProgressDialog(mContext);
 		mProgressGetMessages.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 		mProgressGetMessages.setTitle(mContext.getString(R.string.group));
-		mProgressGetMessages.setMessage(mContext.getString(R.string.asking_new_articles));
+		mProgressGetMessages.setMessage(mContext.getString(R.string.starting_download));
 		mProgressGetMessages.setOnCancelListener(new OnCancelListener() {
 			public void onCancel(DialogInterface dialog) {
 				if (mServerMessageGetter != null) {
@@ -113,6 +113,7 @@ public class GroupMessagesDownloadDialog {
 				}
 			}
 		});
+		mProgressGetMessages.show();
 	}
 	
 	public void progressGetMessagesCallBack(String status, String title, Integer progressCurrent, Integer progressMax) {

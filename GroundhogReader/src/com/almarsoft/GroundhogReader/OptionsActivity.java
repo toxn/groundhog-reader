@@ -17,7 +17,6 @@ import android.view.KeyEvent;
 
 public class OptionsActivity extends PreferenceActivity {
 	
-	// XXX YYY ZZZ: Usar la extension de Activity como variable global en vez de la ñapa de usar mPrefs
 	private SharedPreferences mPrefs; 
 
 	// Used to detect changes

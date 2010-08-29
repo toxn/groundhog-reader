@@ -292,13 +292,13 @@ public class NNTPClient extends NNTP
 
 
     private Reader __retrieve(int command,
-                              int articleNumber, ArticlePointer pointer)
+                              long articleNumber, ArticlePointer pointer)
     throws IOException
     {
         Reader reader;
 
         if (!NNTPReply.isPositiveCompletion(sendCommand(command,
-                                            Integer.toString(articleNumber))))
+                                            Long.toString(articleNumber))))
             return null;
 
         if (pointer != null)
@@ -519,7 +519,7 @@ public class NNTPClient extends NNTP
      * @exception IOException  If an I/O error occurs while either sending a
      *      command to the server or receiving a reply from the server.
      ***/
-    public Reader retrieveArticleHeader(int articleNumber,
+    public Reader retrieveArticleHeader(long articleNumber,
                                         ArticlePointer pointer)
     throws IOException
     {
@@ -528,7 +528,7 @@ public class NNTPClient extends NNTP
 
 
     /*** Same as <code> retrieveArticleHeader(articleNumber, null) </code> ***/
-    public Reader retrieveArticleHeader(int articleNumber) throws IOException
+    public Reader retrieveArticleHeader(long articleNumber) throws IOException
     {
         return retrieveArticleHeader(articleNumber, null);
     }

@@ -201,7 +201,7 @@ public class Article implements Threadable {
         articleId = string;
     }
 
-    public void setArticleNumber(int i) {
+    public void setArticleNumber(long i) {
         articleNumber = i;
     }
 

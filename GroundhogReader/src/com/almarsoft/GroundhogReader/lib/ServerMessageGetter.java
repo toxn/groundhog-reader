@@ -89,14 +89,13 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 		}		
 		
 		
-		// XXX YYY ZZZ: Cambiar de metodo. Hacemos un GROUP, sacamos los indices, "estimamos" los numeros,
-		// y pedimos los articulos.
 		@Override
 		protected Integer doInBackground(Vector<String>...groupsmult) {
 			groups = groupsmult[0];
 			mCurrentGroup = mContext.getString(R.string.group);
 			String typeFetch;
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+			String defaultCharset = prefs.getString("readDefaultCharset", "ISO8859-15");
 			
 			try {
 				
@@ -146,7 +145,6 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 					}
 					
 					
-					// XXX YYY ZZZ: Probar online=>bajar cabeceras, offline=>sincronizar existentes
 					if (mOfflineMode) {
 						// Get a vector with the server article numbers of articleInfos downloaded (and unread) but
 						// not catched, then join the two vectors. It's very important than the newly adquired articles
@@ -197,28 +195,28 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 							// Check if the articleInfo is already on the DB (this can happen when the user has 
 							// selected sync after a non-offline "Get New Messages"; in this case we download only
 							// the content but don't do the fetching-and-inserting operation, obviously
+							
 							offlineData = DBUtils.isHeaderInDatabase(number, group, mContext);
 							
 							// Wasn't on the DB, get and insert it
-							// XXX YYY ZZZ: Aqui se debe meter el header, hay que cambiar getHeader y getBody para que
-							// vayan por numero y no por msgid cadena
-						
 							if (offlineData == null) {		
-								Log.d("XXX", "Number para insertArticleInfo: " + number);
-								offlineData = mServerManager.getAndInsertArticleInfo(number, prefs.getString("readDefaultCharset", "ISO8859-15"), dbwrite);
-								if (offlineData == null) {
+								
+								if (mOfflineMode) 
+									offlineData = mServerManager.getArticleInfoAndHeaderFromHEAD(number, defaultCharset, dbwrite, group);
+								else
+									offlineData = mServerManager.getArticleInfoFromXOVER(number, defaultCharset, dbwrite);
+								
+								if (offlineData == null) 
 									// No article with that number (it is normal since we guess the numbers)
 									continue;
-								}
 							}
 							
 							// Offline mode: save also the article contents to the cache
 							if (mOfflineMode) {
 								msgid = (Long) offlineData.get(0);
 								server_msg_id = (String) offlineData.get(1);
-								Log.d("XXX", "msgid para getHeader: " + msgid);
+								
 								try {
-									mServerManager.getHeader(msgid, server_msg_id, false, false);
 									mServerManager.getBody  (msgid, server_msg_id, false, false);
 								} catch (NNTPNoSuchMessageException e) {
 									// Message not in server, mark as read and ignore
@@ -228,7 +226,6 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 								}
 							}
 							
-							Log.d("XXX", "lastFetched: " + number);
 							lastFetched = number;
 						}
 						

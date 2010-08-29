@@ -741,14 +741,15 @@ public class MessageListActivity extends Activity {
 				currentArticle.setSimplifiedSubject(cur.getString(5));
 
 				dbrefs = cur.getString(5);
-				artRefs = dbrefs.split(" ");
-				int artRefsLen = artRefs.length;
+				if (dbrefs != null) {
+					artRefs = dbrefs.split(" ");
 				
-				for (int j = 0; j < artRefsLen; j++) {
-					currentArticle.addReference(artRefs[j]);
+					for (String ref : artRefs) {
+						currentArticle.addReference(ref);
+					}
 				}
+				
 				articles[i] = currentArticle;
-
 				cur.moveToNext();
 			}
 
