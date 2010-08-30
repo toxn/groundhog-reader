@@ -129,11 +129,11 @@ public class MessagePosterLib {
 		
 		SimpleNNTPHeader header = new SimpleNNTPHeader(from, mSubject);
 		String[] groups = mGroups.trim().split(",");
-		int mgroupslen = groups.length;
 		
-		for(int i=0; i<mgroupslen; i++) {
-			header.addNewsgroup(groups[i]);
+		for (String group : groups) {
+			header.addNewsgroup(group);
 		}
+		
 		header.addHeaderField("Date", date);		
 		header.addHeaderField("Content-Type", "text/plain; charset=" + CharsetUtil.toMimeCharset(mPostCharset) +"; format=flowed");
 		header.addHeaderField("Content-Transfer-Encoding", "8bit");	

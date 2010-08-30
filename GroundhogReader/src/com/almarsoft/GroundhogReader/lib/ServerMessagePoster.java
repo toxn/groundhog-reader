@@ -8,7 +8,6 @@ import java.util.Vector;
 import com.almarsoft.GroundhogReader.R;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 
 public class ServerMessagePoster extends AsyncTaskProxy {
@@ -72,16 +71,15 @@ public class ServerMessagePoster extends AsyncTaskProxy {
 
 			try {
 				Vector<Long> pendingIds = DBUtils.getPendingOutgoingMessageIds(mContext);
-				int pendingSize = pendingIds.size();
 
-				if (pendingIds == null || pendingSize == 0)
+				if (pendingIds == null || pendingIds.size() == 0)
 					return POST_FINISHED_OK;
 
 				String basePath = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/offlinecache/outbox/";
 				String msgPath;
 				String message;
 
-				for (int i = 0; i < pendingSize; i++) {
+				for (long pId : pendingIds) {
 
 					if (isCancelled()) {
 						mStatusMsg = mContext.getString(R.string.download_interrupted_sleep);
@@ -89,7 +87,6 @@ public class ServerMessagePoster extends AsyncTaskProxy {
 						return FINISHED_INTERRUPTED;
 					}
 
-					long pId = pendingIds.get(i);
 					msgPath = basePath + Long.toString(pId);
 					try {
 						// XXX: Aqui seria mejor usar el getDiskFromDiskFile para no petar la memoria si es muy grande

@@ -34,7 +34,7 @@ public class DBUtils {
 			subscribed = new String[c];
 
 			cur.moveToFirst();
-			for (int i=0; i<c; i++) { 
+			for (int i=0; i < c; i++) { 
 				subscribed[i] = cur.getString(0);
 				cur.moveToNext();
 			}
@@ -230,7 +230,7 @@ public class DBUtils {
 		
 		c.moveToFirst();
 		int count = c.getCount();
-		for (int i = 0; i<count; i++) {
+		for (int i = 0; i < count; i++) {
 			set.add(c.getString(0));
 			c.moveToNext();
 		}
@@ -259,7 +259,7 @@ public class DBUtils {
 			c.moveToFirst();
 			
 			int count = c.getCount();
-			for (int i=0; i<count; i++) {
+			for (int i=0; i < count; i++) {
 				bannedThreads.add(c.getString(0));
 				c.moveToNext(); 
 			}
@@ -285,7 +285,7 @@ public class DBUtils {
 			c.moveToFirst();
 			
 			int count = c.getCount();
-			for (int i=0; i<count; i++) {
+			for (int i=0; i < count; i++) {
 				favoriteAuthors.add(c.getString(0));
 				c.moveToNext();
 			}
@@ -314,7 +314,7 @@ public class DBUtils {
 			readSet = new HashSet<String>(c.getCount());
 			c.moveToFirst();
 			
-			for (int i=0; i<count; i++) {
+			for (int i=0; i < count; i++) {
 				readSet.add(c.getString(0));
 				c.moveToNext();
 			}
@@ -344,7 +344,7 @@ public class DBUtils {
 			bannedTrolls = new HashSet<String>(c.getColumnCount());
 			c.moveToFirst();
 			
-			for (int i=0; i<count; i++) {
+			for (int i=0; i < count; i++) {
 				bannedTrolls.add(c.getString(0));
 				c.moveToNext();
 			}
@@ -701,7 +701,7 @@ public class DBUtils {
 		c.moveToFirst();
 		String groupname;
 		
-		for (int i=0; i<count; i++) {
+		for (int i=0; i < count; i++) {
 			
 			groupname = getGroupNameFromId(c.getInt(1) /*subscribed_group_id*/, context);
 			FSUtils.deleteCacheMessage(c.getInt(0)/* _id */, groupname);
@@ -810,7 +810,7 @@ public class DBUtils {
 			retVal = new Vector<Long>(count);
 			c.moveToFirst();
 			
-			for (int i=0; i<count; i++) {
+			for (int i=0; i < count; i++) {
 				retVal.add(c.getLong(0));
 				c.moveToNext();
 			}
@@ -847,7 +847,7 @@ public class DBUtils {
 			toKill += UsenetConstants.SENT_POST_KILL_ADITIONAL;
 			c.moveToFirst();
 			
-			for (int i=0; i<toKill; i++) {
+			for (int i=0; i < toKill; i++) {
 				kennyId = c.getInt(0);
 				dbwrite.execSQL("DELETE FROM sent_posts_log WHERE _id="+kennyId);
 				c.moveToNext();
@@ -879,7 +879,7 @@ public class DBUtils {
 		retVal = new HashSet<String>(count);
 		c.moveToFirst();
 		
-		for (int i=0; i<count; i++) {
+		for (int i=0; i < count; i++) {
 			retVal.add(c.getString(0));
 			c.moveToNext();
 		}

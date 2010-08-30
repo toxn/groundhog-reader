@@ -57,14 +57,14 @@ public class GroupsCheckAlarmReceiver extends BroadcastReceiver{
 		mLock.acquire();
 		
 		try{
-    		
 			Class postPartypes[] = new Class[2];
 			postPartypes[0] = String.class;
 			postPartypes[1] = Integer.class;
 			Method postCallback = this.getClass().getMethod("postCheckMessagesCallBack", postPartypes);
 		
 			ServerManager myServerManager = new ServerManager(context);
-			mServerMessageGetter = new ServerMessageGetter(this, null, null, postCallback, postCallback, context, myServerManager, 100, false, true);
+			mServerMessageGetter = new ServerMessageGetter(this, null, null, postCallback, postCallback, 
+					                                       context, myServerManager, 100, false, true);
 			
 			String[] groupsarr = DBUtils.getSubscribedGroups(context);
 			Vector<String> groups = new Vector<String>(groupsarr.length);

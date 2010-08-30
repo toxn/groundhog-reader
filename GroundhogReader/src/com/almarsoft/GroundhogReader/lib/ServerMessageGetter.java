@@ -26,7 +26,8 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 	private boolean mIsOnlyCheck;
 	private AsyncTask<Vector<String>, Integer, Integer> mTask  = null;
 	
-	public ServerMessageGetter(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, Method cancelCallback,
+	public ServerMessageGetter(Object callerInstance, 
+			                    Method preCallback, Method progressCallback, Method postCallback, Method cancelCallback,
 			                    Context context, ServerManager serverManager, int limit, boolean offlineMode, boolean isOnlyCheck) {
 		
 		super(callerInstance, preCallback, progressCallback, postCallback, cancelCallback, context);
@@ -98,18 +99,13 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 			String defaultCharset = prefs.getString("readDefaultCharset", "ISO8859-15");
 			
 			try {
-				
-				int groupslen = groups.size();				
-				String group = null;
-				
 				int currentLimit = mLimit;
 				
 				if (mIsOnlyCheck)
 					mStatusMsg = new String("");
 				
-				for (int i=0; i<groupslen; i++) {
-					mCurrentGroup = groups.get(i);
-					group = mCurrentGroup;
+				for (String group : groups) {
+					mCurrentGroup = group;
 					
 					if (!mIsOnlyCheck)
 						mStatusMsg = mContext.getString(R.string.asking_new_articles);

@@ -77,7 +77,6 @@ public class GroupListActivity extends Activity {
     	setContentView(R.layout.grouplist);
 
     	// Config checker alert dialog
-    	GroundhogApplication grapp = (GroundhogApplication)getApplication();
     	mConfigAlert = new AlertDialog.Builder(this).create();
 		mConfigAlert.setButton(getString(R.string.ok),
 				new DialogInterface.OnClickListener() {
@@ -468,15 +467,12 @@ public class GroupListActivity extends Activity {
 	@SuppressWarnings("unchecked")
 	private void getAllMessages(boolean getlatest) {
 		
-		int groupslen = mGroupsArray.length;
+		if (mGroupsArray.length == 0) return;
 		
-		if (groupslen == 0) 
-			return;
+		Vector<String> groupVector = new Vector<String>(mGroupsArray.length);
 		
-		Vector<String> groupVector = new Vector<String>(groupslen);
-		
-		for (int i=0; i < groupslen; i++) {
-			groupVector.add(mGroupsArray[i]);
+		for (String group : mGroupsArray) {
+			groupVector.add(group);
 		}
 		
 		try {

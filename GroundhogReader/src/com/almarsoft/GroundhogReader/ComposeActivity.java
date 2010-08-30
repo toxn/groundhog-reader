@@ -1,10 +1,10 @@
 package com.almarsoft.GroundhogReader;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
 
 import org.apache.commons.codec.EncoderException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,11 +26,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.almarsoft.GroundhogReader.lib.FSUtils;
 import com.almarsoft.GroundhogReader.lib.MessagePosterLib;
 import com.almarsoft.GroundhogReader.lib.MessageTextProcessor;
 import com.almarsoft.GroundhogReader.lib.ServerAuthException;
-import com.almarsoft.GroundhogReader.lib.UsenetConstants;
 import com.almarsoft.GroundhogReader.lib.UsenetReaderException;
 
 public class ComposeActivity extends Activity {

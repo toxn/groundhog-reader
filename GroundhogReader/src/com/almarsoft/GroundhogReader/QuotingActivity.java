@@ -59,17 +59,9 @@ public class QuotingActivity extends Activity {
         
         String[] lines = origText.split("\n");
 
-        // Proxies for the loop
-        int linesLen = lines.length;
-        ArrayList<QuoteLineItem> proxyQuoteLineItems = new ArrayList<QuoteLineItem>(linesLen);
-        String line;
-        
-        for (int i=0; i<linesLen; i++) {
-        	line = lines[i];
-        	proxyQuoteLineItems.add(new QuoteLineItem(line, false));
+        for (String line : lines) {
+        	mQuoteLineItemsList.add(new QuoteLineItem(line, false));
         }
-        
-        mQuoteLineItemsList = proxyQuoteLineItems;
         
     	mLinesListView.setAdapter(new QuoteLineAdapter(this, R.layout.banned_item, mQuoteLineItemsList));
     	mLinesListView.setItemsCanFocus(false);
@@ -141,11 +133,10 @@ public class QuotingActivity extends Activity {
 		
 		int lastAddedIndex = 0; 
 		boolean first = true;
-		ArrayList<QuoteLineItem> proxyQuoteLines = mQuoteLineItemsList;
-		int quoteLinesListLen = proxyQuoteLines.size();
 		
+		int quoteLinesListLen = mQuoteLineItemsList.size();
 		for (int i=0; i < quoteLinesListLen; i++) {
-			q = proxyQuoteLines.get(i);
+			q = mQuoteLineItemsList.get(i);
 			
 			if (q.imageActive) {
 				// Add a newline between different blocks
@@ -168,14 +159,9 @@ public class QuotingActivity extends Activity {
 	
 	private void touchAll(boolean check) {
 		
-		ArrayList<QuoteLineItem> proxyLines = mQuoteLineItemsList;
-		int len = proxyLines.size();
-		QuoteLineItem b;
-
-		for (int i=0; i<len; i++) {
-			b = proxyLines.get(i);
+		for (QuoteLineItem b : mQuoteLineItemsList) 
 			b.imageActive = check;
-		}
+			
 		mLinesListView.invalidateViews();	
 	}
 	

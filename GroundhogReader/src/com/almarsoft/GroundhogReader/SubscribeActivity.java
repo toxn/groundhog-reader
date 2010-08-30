@@ -263,15 +263,11 @@ public class SubscribeActivity extends Activity {
 	
 			                if (mSearchResults != null && mSearchResults.length > 0) {
 	
-			                    String[] searchResultsStrProxy = new String[mSearchResults.length];
-			                    NewsgroupInfo[] searchResultsProxy = mSearchResults;
-			                    int searchLen = searchResultsProxy.length;
-	
+			                    int searchLen = mSearchResults.length;
 			                    for (int i = 0; i < searchLen; i++) {
-			                        searchResultsStrProxy[i] = searchResultsProxy[i].getNewsgroup();
+			                        mSearchResultsStr[i] = mSearchResults[i].getNewsgroup();
 			                    }
-	
-			                    mSearchResultsStr = searchResultsStrProxy;
+			                    
 	
 			                    mView_Results.setAdapter(new ArrayAdapter<String>(SubscribeActivity.this,
 			                            android.R.layout.simple_list_item_1, mSearchResultsStr));

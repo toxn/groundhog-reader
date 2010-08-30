@@ -383,7 +383,6 @@ public class MessageListActivity extends Activity {
 			
 			@Override
 			protected Void doInBackground(String... groupArr) {
-				String lgroup = groupArr[0];
 				
 				try {
 					mServerManager.catchupGroup(mGroup);

@@ -173,7 +173,7 @@ public class MessageTextProcessor {
     	String tagopen = "<blockquote style=\"margin: 0pt 0pt 0pt 0.2ex; border-left: 2px solid #00008B; padding-left: 0.5ex;\">";
     	String tagclose = "</blockquote>";
     	
-    	for (int i=0; i<level; i++) {
+    	for (int i=0; i < level; i++) {
     		if (isopen) res.append(tagopen);
     		else res.append(tagclose);
     	}
@@ -187,15 +187,11 @@ public class MessageTextProcessor {
     	StringBuilder html = new StringBuilder(inputText.length());
 
     	String[] lines = inputText.split("\n");
-    	String line;
     	String quoteColor;
-    	int linesLen = lines.length;
     	int quoteLevel = 0;
     	int lastQuoteLevel;
     	
-    	for (int i=0; i < linesLen; i++) {
-    		
-    		line = lines[i];
+    	for (String line : lines) {
     		
     		// Remove empty quoting lines like ">\n" and ">> \n"
     		if (isEmptyQuoting(line)) {
@@ -294,7 +290,7 @@ public class MessageTextProcessor {
     	boolean emptyQuote = true;
     	int lineLen = line.length();
     	
-    	for(int i=0; i<lineLen; i++) {
+    	for (int i=0; i<lineLen; i++) {
     		if (line.charAt(i) != '>') {
     			emptyQuote = false;
     			break;
@@ -389,11 +385,8 @@ public class MessageTextProcessor {
 		} 
 		
 		boolean startWhiteSpace = true;
-		int tmpLinesLen = tmpLines.length;
-		String currentLine;
 		
-		for (int i = 0; i < tmpLinesLen; i++) {
-			currentLine = tmpLines[i];
+		for (String currentLine : tmpLines) {
 			
 			if (currentLine.trim().length() > 0) { 
 				list.add("> " + currentLine);
@@ -414,7 +407,7 @@ public class MessageTextProcessor {
 		int listLen = list.size();
 		String line;
 		
-		for (int i=0; i<listLen; i++) {
+		for (int i=0; i < listLen; i++) {
 			line = list.get(i);
 			retBuf.append(line);
 			retBuf.append("\n");
@@ -445,11 +438,10 @@ public class MessageTextProcessor {
 		
 		if (header.containsKey("Content-Type")) {
 			tmpContentArr = header.get("Content-Type").split(";");
-			int contentLen = tmpContentArr.length;
 		
-			for (int i=0; i<contentLen; i++) {
+			for (String content : tmpContentArr) {
 				
-				contentTypeParts = tmpContentArr[i].split("=", 2);
+				contentTypeParts = content.split("=", 2);
 				tmpFirstToken = contentTypeParts[0].trim();
 				
 				if (contentTypeParts.length > 1 && tmpFirstToken.equalsIgnoreCase("charset")) {
@@ -497,7 +489,7 @@ public class MessageTextProcessor {
 		int fieldsLen = fields.size();
 		String fieldName = null;
 		
-		for(int i=0; i<fieldsLen; i++) {
+		for (int i=0; i < fieldsLen; i++) {
 			fieldName = fields.get(i).getName();
 			if (fieldName.equals("From") || fieldName.equals("Subject") || fieldName.equals("Date") || fieldName.equals("Newsgroups")
 				|| fieldName.equals("Message-ID") || fieldName.equals("References") || fieldName.equals("Organization") || fieldName.equals("Path"))
@@ -527,7 +519,6 @@ public class MessageTextProcessor {
 		
 		attachDatas = new Vector<HashMap<String, String>>();
 		
-		//for (int i=0; i<bodyLinesLen; i++) {
 		while ((line = bodyTextReader.readLine()) != null) {
 			
 			// XXX YYY ZZZ: Probar a quitar esto (optimizacion)
@@ -707,7 +698,7 @@ public class MessageTextProcessor {
 		if (body instanceof Multipart) {
 			Multipart multipart = (Multipart) body;
 			
-			for(BodyPart part : multipart.getBodyParts()) {
+			for (BodyPart part : multipart.getBodyParts()) {
 				Body partbody = part.getBody();
 				
 				if (partbody instanceof TextBody) {

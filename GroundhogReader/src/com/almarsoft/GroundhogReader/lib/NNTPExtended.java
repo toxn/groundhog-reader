@@ -1,17 +1,13 @@
 package com.almarsoft.GroundhogReader.lib;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Vector;
 
-//import org.apache.commons.net.io.DotTerminatedMessageReader;
 import org.apache.commons.net.nntp.ArticlePointer;
 import org.apache.commons.net.nntp.NNTPClient;
 import org.apache.commons.net.nntp.NNTPCommand;
 import org.apache.commons.net.nntp.NNTPReply;
 import org.apache.commons.net.nntp.NewsgroupInfo;
-
-import android.util.Log;
 
 // Extends the apache commons NNTPClient to add support for the 
 public class NNTPExtended extends NNTPClient {

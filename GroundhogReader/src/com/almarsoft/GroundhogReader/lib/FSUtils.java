@@ -345,9 +345,8 @@ public class FSUtils {
 		                     UsenetConstants.ATTACHMENTSDIR  + "/" + group + "/" ;
 		
 		String[] fNames = attachments.split(";");
-		int fNamesLen = fNames.length;
 		
-		for (int i=0; i<fNamesLen; i++) 
-			new File(basePath + fNames[i]).delete();
+		for (String fname : fNames)
+			new File(basePath + fname).delete();
 	}
 }

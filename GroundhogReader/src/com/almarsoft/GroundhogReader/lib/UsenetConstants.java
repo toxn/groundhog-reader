@@ -1,7 +1,5 @@
 package com.almarsoft.GroundhogReader.lib;
 
-import java.io.File;
-
 import android.os.Environment;
 
 public final class UsenetConstants {

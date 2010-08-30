@@ -723,10 +723,9 @@ public class MessageActivity extends Activity {
 	    		Field tmpField = mHeader.getField("Content-Type");
 	    		if (tmpField != null) {
 	    			tmpContentArr = tmpField.getBody().trim().split(";");
-	    			int contentLen = tmpContentArr.length;
 	    		
-    	    		for (int i=0; i<contentLen; i++) {
-    	    			contentTypeParts = tmpContentArr[i].split("=", 2);
+    	    		for (String cont : tmpContentArr) {
+    	    			contentTypeParts = cont.split("=", 2);
     	    			tmpFirstToken = contentTypeParts[0].trim();
     	    			
     	    			if (contentTypeParts.length > 1 && tmpFirstToken.equalsIgnoreCase("charset")) 

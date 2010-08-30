@@ -9,7 +9,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.SocketException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
@@ -17,7 +16,6 @@ import java.util.Vector;
 
 import org.apache.commons.net.io.DotTerminatedMessageReader;
 import org.apache.commons.net.nntp.Article;
-import org.apache.commons.net.nntp.ArticlePointer;
 import org.apache.commons.net.nntp.NewsgroupInfo;
 import org.apache.james.mime4j.message.Header;
 import org.apache.james.mime4j.message.Message;
@@ -213,7 +211,7 @@ final public class ServerManager {
 		
 		// XXX YYY ZZZ: Si es negativo el vector es de tamaño cero y salimos
 		Vector<Long> msgNumbers = new Vector<Long>((int) (lastMessage - (firstMessage -1) ));
-		for(long i=firstMessage;i<=lastMessage;i++) {
+		for (long i=firstMessage;i<=lastMessage;i++) {
 			msgNumbers.add(i);
 		}
 
@@ -246,7 +244,7 @@ final public class ServerManager {
 		// XXX YYY ZZZ: Si es negativo el vector es de tamaño cero y salimos
 		Vector<Long> msgNumbers = new Vector<Long>((int) (lastMessage - (firstMsg - 1) ));
 		
-		for(long i=firstMsg;i<=lastMessage;i++) {
+		for (long i=firstMsg;i<=lastMessage;i++) {
 			msgNumbers.add(i);
 		}
 		
@@ -671,7 +669,7 @@ final public class ServerManager {
 	
 	
 	public void postArticle(String fullMessage, boolean forceOnline)
-	                       throws IOException, ServerAuthException, UsenetReaderException {
+	throws IOException, ServerAuthException, UsenetReaderException {
 		
 		String error = null;
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);

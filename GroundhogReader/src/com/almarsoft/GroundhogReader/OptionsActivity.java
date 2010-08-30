@@ -1,11 +1,7 @@
 package com.almarsoft.GroundhogReader;
 
-import com.almarsoft.GroundhogReader.lib.UsenetReaderException;
-
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -83,12 +79,12 @@ public class OptionsActivity extends PreferenceActivity {
 	 * Check that the alarm changed to enable/reset/disable the current alarm
 	 */
 	protected void checkAlarmChanged() {		
-		boolean newAlarm = mPrefs.getBoolean("enableNotifications", false);
-		long        newAlarmPeriod = new Long(mPrefs.getString("notifPeriod", "3600000")).longValue();
+		boolean newAlarm    = mPrefs.getBoolean("enableNotifications", false);
+		long newAlarmPeriod = new Long(mPrefs.getString("notifPeriod", "3600000")).longValue();
 		
-		Intent alarmIntent = new Intent(this, GroupsCheckAlarmReceiver.class);
+		Intent alarmIntent   = new Intent(this, GroupsCheckAlarmReceiver.class);
 		PendingIntent sender = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);		
+		AlarmManager am      = (AlarmManager) getSystemService(ALARM_SERVICE);		
 		
 		if (oldAlarm == false && newAlarm == true) { // User enabled the alarm
 			am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+newAlarmPeriod, newAlarmPeriod, sender);			
@@ -112,4 +108,5 @@ public class OptionsActivity extends PreferenceActivity {
         
       	return super.onKeyDown(keyCode, event);
     }
+    
 }
