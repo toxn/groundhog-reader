@@ -5,12 +5,12 @@ import android.content.Context;
 
 public class AsyncTaskProxy {
 
-	protected Method mPreCallback          = null;
-	protected Method mProgressCallback = null;
+	protected Method mPreCallback         = null;
+	protected Method mProgressCallback    = null;
 	protected Method mPostCallback        = null;
 	protected Method mCancelCallback	   = null;
-	protected Object  mCallerInstance       = null;
-	protected Context mContext                = null;
+	protected Object  mCallerInstance     = null;
+	protected Context mContext            = null;
 
 	public AsyncTaskProxy(Object callerInstance, Method preCallback, Method progressCallback, Method postCallback, Method cancelCallback, Context context) {
 		

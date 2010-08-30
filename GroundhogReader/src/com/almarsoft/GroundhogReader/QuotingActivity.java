@@ -57,8 +57,10 @@ public class QuotingActivity extends Activity {
         String origText = getIntent().getExtras().getString("origText");
         mMultipleFollowup = getIntent().getExtras().getString("multipleFollowup");
         
+        
         String[] lines = origText.split("\n");
-
+        mQuoteLineItemsList = new ArrayList<QuoteLineItem>(lines.length); 
+        
         for (String line : lines) {
         	mQuoteLineItemsList.add(new QuoteLineItem(line, false));
         }
