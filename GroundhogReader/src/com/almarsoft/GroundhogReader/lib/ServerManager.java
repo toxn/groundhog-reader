@@ -209,8 +209,9 @@ final public class ServerManager {
 			firstMessage = lastFetched ;
 		}
 		
-		// XXX YYY ZZZ: Si es negativo el vector es de tamaño cero y salimos
-		Vector<Long> msgNumbers = new Vector<Long>((int) (lastMessage - (firstMessage -1) ));
+		long diff = lastMessage - (firstMessage -1);
+		if (diff < 0) return null;
+		Vector<Long> msgNumbers = new Vector<Long>((int)diff);
 		for (long i=firstMessage;i<=lastMessage;i++) {
 			msgNumbers.add(i);
 		}
@@ -241,8 +242,9 @@ final public class ServerManager {
 			lastMessage = firstMsg + limit;
 		}
 		
-		// XXX YYY ZZZ: Si es negativo el vector es de tamaño cero y salimos
-		Vector<Long> msgNumbers = new Vector<Long>((int) (lastMessage - (firstMsg - 1) ));
+		long diff = lastMessage - (firstMsg - 1);
+		if (diff < 0) return null;
+		Vector<Long> msgNumbers = new Vector<Long>((int)diff);
 		
 		for (long i=firstMsg;i<=lastMessage;i++) {
 			msgNumbers.add(i);

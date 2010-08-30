@@ -193,7 +193,7 @@ public class SubscribeActivity extends Activity {
     	private NewsgroupInfo[] mSearchResults;
     	
 		public void onClick(View v) {
-			String searchText = mSearchText.getText().toString();			
+			String searchText = mSearchText.getText().toString().toLowerCase().trim();			
 			int numWords = searchText.split(" ").length;			
 			
 			// Check that the text it's not too short 
@@ -263,11 +263,15 @@ public class SubscribeActivity extends Activity {
 	
 			                if (mSearchResults != null && mSearchResults.length > 0) {
 	
-			                    int searchLen = mSearchResults.length;
+			                    String[] searchResultsStrProxy = new String[mSearchResults.length];
+			                    NewsgroupInfo[] searchResultsProxy = mSearchResults;
+			                    int searchLen = searchResultsProxy.length;
+	
 			                    for (int i = 0; i < searchLen; i++) {
-			                        mSearchResultsStr[i] = mSearchResults[i].getNewsgroup();
+			                        searchResultsStrProxy[i] = searchResultsProxy[i].getNewsgroup();
 			                    }
-			                    
+	
+			                    mSearchResultsStr = searchResultsStrProxy;
 	
 			                    mView_Results.setAdapter(new ArrayAdapter<String>(SubscribeActivity.this,
 			                            android.R.layout.simple_list_item_1, mSearchResultsStr));

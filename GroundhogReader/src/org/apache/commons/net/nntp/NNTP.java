@@ -141,7 +141,7 @@ public class NNTP extends SocketClient
     	
         _replyString = _reader_.readLine();       
 
-        Log.d("XXX", "Reply |" + _replyString.trim() + "|");
+        //Log.d("XXX", "Reply |" + _replyString.trim() + "|");
 
         
         if (_replyString != null && _replyString.trim().equals(".")) {
@@ -292,7 +292,7 @@ public class NNTP extends SocketClient
         __commandBuffer.append(SocketClient.NETASCII_EOL);
 
         _writer_.write(message = __commandBuffer.toString());
-        Log.d("XXX", "Sending |" + message.trim() + "|");
+        //Log.d("XXX", "Sending |" + message.trim() + "|");
         _writer_.flush();
 
         if (_commandSupport_.getListenerCount() > 0)

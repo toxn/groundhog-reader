@@ -135,6 +135,8 @@ public class ServerMessageGetter extends AsyncTaskProxy {
 						articleList = mServerManager.selectGroupAndGetArticleNumbers(group, firstToFetch, currentLimit);
 					}
 					
+					if (articleList == null) continue;
+					
 					if (mIsOnlyCheck) {
 						mStatusMsg = mStatusMsg + mCurrentGroup + ":" + articleList.size() + ";";
 						continue;

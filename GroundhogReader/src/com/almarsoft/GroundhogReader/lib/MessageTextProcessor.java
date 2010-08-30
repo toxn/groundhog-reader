@@ -521,7 +521,7 @@ public class MessageTextProcessor {
 		
 		while ((line = bodyTextReader.readLine()) != null) {
 			
-			// XXX YYY ZZZ: Probar a quitar esto (optimizacion)
+			// XXX: Probar a quitar esto (optimizacion)
 			sline = line.trim();
 			
 			if (sline.equals("`")) {

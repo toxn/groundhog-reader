@@ -432,7 +432,7 @@ class ThreadContainer {
 
     // Copy the ThreadContainer tree structure down into the underlying Threadable objects
     // (Make the Threadable tree look like the ThreadContainer tree)
-    // XXX YYY ZZZ: Reimplementar esta mierda sin recursividad
+    // XXX: Reimplementar esta mierda sin recursividad
     void flush() {
         if (parent != null && threadable == null)
             throw new RuntimeException("no threadable in " + this.toString());
