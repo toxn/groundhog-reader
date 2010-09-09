@@ -838,11 +838,15 @@ public class MessageActivity extends Activity {
 	    		// Justify the text removing artificial '\n' chars so it looks square and nice on the phone screen
 	    		// XXX: Optimizacion: aqui se puede utilizar de forma intermedia un StringBuffer (sanitize
 	    		// lo devuelve y se le pasa a prepareHTML)
-	    		mBodyText = MessageTextProcessor.sanitizeLineBreaks(mBodyText);
+	    		
+	    		boolean justify = mPrefs.getBoolean("justifyText", false);
+	    		if (justify) {
+	    			mBodyText = MessageTextProcessor.sanitizeLineBreaks(mBodyText);
+	    		}
+	    		
 	    		mBodyText = MessageTextProcessor.getHtmlHeader(mCharset) + 
 	    		            MessageTextProcessor.getAttachmentsHtml(mMimePartsVector)  + 
-	    		            MessageTextProcessor.prepareHTML(mBodyText);
-	    		
+	    		            MessageTextProcessor.prepareHTML(mBodyText, justify);
 	    		
 	    		// Show the nice, short, headers or the ugly full headers if the user selected that
 	    		if (!mShowFullHeaders) {

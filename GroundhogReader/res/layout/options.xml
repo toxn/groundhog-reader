@@ -107,6 +107,14 @@
 		android:summary="@string/options_reading"
 	>
 	
+		<CheckBoxPreference
+		android:key="justifyText"
+		android:id="@+id/preference_justifyText"
+		android:title="@string/justifyText_title"
+		android:summary="@string/justifyText_summary"			
+		android:defaultValue="false"
+		/>
+	
 		<ListPreference
 		android:key="readDefaultCharset"
 		android:title="@string/read_charset_title"
@@ -151,8 +159,7 @@
 		android:dialogTitle="@string/post_charset_dialog_title" 
 		android:defaultValue="ISO8859-15" 
 		/>
-	
-	
+		
 		<CheckBoxPreference
 		android:key="useQuotingView"
 		android:id="@+id/preference_usequoter"
@@ -199,6 +206,10 @@
 		android:checked="true"
 		android:defaultValue="true"
 		/>	
+		
+		
+		
+		
 	</PreferenceScreen>
 	
 	<PreferenceScreen

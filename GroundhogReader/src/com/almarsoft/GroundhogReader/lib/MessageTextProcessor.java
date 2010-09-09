@@ -170,8 +170,8 @@ public class MessageTextProcessor {
     
     private static String getBlockQuotes(int level, boolean isopen) {
     	StringBuilder res = new StringBuilder();
-    	String tagopen = "<blockquote style=\"margin: 0pt 0pt 0pt 0.2ex; border-left: 2px solid #00008B; padding-left: 0.5ex;\">";
-    	String tagclose = "</blockquote>";
+    	String tagopen = "\n<blockquote style=\"margin: 0pt 0pt 0pt 0.2ex; border-left: 2px solid #00008B; padding-left: 0.5ex;\">\n";
+    	String tagclose = "\n</blockquote>\n";
     	
     	for (int i=0; i < level; i++) {
     		if (isopen) res.append(tagopen);
@@ -181,8 +181,11 @@ public class MessageTextProcessor {
     	return res.toString();
     }
     
+    /**
+     * XXX: Esto es un horror, reajustar el churro de ifs
+     */
     
-    public static String prepareHTML(String inputText) {
+    public static String prepareHTML(String inputText, boolean justify) {
     	
     	StringBuilder html = new StringBuilder(inputText.length());
 
@@ -190,72 +193,118 @@ public class MessageTextProcessor {
     	String quoteColor;
     	int quoteLevel = 0;
     	int lastQuoteLevel;
+    	boolean lastWasP = false;
     	
     	for (String line : lines) {
     		
-    		// Remove empty quoting lines like ">\n" and ">> \n"
-    		if (isEmptyQuoting(line)) {
-    			html.append("<BR/>");
-    			continue;
-    		}
-    		
     		lastQuoteLevel = quoteLevel;
     		quoteLevel = getQuotingLevel(line);
+    		
     		if (quoteLevel > 0) {
-    			// We're in quote 
+    			// We're in a quote
     			
     			quoteColor = getQuotingColor(quoteLevel);
-    			line             = removeStartingQuotes(line);
     			
-    			if (quoteLevel == lastQuoteLevel) {
-    				// We're at the same quoting level; use a <BR> so we don't break the paragraph
-    				
-    				html.append("</I> <BR/>\n<I>");
-    				
-    			} else {
-    				// First line of different quoting level; use a </P> and change the color
-    				if (lastQuoteLevel > 0) html.append("</I>");
-    				
-    				html.append("<P/>\n");
+        		// Remove empty quoting lines like ">\n" and ">> \n"
+				if (lastQuoteLevel > 0) 
+					html.append("</I>\n");
+				
+    			if (quoteLevel != lastQuoteLevel) {
+    				html.append("</P>\n");
     				html.append(getBlockQuotes(lastQuoteLevel, false));
     				html.append(getBlockQuotes(quoteLevel, true));
     				html.append("<P style=\"BACKGROUND-COLOR: ");
     				html.append(quoteColor);
-					html.append("\"><I>");
-    							
+    				html.append("\">\n");
     			}
+    			
+        		if (isEmptyQuoting(line)) {
+        			html.append("<BR/>");
+        			continue;
+        		}
+        		
+        		if (quoteLevel > 0)
+        			html.append("<I>");
+    			
+        		// XXX Revisar (con espacios en medio y tal)
+    			line       = removeStartingQuotes(line);
+
     		}
     		else { 
     			if (lastQuoteLevel > 0) {
     				// We're not in quote and last was quote, close the <i>
     				html.append("</I></P>");
+    				html.append(getBlockQuotes(lastQuoteLevel, false));
     			}
     			html.append(getBlockQuotes(lastQuoteLevel, false));
-    			html.append("<P>\n");
-    			
+
     		}
-    		html.append(escapeHtmlWithLinks(line));
+    		
+			if (line.length() == 0) {
+				html.append("<P>\n");
+				lastWasP = true;
+			}
+			else {
+				if (!lastWasP) 
+					html.append("<BR/>\n");
+				lastWasP = false;
+			}
+    		
+    		
+    		line = escapeHtmlWithLinks(line);
+    		line = escapeInitialSpaces(line);
+    		html.append(line);
     	}
     	
     	html.append("\n</BODY> </HTML>\n");
     	return html.toString();
     }
     
-    // =================================================================================================
+    /*
+     * Replace initial spaces with &nbsp; (for code indentation, poetry, etc)
+     */
+    private static String escapeInitialSpaces(String line) {
+    	
+    	StringBuilder newline = new StringBuilder(line.length());
+    	char c;
+    	boolean atStart = true;
+    	String append = null;
+    	
+    	for (int i = 0; i < line.length(); i++) {
+    		c = line.charAt(i);
+    		append = null;
+    		
+    		if (atStart) {
+    			if (c == ' ') 
+    				append = "&nbsp;";
+    			else
+    				atStart = false;
+    		}
+    		if (append == null)
+    			append = Character.toString(c);
+    		
+    		newline.append(append);
+    	}
+		return newline.toString();
+	}
+
+    
+	// =================================================================================================
     // Escape a text converting it to HTML. It also convert urls to links; this conversion is not
-    // the most advances: it only works when the link is entirely contained within the same line and it
+    // the most advanced: it only works when the link is entirely contained within the same line and it
     // only converts the first link in the line. But it covers 95% of cases found on Usenet.
     // =================================================================================================
     private static String escapeHtmlWithLinks(String line) {
     	
-    	// Shortcut for most cases with line not having a link
     	StringBuffer buf = null;
     	
+    	// Shortcut for most cases with line not having a link    	
     	int idx = line.toLowerCase().indexOf("http://");
     	
     	if (idx == -1) {
     		return StringEscapeUtils.escapeHtml(line);
-    	} else {
+    	} 
+    	else {
     		buf = new StringBuffer();
     		buf.append(StringEscapeUtils.escapeHtml(line.substring(0, idx)));
     		
@@ -312,11 +361,31 @@ public class MessageTextProcessor {
     	return count;
     }
     
+    /*
+     * Remove the quoting chars at the start of the lines
+     * Works for:
+     * ">>>"
+     * "> > >"
+     * ">> >> > >"
+     * etc...
+     */
     private static String removeStartingQuotes(String line) {
     	int idx = 0;
+    	boolean finished = false;
     	try{ 
-    		while(line.charAt(idx) == '>') 
-    			idx++;
+    		while (!finished && idx < line.length()) {
+    			
+    			if (line.charAt(idx) == '>') {
+    				idx++;
+    				continue;
+    			}
+    			else if (line.charAt(idx) == ' ' && idx+1 < line.length() && line.charAt(idx+1) == '>') {
+    				idx+=2;
+    				continue;
+    			}
+    			else 
+    				finished = true;
+    		}
     	} catch (IndexOutOfBoundsException e) {
     		if (idx == 0) return line;
     		else idx--;

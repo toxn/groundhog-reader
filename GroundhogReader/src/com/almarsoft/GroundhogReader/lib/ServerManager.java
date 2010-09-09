@@ -294,7 +294,6 @@ final public class ServerManager {
 	// complete header. This is used in offline mode so we don't have to do an XOVER and then a HEADER, which 
 	// is redundant
 	// =======================================================================================================
-	// VVV
 	public Vector<Object> getArticleInfoAndHeaderFromHEAD(long serverNumber, String charset, SQLiteDatabase catchedDB, String group) 
 	throws IOException, UsenetReaderException, ServerAuthException {
 		clientConnectIfNot();
@@ -332,7 +331,6 @@ final public class ServerManager {
 				for (String r : refs) {
 					if (r.trim().length() == 0)	
 						continue;
-					Log.d("XXX", "Reference: |" + r + "|");
 					article.addReference(r.trim());
 				}
 			}
@@ -360,7 +358,8 @@ final public class ServerManager {
 	}
 	
 	
-	private Article buildArticleInfoFromXOVER(long articleNumber) throws IOException, ServerAuthException {
+	private Article buildArticleInfoFromXOVER(long articleNumber) 
+	throws IOException, ServerAuthException {
 		clientConnectIfNot();
 		
 		Article article = null;

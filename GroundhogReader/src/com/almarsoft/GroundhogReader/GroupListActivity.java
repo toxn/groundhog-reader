@@ -316,7 +316,6 @@ public class GroupListActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
 		new MenuInflater(getApplication()).inflate(R.menu.grouplistmenu, menu);
-		Log.d("XXX", "onCreateOptionsMenu");
 		return(super.onCreateOptionsMenu(menu));
 		
 	}
@@ -499,7 +498,6 @@ public class GroupListActivity extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     	new MenuInflater(getApplicationContext()).inflate(R.menu.grouplist_item_menu, menu);
     	menu.setHeaderTitle(getString(R.string.group_menu));
-    	Log.d("XXX", "OnCreateContext");
     	super.onCreateContextMenu(menu, v, menuInfo);
     }
     

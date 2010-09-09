@@ -301,4 +301,8 @@
     <string name="empty_pass_title">Empty Pass</string>
     <string name="empty_pass_error">The password is empty. Enter a password in Connection->Password</string>
 	<string name="starting_download">Connecting for download</string>    
+	
+<!-- New on 1.19.0 -->
+	<string name="justifyText_title">Justify Text</string>
+	<string name="justifyText_summary">Justify Text (disable for programming or poetry groups)</string>
 </resources>
