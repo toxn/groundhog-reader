@@ -774,7 +774,9 @@ public class MessageTextProcessor {
 					realBody = (TextBody) partbody;
 				}
 				else if (partbody instanceof BinaryBody) {
-					attachsVector.add(saveBinaryBody((BinaryBody) partbody, group));
+					HashMap<String, String> binaryBody = saveBinaryBody((BinaryBody) partbody, group);
+					if (binaryBody != null)
+						attachsVector.add(binaryBody);
 					partbody.dispose();
 				}				
 			}
@@ -785,7 +787,9 @@ public class MessageTextProcessor {
 		else if (body instanceof Message) {
 		}
 		else if (body instanceof BinaryBody) {
-			attachsVector.add(saveBinaryBody((BinaryBody) body, group));
+			HashMap<String, String> binaryBody = saveBinaryBody((BinaryBody) body, group);
+			if (binaryBody != null)
+				attachsVector.add(binaryBody);
 			body.dispose();
 		}
 		
@@ -809,7 +813,9 @@ public class MessageTextProcessor {
 		// opened from the SDCARD, but protects from potential onlookers on a directory listing)
 		String path    = UsenetConstants.EXTERNALSTORAGE + "/" + UsenetConstants.APPNAME + "/" + UsenetConstants.ATTACHMENTSDIR + "/" + group + "/";
 		String fname = parent.getFilename();
-		String ext      = fname.substring(fname.lastIndexOf('.')+1, fname.length());
+		if (fname == null)
+			return null;
+		String ext      = fname.substring(fname.lastIndexOf('.') + 1, fname.length());
 		partData.put("md5", DigestUtils.md5Hex(parent.getFilename()) + "." + ext);
 		try {
 			size = FSUtils.writeInputStreamAndGetSize(path, partData.get("md5"), body.getInputStream());

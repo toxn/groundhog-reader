@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.almarsoft.GroundhogReader"
-      android:versionName="1.19.1 [Lots of improvements to message formatting and quoting. Programming/science/poetry groups should be readable now]" android:versionCode="40"
-      android:installLocation="preferExternal"
+      android:versionName="1.19.2 (Fix installation problems for some users. Thanks to Terry for reporting the problem and testing the fix)" android:versionCode="41"
+      android:installLocation="auto"
      > 
       
     <uses-sdk android:minSdkVersion="3"/>

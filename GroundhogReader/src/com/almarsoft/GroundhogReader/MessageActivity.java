@@ -744,6 +744,8 @@ public class MessageActivity extends Activity {
 
 	    		Vector<Object> body_attachs = MessageTextProcessor.extractBodySaveAttachments(mGroup, mMessage);
 	    		TextBody textBody = (TextBody)body_attachs.get(0);
+	    		if (textBody == null)
+	    			throw new UsenetReaderException("Unkown error parsing the message :(");
 	    		
 	    		if (mHeader.getField("MIME-Version") != null)
 	    			mMimePartsVector  = (Vector<HashMap<String, String>>)body_attachs.get(1);
