@@ -66,13 +66,8 @@ public class Threader {
             throw new RuntimeException("root node has a next:" + root);
 
         for (ThreadContainer r = root.child; r != null; r = r.next) {
-            if (r.threadable == null) {
-            	// juanjo juanjux
-            	if (r.child != null)
-            		r.threadable = r.child.threadable.makeDummy();
-            	else
-            		continue;
-            }
+            if (r.threadable == null)
+                r.threadable = r.child.threadable.makeDummy();
         }
 
         Threadable result = (root.child == null ? null : root.child.threadable);
@@ -289,13 +284,8 @@ public class Threader {
             // No threadable? If so, it is a dummy node in the root set.
             // Only root set members may be dummies, and they alway have at least 2 kids
             // Take the first kid as representative of the subject
-            if (threadable == null) {
-            	// Cambio juanjo juanjux
-            	if (c.child != null && c.child.threadable != null)
-            		threadable = c.child.threadable;
-            	else
-            		continue;
-            }
+            if (threadable == null)
+                threadable = c.child.threadable;
 
             String subj = threadable.simplifiedSubject();
 
@@ -329,11 +319,9 @@ public class Threader {
         // subjectTable is now populated with one entry for each subject which occurs in the 
         // root set. Iterate over the root set, and gather together the difference.
         ThreadContainer prev, c, rest;
-        for (prev = null, c = root.child, rest = c.next; c != null; prev = c, c = rest, rest = (rest == null ? null : rest.next)) {
-        	//  juanjo juanjux
-        	if (c.child == null)
-        		continue;
-        		
+        for (prev = null, c = root.child, rest = c.next;
+            c != null;
+            prev = c, c = rest, rest = (rest == null ? null : rest.next)) {
             Threadable threadable = c.threadable;
 
             // is it a dummy node?
