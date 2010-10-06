@@ -849,6 +849,9 @@ public class MessageListActivity extends Activity {
 		
 		while (!finished) {
 
+			if (root == null)
+				finished = true;
+			
 			root.setReplyTo(replyto);
 
 			if (!root.isDummy()) {

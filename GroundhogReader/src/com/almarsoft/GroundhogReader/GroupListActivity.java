@@ -422,8 +422,11 @@ public class GroupListActivity extends Activity {
 				Editor ed = mPrefs.edit();
 				ed.putLong("lastExpiration", System.currentTimeMillis());
 				ed.commit();
+				
 				updateGroupList();
-				dismissDialog(ID_DIALOG_DELETING);
+				try {
+					dismissDialog(ID_DIALOG_DELETING);
+				} catch (IllegalArgumentException e) {}
 			}
 		};
 		

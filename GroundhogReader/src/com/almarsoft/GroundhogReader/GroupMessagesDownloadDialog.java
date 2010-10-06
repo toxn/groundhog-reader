@@ -86,7 +86,9 @@ public class GroupMessagesDownloadDialog {
 	public void synchronize(boolean offlineMode, final Vector<String> groups, Method callback, Method cancelCallback, Object caller) {
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-		mLimit = new Integer(prefs.getString("maxFetch", "100").trim());
+		String maxFetch = prefs.getString("maxFetch", "100");
+		if (maxFetch.length() == 0) maxFetch = "100";
+		mLimit = new Integer(maxFetch);
 		mCallback = callback;
 		mCancelCallback = cancelCallback;
 		mCallerInstance = caller;

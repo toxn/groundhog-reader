@@ -280,7 +280,9 @@ public class ComposeActivity extends Activity {
 			}
 			
 			protected void onPostExecute(Void arg0) {
-				dismissDialog(ID_DIALOG_POSTING);
+				try {
+					dismissDialog(ID_DIALOG_POSTING);
+				} catch (IllegalArgumentException e) {}
 				
 				if (mPostingErrorMessage != null)  {
 					new AlertDialog.Builder(ComposeActivity.this) .setTitle(getString(R.string.error_posting))

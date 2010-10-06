@@ -408,7 +408,7 @@ final public class ServerManager {
 			
 			// Crappy heuristics... but nextToken skips the empty reference if it's no reference and give up the 
 			// next token as reference
-			if (refsStr.contains("@")) { 
+			if (refsStr != null && refsStr.contains("@")) { 
 				String[] refs = refsStr.split(" ");
 
 				for (String r: refs) 

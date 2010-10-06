@@ -421,13 +421,17 @@ class ThreadContainer {
      * @return true if child is under self's tree. Detects circular references
      */
     boolean findChild(ThreadContainer target) {
-        if (child == null)
-            return false;
-
-        else if (child == target)
-            return true;
-        else
-            return child.findChild(target);
+    	try {
+	        if (child == null)
+	            return false;
+	
+	        else if (child == target)
+	            return true;
+	        else
+	            return child.findChild(target);
+    	} catch (StackOverflowError e) {
+    		return false;
+    	}
     }
 
     // Copy the ThreadContainer tree structure down into the underlying Threadable objects
