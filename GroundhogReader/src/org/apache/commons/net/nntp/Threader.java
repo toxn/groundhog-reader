@@ -66,7 +66,7 @@ public class Threader {
             throw new RuntimeException("root node has a next:" + root);
 
         for (ThreadContainer r = root.child; r != null; r = r.next) {
-            if (r.threadable == null)
+            if (r.threadable == null && r.child != null)
                 r.threadable = r.child.threadable.makeDummy();
         }
 
@@ -284,8 +284,12 @@ public class Threader {
             // No threadable? If so, it is a dummy node in the root set.
             // Only root set members may be dummies, and they alway have at least 2 kids
             // Take the first kid as representative of the subject
-            if (threadable == null)
-                threadable = c.child.threadable;
+            if (threadable == null) {
+            	if (c.child != null)
+            		threadable = c.child.threadable;
+            	else 
+            		continue;
+            }
 
             String subj = threadable.simplifiedSubject();
 
@@ -325,8 +329,12 @@ public class Threader {
             Threadable threadable = c.threadable;
 
             // is it a dummy node?
-            if (threadable == null)
-                threadable = c.child.threadable;
+            if (threadable == null) {
+            	if (c.child != null)
+            		threadable = c.child.threadable;
+            	else
+            		continue;
+            }
 
             String subj = threadable.simplifiedSubject();
 
