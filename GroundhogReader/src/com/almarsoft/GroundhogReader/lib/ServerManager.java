@@ -1,5 +1,25 @@
+/*
+Groundhog Usenet Reader
+Copyright (C) 2008-2010  Juan Jose Alvarez Martinez
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
 package com.almarsoft.GroundhogReader.lib;
 
+import com.almarsoft.GroundhogReader.lib.TrustManagerFactory;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
@@ -9,10 +29,16 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.SocketException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
 import org.apache.commons.net.io.DotTerminatedMessageReader;
 import org.apache.commons.net.nntp.Article;
@@ -31,7 +57,6 @@ import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 
 final public class ServerManager {
 
@@ -113,8 +138,31 @@ final public class ServerManager {
 		
 		String cpass = prefs.getString("pass", null);
 		if (cpass != null) cpass = cpass.trim();
+		
+		boolean useSSL = prefs.getBoolean("useSSL", false);
+		boolean trustAllCertificates = prefs.getBoolean("trustAllCertificates", false);
 
 		mClient = new NNTPExtended();
+		
+		if (useSSL) {
+			Log.i("CgroundhogReader.lib.ServerManager", "Using SSL...");
+			try {
+				SSLContext sslContext = SSLContext.getInstance("TLS");
+				sslContext.init(null, new TrustManager[] {
+						TrustManagerFactory.get(host, !trustAllCertificates)
+				}, new SecureRandom());
+				mClient.setSocketFactory(sslContext.getSocketFactory());
+			}
+			catch (KeyManagementException e) {
+				Log.e("GroundhogReader.lib.ServerManager",
+						"Caught KeyManagementException", e);
+			}
+			catch (NoSuchAlgorithmException e) {
+				Log.e("GroundhogReader.lib.ServerManager",
+						"Caught NoSuchAlgorihmException", e);
+			}
+		}
+		
 			
 		// Get the configuration host, port, username and pass
 		mClient.connect(host, port);

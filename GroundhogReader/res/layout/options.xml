@@ -32,6 +32,24 @@
 		android:numeric="integer"			
 		/>
 		
+ 		<CheckBoxPreference
+		android:key="useSSL"
+		android:id="@+id/preference_useSSL"
+		android:title="@string/server_uses_ssl_title"
+		android:summary="@string/server_uses_ssl_summary"
+		android:checked="false"
+		android:defaultValue="false"
+		/>
+		
+		<CheckBoxPreference
+		android:key="trustAllCertificates"
+		android:dependency="useSSL"
+		android:title="@string/trust_all_certificates_title"
+		android:summary="@string/trust_all_certificates_summary"
+		android:checked="false"
+		android:defaultValue="false"
+		/>		
+		
 		<CheckBoxPreference
 		android:key="needsAuth"
 		android:id="@+id/preference_needsAuth"

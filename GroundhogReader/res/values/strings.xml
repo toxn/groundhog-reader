@@ -305,4 +305,10 @@
 <!-- New on 1.19.0 -->
 	<string name="justifyText_title">Justify Text</string>
 	<string name="justifyText_summary">Justify Text (disable for programming or poetry groups)</string>
+	
+<!--  New on 1.20.0 -->
+	<string name="server_uses_ssl_title">Use SSL</string>
+	<string name="server_uses_ssl_summary">Tick if the server supports SSL encryption.</string>
+	<string name="trust_all_certificates_title">Trust any certificate</string>
+	<string name="trust_all_certificates_summary">Tick if your server has a self-signed certificate.  Use with caution!</string>
 </resources>
