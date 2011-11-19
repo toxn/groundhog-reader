@@ -1,10 +1,4 @@
-.metadata
-.metadata
-.metadata
-GroundhogReader/.metadata
-GroundhogReader/bin/com/almarsoft/GroundhogReader/*.class
-GroundhogReader/bin/com/almarsoft/GroundhogReader/lib
-GroundhogReader/bin/GroundhogReader.apk
-GroundhogReader/bin/classes.dex
-GroundhogReader/bin/resources.ap_
-GroundhogReader/gen/com
+.metadata/*
+GroundhogReader/.metadata/*
+GroundhogReader/bin/*
+GroundhogReader/gen/*
