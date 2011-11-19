@@ -36,6 +36,7 @@ import org.apache.james.mime4j.field.address.Mailbox;
 import org.apache.james.mime4j.field.address.MailboxList;
 import org.apache.james.mime4j.message.BinaryBody;
 import org.apache.james.mime4j.message.Body;
+import org.apache.james.mime4j.message.BodyFactory;
 import org.apache.james.mime4j.message.BodyPart;
 import org.apache.james.mime4j.message.Entity;
 import org.apache.james.mime4j.message.Header;
@@ -74,6 +75,7 @@ public class MessageTextProcessor {
 		if (rawStr.indexOf("=?") != -1) {
 			return message.getSubject();
 		}
+		charset = BodyFactory.toJavaCharset(charset, false).name();
 		return new String(subjectField.getRaw().toByteArray(), charset).replaceFirst("Subject: ", "");
 	}
 	
@@ -100,6 +102,7 @@ public class MessageTextProcessor {
 		}
 
 		try {
+			charset = BodyFactory.toJavaCharset(charset, false).name();
 			return new String(fromField.getRaw().toByteArray(), charset).replaceFirst("From: ", "");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -114,6 +117,7 @@ public class MessageTextProcessor {
 			return DecoderUtil.decodeEncodedWords(originalHeader);
 		}
 		try{
+			charset = BodyFactory.toJavaCharset(charset, false).name();
 			return new String(originalHeader.getBytes("ISO8859-1"), charset);
 		} catch (UnsupportedEncodingException e) {
 			return "Unknown";

@@ -6,8 +6,9 @@
 	<classpathentry exported="true" kind="lib" path="libs/commons-lang-2.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/misc.jar"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry exported="true" kind="lib" path="libs/apache-mime4j-0.6.jar" sourcepath="/home/juanjux/reader/GroundhogReader/apache-mime4j-0.6"/>
+	<classpathentry exported="true" kind="lib" path="libs/apache-mime4j-0.6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/API 7 extra libraries"/>
-	<classpathentry kind="lib" path="/home/juanjux/reader/GroundhogReader/libs/shared-bouncycastle-reduced-0.9.12.jar"/>
+	<classpathentry kind="lib" path="libs/shared-bouncycastle-reduced-0.9.12.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/layoutlib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

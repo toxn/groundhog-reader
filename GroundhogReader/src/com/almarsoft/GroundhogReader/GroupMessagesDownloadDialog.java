@@ -106,7 +106,6 @@ public class GroupMessagesDownloadDialog {
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		String maxFetch = prefs.getString("maxFetch", "100");
-		if (maxFetch.length() == 0) maxFetch = "100";
 		mLimit = new Integer(maxFetch);
 		mCallback = callback;
 		mCancelCallback = cancelCallback;

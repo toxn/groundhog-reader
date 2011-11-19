@@ -117,7 +117,7 @@ public class MessagePosterLib {
 	private String getSignature() {
 		String signature = mPrefs.getString("signature", "");
 		if (signature.length() > 0) {
-			signature = "\n\n" + "--\n" + signature; 
+			signature = "\n\n" + "-- \n" + signature; 
 		}
 		
 		return signature;

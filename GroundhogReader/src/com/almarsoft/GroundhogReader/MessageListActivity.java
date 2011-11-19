@@ -684,6 +684,28 @@ public class MessageListActivity extends Activity {
 							}
 						}).show();
 	}
+
+	
+	// Create a thread with big stack so the recursive functions in nntp.Threader.java doesn't crash the stack
+	class BigStackThreader
+	{
+		
+		public BigStackThreader(final Article[] articles) throws InterruptedException
+		{
+			Runnable r = new Runnable() {
+				public void run() {
+					Threader threader = new Threader();
+					Article root = (Article) threader.thread(articles);
+					fillListNonRecursive(root, 0, null);
+					fillNumbersArray();
+				}
+			};
+			
+			Thread t = new Thread(new ThreadGroup("tgroup"), r, "threader_thread_", 1024*1024);
+			t.start();
+			t.join();
+		}
+	}
 	
 	
 	private class LoadFromDBAndThreadTask extends AsyncTask<Void, Integer, Integer > {
@@ -785,12 +807,15 @@ public class MessageListActivity extends Activity {
 	
 			// XXX YYY ZZZ: ORDENAR AQUI
 			if (articles.length > 0) {
-				Threader threader = new Threader();
-				// XXX: This crash the stack if there are lots of messages, reimplement using a iterative version
-				Article root = (Article) threader.thread(articles);
-
-				fillListNonRecursive(root, 0, null);
-				fillNumbersArray();
+				// This class call the recursive functions in the message threader inside a thread with a big stack
+				// (Android main thread stack is only 8Kb)
+				try {
+					new BigStackThreader(articles);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					articles = null;
+					return FINISHED_INTERRUPTED;
+				}
 			}
 			
 			articles = null;
@@ -1040,10 +1065,13 @@ public class MessageListActivity extends Activity {
 				    prevArticleReferences == null         ||
 						(prevArticleReferences != null    && 
 						 prevArticleReferences.length > 0  &&
-						 !prevArticleReferences[0].equalsIgnoreCase(thisArticleReferences[0]))) {					
+						 !prevArticleReferences[0].trim().equalsIgnoreCase(thisArticleReferences[0].trim()))) {					
 					
 					subjectChange = true;
+					Log.d("XXX", "subjectChange = true\n");
 				}
+				else
+					Log.d("XXX", "subjectChange = false\n");
 				
 				// New subject
 				if (subjectChange) {		
@@ -1141,6 +1169,4 @@ public class MessageListActivity extends Activity {
 		DBUtils.updateStarredThread(newValue, starred_thread_subject, mGroupID, getApplicationContext());
 		mMsgList.invalidateViews();
 	}
-
-
 }
