@@ -19,14 +19,15 @@
 
 package com.almarsoft.GroundhogReader.lib;
 
-import org.apache.harmony.xnet.provider.jsse.SSLParameters;
-
 import com.almarsoft.GroundhogReader.lib.DomainNameChecker;
+import java.security.cert.CertificateException;
 import android.util.Log;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 /**
@@ -129,7 +130,15 @@ public final class TrustManagerFactory {
 
     public static X509TrustManager get(String host, boolean secure) {
         if (secure) {
-            return new SecureX509TrustManager(SSLParameters.getDefaultTrustManager(), host) ;
+            String defaultAlgorithm = javax.net.ssl.TrustManagerFactory.getDefaultAlgorithm();
+            javax.net.ssl.TrustManagerFactory tmf;
+            try {
+                tmf = javax.net.ssl.TrustManagerFactory.getInstance(defaultAlgorithm);
+            } catch (NoSuchAlgorithmException e) {
+                return sUnsecureTrustManager;
+            }
+            TrustManager[] tms = tmf.getTrustManagers();
+            return new SecureX509TrustManager((X509TrustManager) tms[0], host);
         } else {
             return sUnsecureTrustManager;
         }

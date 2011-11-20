@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.almarsoft.GroundhogReader"
-      android:versionName="1.20.3" android:versionCode="64"
+      android:versionName="1.20.4" android:versionCode="64"
      > 
       
     <uses-sdk android:minSdkVersion="4"/>
