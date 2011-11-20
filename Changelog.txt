@@ -1,3 +1,8 @@
+1.20.4
+- Project forked to Github. A couple of fixes along the way (still
+  need testing). There is a gap in changes, because the changelog
+  wasn't kept up to date for some time.
+
 1.15.1
 - Bugfixes (lots, thanks to the Market new crash reporting tool)
 
