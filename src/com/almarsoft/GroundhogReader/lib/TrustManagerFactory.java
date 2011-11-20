@@ -128,15 +128,10 @@ public final class TrustManagerFactory {
     private TrustManagerFactory() {
     }
 
-    public static X509TrustManager get(String host, boolean secure) {
+    public static X509TrustManager get(String host, boolean secure) throws NoSuchAlgorithmException {
         if (secure) {
             String defaultAlgorithm = javax.net.ssl.TrustManagerFactory.getDefaultAlgorithm();
-            javax.net.ssl.TrustManagerFactory tmf;
-            try {
-                tmf = javax.net.ssl.TrustManagerFactory.getInstance(defaultAlgorithm);
-            } catch (NoSuchAlgorithmException e) {
-                return sUnsecureTrustManager;
-            }
+            javax.net.ssl.TrustManagerFactory tmf = javax.net.ssl.TrustManagerFactory.getInstance(defaultAlgorithm);
             TrustManager[] tms = tmf.getTrustManagers();
             return new SecureX509TrustManager((X509TrustManager) tms[0], host);
         } else {
