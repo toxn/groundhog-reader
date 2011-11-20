@@ -5,8 +5,8 @@ NNTP news reader for Android originally developed by Juanjo Alvarez.
 
 URL of the original project page on Launchpad: https://launchpad.net/groundhog/ 
 
-Project is still in process of cleanup. Libraries forked for the purpose of the project are successively moved out to independent projects.
-For the time being, the only such external dependency is apache-mime4j library fitted for the needs of the Groundhog Reader.
+Project is still in the process of cleanup. 
+James Apache Mime4J fork was moved to a separate project:
 
 https://github.com/zoldar/apache-james-mime4j-groundhog
 
