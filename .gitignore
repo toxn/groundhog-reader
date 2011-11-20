@@ -1,5 +1,4 @@
 .metadata/*
-GroundhogReader/.metadata/*
-GroundhogReader/bin/*
-GroundhogReader/gen/*
-GroundhogReader/target/*
+bin/*
+gen/*
+target/*
