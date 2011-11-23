@@ -17,10 +17,14 @@ In order to build and deploy the application, you need to have Maven (http://mav
 
 If not told otherwise, all commands have to be issued from the project's root directory.
 
-1. Build project 
+1. Set ANDROID\_HOME environment variable to point to the root directory of your Android SDK installation
+
+        export ANDROID_HOME=/path_to_your_android_sdk_install
+
+2. Build project 
 
         mvn install
 
-2. Deploy project to the connected phone
+3. Deploy project to the connected phone
 
         mvn android:deploy
