@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="done">Terminé</string>
+
+    <!-- These 4 are used when displaying a message, on the header -->
+    <string name="groupscolon">Groupes : </string>
+    <string name="subjectcolon">Sujet : </string>
+    <string name="authorcolon">Auteur : </string>
+    <string name="datecolon">Date : </string>
+
+    <!-- Start of settings strings -->
+    <!-- Connection settings -->
+    <string name="category_connection">Connexion</string> <!-- Category title -->
+    <string name="section_mandatory">Connexion sur le serveur, identification et sécurisation</string>
+    <string name="server_address_title">Adresse du serveur</string>
+    <string name="server_address_summary">Adresse du serveur de nouvelles</string>
+    <string name="server_address_dialog_title">Adresse du serveur :</string>
+    <string name="server_address_dialog_message">Saisissez l\'adresse de votre serveur de nouvelles (sans "nntp://").</string>
+    <string name="server_port_title">Numéro de port du serveur</string>
+    <string name="server_port_summary">Numéro du port utilisé par le serveur (habituellement 119)</string>
+    <string name="server_port_dialog_title">Numéro de port serveur :</string>
+    <string name="server_need_login_title">Le serveur nécessite une identification</string>
+    <string name="server_need_login_summary">Le serveur nécessite un identifiant et un mot de passe</string>
+    <string name="login_name_title">Identifiant</string>
+    <string name="login_name_summary">Identifiant de connexion (ne sera PAS affiché dans les articles)</string>
+    <string name="login_name_dialog_title">Saisissez votre identifiant.</string>
+    <string name="pass_title">Mot de passe</string>
+    <string name="pass_summary">Mot de passe de connexion</string>
+    <string name="pass_dialog_title">Saisissez votre mot de passe.</string>
+    <string name="maxfetch_title">Nombre maximum d\'articles</string>
+    <string name="maxfetch_summary">Nombre maximum d\'article à télécharger lors d\'une vérification</string>
+    <string name="maxfetch_dialog_title">Maximum téléchargés</string>
+
+    <!-- User Info settings -->
+    <string name="category_userinfo">Informations d\'utilisateur</string>
+    <string name="summary_userinfo">Informations d\'utilisateur (nom, mél, signature)</string>
+    <string name="name_title">Nom</string>
+    <string name="name_summary">Nom affiché dans les articles</string>
+    <string name="name_dialog_title">Saisissez votre nom ou pseudonyme.</string>
+    <string name="email_title">Adresse mél</string>
+    <string name="email_summary">Adresse mél affichée dans les articles. Les adresses invalides sont autorisées et doivent se terminer par ".invalid".</string>
+    <string name="email_dialog_title">Saisissez votre adresse mél</string>
+    <string name="signature_title">Signature</string>
+    <string name="signature_summary">Signature optionnelle ajoutée en fin d\'article</string>
+    <string name="signature_dialog_title">Saisissez votre signature</string>
+
+    <!-- Writing settings -->
+    <string name="category_posting">Composition</string>
+    <string name="posting">Composition des articles</string>
+    <string name="post_charset_title">Jeu de caractères</string>
+    <string name="post_charset_summary">Jeu de caractères à utiliser pour vos articles</string>
+    <string name="quote_title">Sélecteur de citation</string>
+    <string name="quote_summary">Sélectionner les portions à citer avant de répondre.</string>
+    <string name="replycursor_title">Curseur de réponse au début</string>
+    <string name="replycursor_summary">Positionner le curseur au début de l\'article avant de composer la réponse.</string>
+    <string name="followup_title">Suivis multiples</string>
+    <string name="followup_summary">Réponse à un article dont le suivi est positionné sur plusieurs groupes</string>
+    <string name="followup_dialog_title">Suivi sur...</string>
+    <string name="quotestring_title">En-tête de citation</string>
+    <string name="quotestring_summary">Configurer la ligne initiale de citation dans une réponse.</string>
+    <string name="quotestring_dialog_title">Configuration de l\'en-tête</string>
+    <string name="quotestring_dialog_message">Ce texte introduit la citation de l\'article auquel vous répondez. Utilisez les jetons [date] et [user] (NdT : utilisateur), qui seront remplacés par les valeurs appropriées.\nExemple :\nLe [date], [user] a écrit :</string>
+    <!-- Translate the sentence but NOT the words inside brackets like [date] or [quote] -->
+    <string name="default_quote_header">Le [date], [user] a écrit :</string>
+    <string name="offlinemode_title">Mode hors-ligne</string>
+    <string name="offlinemode_summary">La vérification manuelle envoie les articles composés et reçoit les nouveaux articles complets</string>
+
+    <!-- Reading settings -->
+    <string name="category_reading">Lecture</string>
+    <string name="post_charset_dialog_title">Choisissez votre jeu de caractère</string>
+    <string name="options_reading">Lecture des articles</string>
+    <string name="read_charset_title">Jeu de caractères par défaut</string>
+    <string name="read_charset_summary">Jeu de caractères par défaut pour la lecture</string>
+    <string name="read_charset_dialog_title">Choisissez votre jeu de caractères</string>
+    <string name="replies_title">Mise en évidence des réponses</string>
+    <string name="replies_summary">Mettre en évidence les réponses directes à mes articles</string>
+    <string name="expire_mode">Conservation des articles lus</string>
+    <string name="expire_mode_summary">Délai de conservation des articles lus</string>
+    <string name="expire_modes_dialog_title">Délai de conservation</string>
+
+    <!-- End of settings strings -->
+
+
+    <!-- Generic stuff -->
+    <string name="close">Fermer</string>
+    <string name="cancel">Annuler</string>
+
+    <!-- These are used on the screen where the user can subscribe new groups -->
+    <string name="btn_search_groups">Rechercher des groupes</string>
+    <string name="statuscolon">Statut : </string>
+    <string name="starting_d">Démarrage...</string>
+
+    <!-- This is used on the quotes selector to select all text lines or select none of it -->
+    <string name="banned_menu_select">Tout sélectionner</string>
+    <string name="banned_menu_deselect">Tout dé-sélectionner</string>
+
+    <!-- These strings are used on the compose message screen where the user can compose new messages -->
+    <string name="send">Envoyer</string>
+    <string name="discard">Abandonner</string>
+    <string name="compose_deletetext">Effaçer tout le texte</string>
+    <string name="compose_increasesize">Agrandir le texte</string>
+    <string name="compose_decreasesize">Rétrécir le texte</string>
+    <string name="compose_changue_post_charset">Modifier le jeu de caractères d\'envoi</string>
+    <string name="mark_all_read">Marquer tous les articles comme lus.</string>
+    <string name="unsubscribe_group">Se désabonner du groupe</string>
+    <string name="grouplist_getall">Télécharger tous les articles</string>
+    <string name="grouplist_add_groups">Ajouter des groupes</string>
+    <string name="grouplist_set_offline">Passer hors-ligne</string>
+    <string name="show_help">Afficher l\'aide succinte</string>
+    <string name="global_settings">Configuration</string>
+    <string name="clear_cache">Vider le tampon</string>
+    <string name="msglist_mark_thread_read">Marquer la discussion comme lue</string>
+    <string name="msglist_mark_thread_unread">Marquer la discussion comme non lue</string>
+    <string name="msglist_star_thread">(Dés-)Étoiler l\'article</string>
+    <string name="msglist_ban_thread">Masquer la discussion</string>
+    <string name="msglist_ban_author">Masquer l\'auteur</string>
+    <string name="msglist_newpost">Nouvel article</string>
+    <string name="msglist_group_list">Liste des groupes</string>
+    <string name="msglist_refresh">Rafraîchir</string>
+    <string name="msglist_getnew">Synchroniser</string>
+    <string name="msglist_markread">Tout marquer comme lu</string>
+    <string name="msglist_manage_banned">Discussions masquées</string>
+    <string name="msglist_manage_banned_users">Auteurs masqués</string>
+    <string name="msglist_change_read_charset">Modifier le jeu de caractères de lecture</string>
+    <string name="reply">Répondre</string>
+    <string name="keep_unread">Garder non-lu</string>
+    <string name="forward">Répondre par mél</string>
+    <string name="ban_author">Masquer l\'auteur</string>
+    <string name="toggle_favorite">Favori</string>
+    <string name="increase_text_size">Agrandir le texte</string>
+    <string name="decrease_text_size">Réctrécir le texte</string>
+    <string name="showheaders">Afficher/cacher l\'en-tête complet</string>
+    <string name="nothing_to_do">Rien à faire</string>
+    <string name="there_are_no_bans">Rien n\'est masqué</string>
+    <string name="return_">Retour</string>
+    <string name="encoding">Encodage</string>
+    <string name="change_encoding_tip"> (Vous pouvez le modifier avec menu puis encodage)</string>
+    <string name="posting_message">Envoi de l\'article...</string>
+    <string name="empty_groups">Groupes vides !</string>
+    <string name="must_select_group">"Vous devez sélectionner des groupes dans le champs groupes !</string>
+    <string name="error_posting">Erreur lors de l\'envoi !</string>
+    <string name="group_offline_mode">Liste des groupes (mode hors-ligne)</string>
+    <string name="group_online_mode">Liste des groupes (mode connecté)</string>
+    <string name="group_headers">En-têtes du groupe</string>
+    <string name="server_change_detected">Modification sur le serveur détectée - Les anciens en-têtes ont été effaçés</string>
+    <string name="deleting_d">Effacement...</string>
+    <string name="unsubscribing_deleting_caches">Désabonnement et nettoyage...</string>
+    <string name="marking_read_deleting_caches">Marquage de tous les articles comme lu et suppression du cache des articles lus...</string>
+    <string name="sync_messages">Synchroniser les articles</string>
+    <string name="set_online_mode">Se connecter</string>
+    <string name="get_all_headers">Télécharger tous les en-têtes</string>
+    <string name="set_offline_mode">Se déconnecter</string>
+    <string name="confirm_expire_messages">Voulez-vous supprimer tous les articles lus ?</string>
+    <string name="group_menu">Menu groupe</string>
+    <string name="error">Erreur</string>
+    <string name="mark_read_question">Voulez-vous marquer tous les articles de {0} comme lu ?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="unsubscribe_question">Voulez-vous vous désabonner de {0} ?</string>
+    <string name="unsubscribe">Se désabonner</string>
+    <string name="get_new">Vérifier nouveaux</string>
+    <string name="warning_online_to_offline_sync">Attention : Ce groupe contient des articles dont le corps n\'a pas encore été téléchargé. Voulez-vous télécharger ces articles maintenant ? (Si vous ne le souhaitez pas, le corps sera téléchargé quand vous visualiserez les articles, même en mode hors-ligne).</string>
+    <string name="yes_sync">Oui (synchroniser)</string>
+    <string name="no_enter_anyway">Non (Entrer quand même)</string>
+    <string name="fetch_headers_question">Voulez-vous télécharger les nouveaux articles de {0} ?</string>
+    <string name="asking_new_articles">Recherche de nouveaux articles</string>
+    <string name="full_messages">s articles complets</string>
+    <string name="headers">s en-têtes</string>
+    <string name="getting_something">Téléchargement de{0}</string>
+    <string name="interrupted">Interrompu</string>
+    <string name="auth_error">Erreur d\'authentification</string>
+    <string name="posting_pending_messages">Envoi des articles en attente</string>
+    <string name="finished">Terminé</string>
+    <string name="error_post_check_settings">Une erreur est survenue pendant l\'envoi ou la réception des articles. Merci de vérifier vos réglages de connexion :\n</string>
+    <string name="download_interrupted_sleep">Réception interrompue (Application probablement mise en veille par le système)</string>
+    <string name="error_authenticating_check_pass">Une erreur est intervenue pendant l\'autentification. Merci de vérifier vos utilisateur et mot de passe sur le serveur :\n</string>
+    <string name="loading_help_d">Chargement de l\'aide...</string>
+    <string name="at_first_message">Vous êtes déjà au premier article</string>
+    <string name="no_more_messages">Il n\'y a plus d\'articles dans le groupe</string>
+    <string name="open_save_attach_question">Ouvrir ou sauver attachement ?</string>
+    <string name="open">Ouvrir</string>
+    <string name="save">Sauver</string>
+    <string name="saved_to">Sauver sous </string>
+    <string name="attachment">Attachement</string>
+    <string name="could_not_save_colon">Ne peut pas sauver : </string>
+    <string name="stored_outbox_send_next_sync">L\'article est stocké dans la file d\'attente, il sera envoyé lors de la prochaine synchronisation</string>
+    <string name="message_sent">Article envoyé</string>
+    <string name="message_discarded">Article abandonné</string>
+    <string name="reload_tosee_unbanned_authors">Rechargez la liste des articles pour voir les auteurs dévoilés</string>
+    <string name="nothing_to_unban">Rien à restaurer</string>
+    <string name="cant_reply_no_header_data">Réponse impossible ; pas de données d\'en-tête</string>
+    <string name="message_marked_unread">Article marqué comme non lu</string>
+    <string name="author_banned_reload_tohide">Auteur masqué, faites Liste des messages -> Rafraîchir pour le cacher</string>
+    <string name="cant_ban_no_header_data">Impossible de masquer l\'auteur ; pas de données d\'en-tête</string>
+    <string name="followup_multigroup_question">Cet article est publié sur plusieurs groupes. Voulez-vous répondre sur tous les groupes ou seulement le groupe actuel ? Les groupes sont :\n</string>
+    <string name="followup_all_groups">Tous</string>
+    <string name="followup_current_group">Actuel</string>
+    <string name="must_fill_name_email_goto_settings">Vous devez fournir un nom et une boîte mél (peuvent être invalides) dans les réglages (dans la section Informations Utilisateur). Souhaitez-vous effectuer ce réglage maintenant ?</string>
+    <string name="user_info_unset">Informations utilisateur supprimées</string>
+    <string name="cant_make_favorite_no_header">Impossible de marquer comme favori ; Pas de données d\'en-tête</string>
+    <string name="fetching_body">Récupération du corps de l\'article</string>
+    <string name="could_not_fetch_header">Impossible de récupérer l\'en-tête depuis le serveur</string>
+    <string name="requesting_message">Demande de l\'article</string>
+    <string name="message">Article</string>
+    <string name="error_loading_kept_unread">Erreur lors de la récupération du corps de l\'article (l\'article reste non lu)</string>
+    <string name="error_loading_kept_unread_long">Erreur lors de la récupération du corps de l\'article. Veuillez s\'il-vous-plait vérifier vos réglages de serveur et le statu de votre connexion (l\'article reste non lu.)</string>
+    <string name="error_saving_kept_unread">Erreur pendant la conservation de l\'article (l\'article reste non lu)</string>
+    <string name="error_saving_kept_unread_long">Une erreur est survenue en tentant de conserver l\'article sur la machine ou sur la carte mémoire. Veuillez s-\'il vous plait vérifier votre carte mémoire (l\'article reste non lu)</string>
+    <string name="server_doesnt_have_message">L\'article n\'est plus présent sur le serveur</string>
+    <string name="server_doesnt_have_message_long">[,L\'article n\'est plus présent sur le serveur, celui-ci est peut-être trop ancien ou un pourriel]</string>
+    <string name="new_subject">Nouveau sujet : \n</string>
+    <string name="no_unread_use_sync">Aucun article non lu, utilisez Menu->Synchroniser pour en recevoir plus</string>
+    <string name="article_menu">Menu article</string>
+    <string name="thread_ignore">Les articles futurs de cette discussion seront masqués, utilisez Menu->Plus->Gérer les conversations masquées pour les restaurer</string>
+    <string name="future_unignored_willbe_fetched">Les futurs articles des discussions restaurées seront reçus</string>
+    <string name="deleting_messages_caches">Suppression des articles lus</string>
+    <string name="threading_messages">Tri des articles en discussions</string>
+    <string name="messages">Articles</string>
+    <string name="add_group">Ajouter groupe</string>
+    <string name="subscribe_question">Souhaitez-vous vous inscrire au groupe {0} ?</string>
+    <string name="already_subscribed_long">Vous recevez déjà {0} !</string>
+    <string name="already_subscribed_excl">Déjà inscrit !</string>
+    <string name="subscribed_ok">Vous êtes inscrit à {0} ; utilisez le bouton RETOUR pour revenir à la liste des groupes</string>
+    <string name="too_short_excl">Trop court !</string>
+    <string name="too_short_three_chars">Le texte de recherche doit contenir au moins trois caractères</string>
+    <string name="not_configured">Non réglé</string>
+    <string name="error_retrieving_check_connection">Une erreur est survenue lors de la réception. Veuillez s\'il-vous-plait vérifier vos réglages de connexion (en particulier l\'adresse du serveur, le port et les informations d\'identification) ou la qualité de réception. Souhaitez-vous vous rendre dans les réglages maintenant ?</string>
+    <string name="error_auth_check_pass_go_settings">Une erreur est survenue lors de l\'identification sur le serveur. Veuillez s\'il-vous-plait vérifier vos réglages d\'identifiant et de mot de passe. Souhaitez-vous vous rendre dans les réglages maintenant ?</string>
+    <string name="go_to_settings">Réglages</string>
+    <string name="hostname_not_configured_goto_settings">L\'adresse de votre serveur usenet n\'est pas spécifiée. Souhaitez-vous effectuer ce réglage maintenant ?</string>
+    <string name="group">Groupe</string>
+    <string name="offline_group_has_no_messages_sync">Le groupe ne contient aucun article non lu. Souhaitez-vous le synchroniser maintenant ?</string>
+    <string name="subscribe_to_groups">Souscrire aux groupes</string>
+    <string name="banned_threads">Conversations masquées</string>
+    <string name="banned_users">Auteurs masqués</string>
+    <string name="select_quote">Selectionnez le texte à citer</string>
+    <string name="all">Tout</string>
+    <string name="none">Rien</string>
+
+    <!-- New on 1.12.0 -->
+    <string name="expire_messages">Supprimer les articles lus</string>
+    <string name="msglist_group_showread">Montrer les articles lus</string>
+    <string name="msglist_group_hideread">Masquer les articles lus</string>
+    <string name="expiring_d">Masquage des articles lus...</string>
+
+    <!-- New on 1.13.0 -->
+    <!-- Notifications category options at settings -->
+    <string name="preference_enable_notif_title">Notifications</string>
+    <string name="preference_enable_notif_summary">Rechercher de nouveaux articles et notifier</string>
+    <string name="preference_wifiOnly">Seulement sur WIFI</string>
+    <string name="pref_notif_period">Intervalle de vérification</string>
+    <string name="preference_useSound_title">Jouer un son</string>
+    <string name="preference_useVibration_title">Vibrer</string>
+    <string name="preference_useLight_title">Sortir de la veille</string>
+    <string name="summary_posting_screen">Écriture et envoi des articles</string>
+    <!-- This is shown on Android bar notifications area (when expanded) -->
+    <string name="new_messages">Nouveaux articles</string>
+
+    <!-- New on 1.13.1 -->
+    <!-- User can't currently input more than one word/wildcar on the subscribe screen search textbox: -->
+    <string name="only_one_word_title">Trop de mots</string>
+    <string name="only_one_word">Pour l\'instant un seul terme (ou joker) n\'est autorisé</string>
+
+    <!-- New on 1.16.0 -->
+    <string name="getlatest_all">Recevoir tous les nouveaux articles</string>
+    <string name="getlatest">Recevoir les nouveaux articles</string>
+
+    <!-- New on 1.17.0 -->
+    <string name="confirm_send">Envoyer</string>
+    <string name="confirm_send_question">Souhaitez-vous envoyer l\'article ?</string>
+    <string name="confirm_discard">Abandonner</string>
+    <string name="confirm_discard_question">Abandonner l\'article ?</string>
+    <string name="catchup_menu">Rattraper les groupes</string>
+    <string name="catchup_menu_all">Rattraper tout</string>
+    <string name="catchingup_server">Rattrapage sur le serveur</string>
+    <string name="catchup_done">Rattrapage sur le serveur effectué</string>
+
+    <!-- New on 1.17.1 -->
+    <string name="ok">Ok</string>
+    <string name="empty_host_title">Adresse vide</string>
+    <string name="empty_host_error">L\'adresse du serveur est vide. Veuillez en saisir une dans Connexion->Adresse du serveur</string>
+    <string name="empty_port_title">Numéro de port vide</string>
+    <string name="empty_port_error">Le numéro de port est vide. Veuillez en saisir un dans Connexion->Numéro de port du serveur</string>
+    <string name="empty_login_title">Identifiant vide</string>
+    <string name="empty_login_error">L\'identifiant est vide. Veuillez en saisir un dans Connexion->Identifiant</string>
+    <string name="empty_pass_title">Mot de passe vide</string>
+    <string name="empty_pass_error">Le mot de passe est vide. Veuillez en saisir un dans Connexion->Mot de passe</string>
+    <string name="starting_download">Connexion au serveur</string>
+
+    <!-- New on 1.19.0 -->
+    <string name="justifyText_title">Redisposer le texte</string>
+    <string name="justifyText_summary">Adapter les lignes de texte à la largeur de l\'affichage.\nDésactivez pour les groupes de poétrie ou de programmation.</string>
+
+    <!-- New on 1.20.0 -->
+    <string name="server_uses_ssl_title">Utiliser SSL</string>
+    <string name="server_uses_ssl_summary">Le serveur gère la couche de sécurité SSL.</string>
+    <string name="trust_all_certificates_title">Faire confiance à n\'importe quel certificat</string>
+    <string name="trust_all_certificates_summary">Le certificat de votre serveur est auto-signé. A utiliser avec circonspection !</string>
+
+    <!-- New on 1.20.4 -->
+    <string name="groupsearch">Recherche des groupes correspondant...</string>
+
+</resources>
